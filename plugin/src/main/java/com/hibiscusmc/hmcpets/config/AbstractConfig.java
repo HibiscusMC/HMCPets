@@ -2,12 +2,12 @@ package com.hibiscusmc.hmcpets.config;
 
 import lombok.extern.java.Log;
 import me.lojosho.hibiscuscommons.config.serializer.ItemSerializer;
+import me.lojosho.shaded.configurate.CommentedConfigurationNode;
+import me.lojosho.shaded.configurate.ConfigurateException;
+import me.lojosho.shaded.configurate.yaml.NodeStyle;
+import me.lojosho.shaded.configurate.yaml.YamlConfigurationLoader;
+import me.lojosho.shaded.configurate.yaml.internal.snakeyaml.DumperOptions;
 import org.bukkit.inventory.ItemStack;
-import org.spongepowered.configurate.CommentedConfigurationNode;
-import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.yaml.NodeStyle;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
-import org.spongepowered.configurate.yaml.internal.snakeyaml.DumperOptions;
 
 import java.lang.reflect.Field;
 import java.nio.file.Path;
@@ -30,9 +30,7 @@ public abstract class AbstractConfig {
                     .builder()
                     .path(path)
                     .defaultOptions(opts ->
-                            opts.serializers(build -> {
-                                    build.register(ItemStack.class, ItemSerializer.INSTANCE);
-                            }))
+                            opts.serializers(build -> build.register(ItemStack.class, ItemSerializer.INSTANCE)))
                     .nodeStyle(NodeStyle.BLOCK);
 
             Field optsField = builder.getClass().getDeclaredField("options");

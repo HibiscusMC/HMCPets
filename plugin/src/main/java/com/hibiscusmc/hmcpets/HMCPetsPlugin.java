@@ -5,7 +5,7 @@ import com.hibiscusmc.hmcpets.command.CommandModule;
 import com.hibiscusmc.hmcpets.config.ConfigModule;
 import com.hibiscusmc.hmcpets.service.Service;
 import com.hibiscusmc.hmcpets.service.ServiceModule;
-import com.hibiscusmc.hmcpets.storage.Storage;
+import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.plugin.Plugin;
@@ -67,7 +67,7 @@ public class HMCPetsPlugin extends JavaPlugin implements Module {
         binder.bind(JavaPlugin.class).to(HMCPetsPlugin.class);
         binder.bind(Plugin.class).to(HMCPetsPlugin.class);
 
-        binder.bind(Storage.class).toInstance(new Storage());
+        binder.bind(StorageHolder.class).toInstance(new StorageHolder());
         binder.bind(UserCache.class).to(UserCache.class);
 
         binder.install(new ServiceModule());

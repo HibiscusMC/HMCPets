@@ -5,17 +5,17 @@ import com.hibiscusmc.hmcpets.model.Collar;
 import com.hibiscusmc.hmcpets.model.Pet;
 import com.hibiscusmc.hmcpets.model.Skin;
 import com.hibiscusmc.hmcpets.model.User;
-import com.hibiscusmc.hmcpets.storage.impl.StorageImpl;
+import com.hibiscusmc.hmcpets.storage.impl.Storage;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
 
-public class JSONImpl implements StorageImpl {
+public class CSVStorage implements Storage {
     @Override
     public String name() {
-        return "JSON";
+        return "CSV";
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.hibiscusmc.hmcpets.gui;
 
 import com.hibiscusmc.hmcpets.config.AbstractConfig;
+import me.lojosho.shaded.configurate.serialize.SerializationException;
 import org.apache.commons.lang.math.IntRange;
 import org.bukkit.inventory.ItemStack;
-import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -44,27 +44,27 @@ public class ListPetsMenu extends AbstractConfig {
                     validSlots.add(Integer.parseInt(slot));
                 }
             }
+
+            for (var entry : get("icons").childrenMap().entrySet()) {
+                String iconKey = entry.getKey().toString();
+
+                switch (iconKey) {
+                    case "next-page":
+                        ItemStack item = get("icons." + iconKey + ".item").get(ItemStack.class);
+                        break;
+                    case "previous-page":
+
+                        break;
+                    case "filter":
+
+                        break;
+                    default:
+
+                        break;
+                }
+            }
         } catch (SerializationException | NullPointerException e) {
             throw new RuntimeException("Cannot parse valid slots for list_pets.yml menu.");
-        }
-
-        for (var entry : get("icons").childrenMap().entrySet()) {
-            String iconKey = entry.getKey().toString();
-
-            switch (iconKey) {
-                case "next-page":
-                    ItemStack item = get("icons." + iconKey + ".item").get(ItemStack.class);
-                    break;
-                case "previous-page":
-
-                    break;
-                case "filter":
-
-                    break;
-                default:
-
-                    break;
-            }
         }
     }
 
@@ -81,6 +81,7 @@ public class ListPetsMenu extends AbstractConfig {
             this.item = item;
             this.slot = slot;
             this.dynamic = dynamic;
+            return this;
         }
     }
 }

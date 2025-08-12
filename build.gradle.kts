@@ -68,7 +68,7 @@ tasks {
     runServer {
         downloadPlugins {
             url("https://repo.hibiscusmc.com/releases/me/lojosho/HibiscusCommons/0.6.4/HibiscusCommons-0.6.4.jar")
-            url("https://ci.dmulloy2.net/job/ProtocolLib/lastStableBuild/artifact/build/libs/ProtocolLib.jar")
+            url("https://github.com/dmulloy2/ProtocolLib/releases/download/5.4.0/ProtocolLib.jar")
             url("https://download.luckperms.net/1595/bukkit/loader/LuckPerms-Bukkit-5.5.10.jar")
         }
 

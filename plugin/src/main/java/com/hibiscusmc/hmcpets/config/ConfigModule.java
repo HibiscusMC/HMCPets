@@ -14,21 +14,17 @@ import java.io.File;
 
 public class ConfigModule extends AbstractModule {
 
-    public static PetConfig petConfig;
-    public static LangConfig langConfig;
-    public static MenuConfig menuConfig;
-    public static PluginConfig pluginConfig;
-
     @Provides
     @Singleton
     public PetConfig petConfig(@NotNull Plugin plugin) {
         PetConfig config = new PetConfig(
+                plugin,
                 new File(plugin.getDataFolder().getPath(), "pets").toPath()
         );
 
         config.setup();
 
-        return petConfig = config;
+        return config;
     }
 
     @Provides
@@ -40,7 +36,7 @@ public class ConfigModule extends AbstractModule {
 
         config.setup();
 
-        return langConfig = config;
+        return config;
     }
 
     @Provides
@@ -52,7 +48,7 @@ public class ConfigModule extends AbstractModule {
 
         config.setup();
 
-        return menuConfig = config;
+        return config;
     }
 
     @Provides
@@ -64,6 +60,6 @@ public class ConfigModule extends AbstractModule {
 
         config.setup();
 
-        return pluginConfig = config;
+        return config;
     }
 }

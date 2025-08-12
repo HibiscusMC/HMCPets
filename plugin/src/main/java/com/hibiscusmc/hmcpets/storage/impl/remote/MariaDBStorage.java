@@ -1,15 +1,22 @@
-package com.hibiscusmc.hmcpets.storage.impl.local;
+package com.hibiscusmc.hmcpets.storage.impl.remote;
 
 import com.hibiscusmc.hmcpets.config.PluginConfig;
+import com.hibiscusmc.hmcpets.pet.PetConfig;
 import com.hibiscusmc.hmcpets.storage.impl.SQLBasedStorage;
-import com.hibiscusmc.hmcpets.storage.impl.StorageImpl;
+import team.unnamed.inject.Inject;
 
 import java.sql.Connection;
 
-public class SQLiteImpl extends SQLBasedStorage {
+public class MariaDBStorage extends SQLBasedStorage {
+
+    @Inject
+    public MariaDBStorage(PluginConfig pluginConfig, PetConfig petConfig) {
+        super(pluginConfig, petConfig);
+    }
+
     @Override
     public String name() {
-        return "SQLite";
+        return "MariaDB";
     }
 
     @Override

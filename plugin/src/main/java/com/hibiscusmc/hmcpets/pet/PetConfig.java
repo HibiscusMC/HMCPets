@@ -16,14 +16,13 @@ import java.util.Map;
 @Log(topic = "HMCPets")
 @RequiredArgsConstructor
 public class PetConfig {
+
     @Getter
     private final Map<String, PetData> allPets
             = new HashMap<>();
 
+    private final Plugin plugin;
     private final Path path;
-
-    @Inject
-    private Plugin plugin;
 
     public void setup() {
         log.info("Loading pets...");

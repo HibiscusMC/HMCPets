@@ -1,7 +1,6 @@
 package com.hibiscusmc.hmcpets.storage;
 
 import com.hibiscusmc.hmcpets.config.PluginConfig;
-import com.hibiscusmc.hmcpets.storage.impl.StorageImpl;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
@@ -11,8 +10,8 @@ import team.unnamed.inject.Singleton;
 @Setter
 @Log(topic = "HMCPets")
 @Singleton
-public class Storage {
-    private StorageImpl implementation;
+public class StorageHolder {
+    private com.hibiscusmc.hmcpets.storage.impl.Storage implementation;
 
     public String name() {
         return implementation.name();

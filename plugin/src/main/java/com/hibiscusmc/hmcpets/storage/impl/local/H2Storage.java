@@ -2,8 +2,10 @@ package com.hibiscusmc.hmcpets.storage.impl.local;
 
 import com.hibiscusmc.hmcpets.HMCPetsPlugin;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
+import com.hibiscusmc.hmcpets.pet.PetConfig;
 import com.hibiscusmc.hmcpets.storage.impl.SQLBasedStorage;
 import org.h2.jdbc.JdbcConnection;
+import team.unnamed.inject.Inject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,8 +15,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class H2Impl extends SQLBasedStorage {
+public class H2Storage extends SQLBasedStorage {
+
     private JdbcConnection connection;
+
+    @Inject
+    public H2Storage(PluginConfig pluginConfig, PetConfig petConfig) {
+        super(pluginConfig, petConfig);
+    }
 
     @Override
     public String name() {

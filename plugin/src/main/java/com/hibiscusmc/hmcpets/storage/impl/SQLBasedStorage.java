@@ -1,10 +1,11 @@
 package com.hibiscusmc.hmcpets.storage.impl;
 
-import com.hibiscusmc.hmcpets.config.ConfigModule;
+import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.model.Collar;
 import com.hibiscusmc.hmcpets.model.Pet;
 import com.hibiscusmc.hmcpets.model.Skin;
 import com.hibiscusmc.hmcpets.model.User;
+import com.hibiscusmc.hmcpets.pet.PetConfig;
 import com.hibiscusmc.hmcpets.pet.PetData;
 import lombok.extern.java.Log;
 import me.lojosho.hibiscuscommons.hooks.Hooks;
@@ -20,7 +21,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Log(topic = "HMCPets")
-public abstract class SQLBasedStorage implements StorageImpl {
+public abstract class SQLBasedStorage implements Storage {
+
     // Pets Statements
     private static final String PETS_INSERT = "INSERT INTO <prefix>pets (" +
             " pet_id, owner, name, level, experience," +
@@ -76,8 +78,16 @@ public abstract class SQLBasedStorage implements StorageImpl {
     private static final String FAVORITE_PETS_SELECT_ALL = "SELECT * FROM <prefix>favorite_pets WHERE user_id = ?;";
     private static final String FAVORITE_PETS_DELETE = "DELETE FROM <prefix>favorite_pets WHERE user_id = ? AND pet_id = ?;";
 
+    protected final PluginConfig pluginConfig;
+    protected final PetConfig petConfig;
+
+    public SQLBasedStorage(PluginConfig pluginConfig, PetConfig petConfig) {
+        this.pluginConfig = pluginConfig;
+        this.petConfig = petConfig;
+    }
+
     private String parsePrefix(String statement) {
-        return statement.replace("<prefix>", ConfigModule.pluginConfig.storage().prefix());
+        return statement.replace("<prefix>", pluginConfig.storage().prefix());
     }
 
     @Override
@@ -159,7 +169,7 @@ public abstract class SQLBasedStorage implements StorageImpl {
             return null;
         }
 
-        PetData petData = ConfigModule.petConfig.allPets().get(configId);
+        PetData petData = petConfig.allPets().get(configId);
         Pet pet = new Pet(id, user, petData);
 
         String name = rs.getString("name");

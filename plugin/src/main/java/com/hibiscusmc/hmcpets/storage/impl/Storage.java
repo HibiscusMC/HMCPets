@@ -11,7 +11,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
 
-public interface StorageImpl {
+public interface Storage {
     String name();
 
     void initialize(PluginConfig.StorageConfig config);

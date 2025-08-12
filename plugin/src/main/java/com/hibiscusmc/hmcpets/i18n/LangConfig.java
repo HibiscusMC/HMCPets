@@ -2,8 +2,8 @@ package com.hibiscusmc.hmcpets.i18n;
 
 import com.hibiscusmc.hmcpets.config.AbstractConfig;
 import lombok.Getter;
-import org.spongepowered.configurate.CommentedConfigurationNode;
-import org.spongepowered.configurate.ConfigurateException;
+import me.lojosho.shaded.configurate.CommentedConfigurationNode;
+import me.lojosho.shaded.configurate.ConfigurateException;
 
 import java.nio.file.Path;
 import java.util.Arrays;

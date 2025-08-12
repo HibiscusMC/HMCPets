@@ -7,8 +7,8 @@ import com.hibiscusmc.hmcpets.i18n.LangConfig;
 import com.hibiscusmc.hmcpets.model.Pet;
 import com.hibiscusmc.hmcpets.model.User;
 import com.hibiscusmc.hmcpets.pet.PetConfig;
-import com.hibiscusmc.hmcpets.storage.Storage;
-import com.hibiscusmc.hmcpets.storage.impl.StorageImpl;
+import com.hibiscusmc.hmcpets.storage.StorageHolder;
+import com.hibiscusmc.hmcpets.storage.impl.Storage;
 import com.hibiscusmc.hmcpets.util.Debug;
 import me.fixeddev.commandflow.annotated.CommandClass;
 import me.fixeddev.commandflow.annotated.annotation.Command;
@@ -42,7 +42,7 @@ public class PetsAdminCommand implements CommandClass {
     @Inject
     private UserCache userCache;
     @Inject
-    private Storage storage;
+    private StorageHolder storage;
 
     @Command(names = {"debug"}, permission = "hmcpets.admincommands.debug")
     public void onDebugCommand(CommandSender sender) {
@@ -69,7 +69,7 @@ public class PetsAdminCommand implements CommandClass {
             return;
         }
 
-        StorageImpl impl = storage.implementation();
+        Storage impl = storage.implementation();
 
         User user = userCache.fetch(player.getUniqueId());
 
@@ -96,7 +96,7 @@ public class PetsAdminCommand implements CommandClass {
             return;
         }
 
-        StorageImpl impl = storage.implementation();
+        Storage impl = storage.implementation();
 
         User user = userCache.fetch(player.getUniqueId());
 

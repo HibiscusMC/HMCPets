@@ -1,7 +1,7 @@
 package com.hibiscusmc.hmcpets.cache;
 
 import com.hibiscusmc.hmcpets.model.User;
-import com.hibiscusmc.hmcpets.storage.Storage;
+import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.inject.Inject;
 
@@ -15,7 +15,7 @@ public class UserCache extends HashMap<UUID, User> {
             = new HashMap<>();
 
     @Inject
-    private Storage storage;
+    private StorageHolder storage;
 
     @Override
     public User put(UUID key, User value) {

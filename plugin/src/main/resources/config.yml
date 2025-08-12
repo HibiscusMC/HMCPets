@@ -1,0 +1,58 @@
+###########################################################################
+#                                                                         #
+#               |   |   \  |   ___|   _ \        |                        #
+#               |   |  |\/ |  |      |   |  _ \  __|   __|                #
+#               ___ |  |   |  |      ___/   __/  |   \__ \                #
+#              _|  _| _|  _| \____| _|    \___| \__| ____/                #
+#                                                                         #
+#                 The ultimate Minecraft pets experience                  #
+#                                                                         #
+#=========================================================================#
+#                                                                         #
+#       Documentation: https://docs.hibiscusmc.com                        #
+#       Support:       https://discord.gg/pcm8kWrdNt                      #
+#       Issues:        https://github.com/HibiscusMC/HMCPets/issues       #
+#                                                                         #
+#                           A HibiscusMC Plugin                           #
+#                               Made by Kiz                               #
+#                                                                         #
+###########################################################################
+
+#######################################################
+#                       STORAGE                       #
+#=====================================================#
+#                                                     #
+#  Storage Methods:                                   #
+#    Remote Database:                                 #
+#    - MariaDB (Recommended) | Default Port: 3306     #
+#    - MySQL | Default Port: 3306                     #
+#    - PostgreSQL | Default Port: 5432                #
+#    - MongoDB | Default Port: 27017                  #
+#    Local Database:                                  #
+#    - H2 (Recommended)                               #
+#    - SQLite                                         #
+#    Text file:                                       #
+#    - JSON (Recommended)                             #
+#    - YAML                                           #
+#    - CSV                                            #
+#                                                     #
+#######################################################
+storage:
+  # Here you should specify the method you want to use to store pets data.
+  method: H2
+  remote:
+    # Setting the URI will override all the values defined below it.
+    uri: ''
+    # The address where your database is hosted. Do not include the port!
+    address: 'localhost'
+    # The port of your database.
+    port: 3306
+    # The username the plugin will use for the database connection.
+    username: 'root'
+    # The password for the specified username.
+    password: 'youshallnotpass'
+  # The name of the database where the data will be stored.
+  # If method is set to a local / text database, it will define the name of the file
+  database: 'hmcpets'
+  # The prefix that will be used for the tables / collections.
+  prefix: 'hmcpets_'

@@ -1,0 +1,44 @@
+title: '<white>ꐽ'
+rows: 6
+slots:
+  - 0-44
+icons:
+  next-page:
+    dynamic: true
+    item:
+      material: nexo:cancel_icon
+      name: 'Next Page'
+      lore:
+        - 'Click to go to the next page'
+    slot: 53
+  previous-page:
+    dynamic: true
+    item:
+      material: nexo:cancel_icon
+      name: 'Previous Page'
+      lore:
+        - 'Click to go to the previous page'
+    slot: 45
+  filter:
+    item:
+      material: nexo:cancel_icon
+      name: 'Filter'
+      lore:
+        - '<current:all>All'
+        - '<current:unlocked>Unlocked'
+        - '<current:active>Active'
+        - '<current:inactive>Inactive'
+        - '<current:resting>Resting'
+        - ''
+        - 'Click to switch through the filter'
+    slot: 49
+  example-button:
+    slot: 50
+    item:
+      material: nexo:cancel_icon
+      name: 'Example Icon'
+      lore:
+        - 'This is an example icon'
+    actions:
+      - 'player: me hola'
+      - 'console: say hello %player_name%'

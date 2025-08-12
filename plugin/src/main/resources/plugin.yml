@@ -1,0 +1,11 @@
+name: 'HMCPets'
+main: "com.hibiscusmc.hmcpets.HMCPetsPlugin"
+version: '${hmcpets.version}'
+api-version: '1.21'
+author: iKztu
+depend: [HibiscusCommons]
+
+libraries:
+  - com.github.ben-manes.caffeine:caffeine:3.2.0
+  - org.spongepowered:configurate-yaml:4.2.0
+  - com.h2database:h2:2.3.232

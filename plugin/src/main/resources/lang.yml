@@ -1,0 +1,19 @@
+prefix: "<b><gradient:#d24c9f:#FF8282>HMCPets</gradient> <dark_gray>»</dark_gray></b> <gray>"
+no-permission: "<prefix><red>No permission."
+
+commands:
+  admin:
+    reload: "<prefix><gray>Reloaded <color:#d24c9f><type></color> files in <color:#d24c9f><ms>ms</color>!"
+    debug: "<prefix><gray>Debug mode: <status>"
+  usage: "<prefix><gray>Usage: <#d24c9f>/<command> <usage>"
+
+pets:
+  rarity:
+    common: "<gray><b>COMMON</b></gray>"
+    rare: "<blue><b>RARE</b></blue>"
+    epic: "<dark_purple><b>EPIC</b></dark_purple>"
+    legendary: "<gold><b>LEGENDARY</b></gold>"
+
+constants:
+  enabled: "<green><b>ENABLED</b></green>"
+  disabled: "<red><b>DISABLED</b></red>"

@@ -5,6 +5,7 @@ import lombok.extern.java.Log;
 
 @Log(topic = "HMCPets - DEBUG")
 public class Debug {
+
     @Getter
     private static boolean debug = false;
 
@@ -19,4 +20,5 @@ public class Debug {
     public static boolean toggleDebug() {
         return debug = !debug;
     }
+
 }

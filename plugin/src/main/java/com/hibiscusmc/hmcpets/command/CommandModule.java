@@ -4,6 +4,7 @@ import me.fixeddev.commandflow.annotated.CommandClass;
 import team.unnamed.inject.AbstractModule;
 
 public class CommandModule extends AbstractModule {
+
     @Override
     protected void configure() {
         multibind(CommandClass.class)
@@ -11,4 +12,5 @@ public class CommandModule extends AbstractModule {
                 .to(PetsCommand.class)
                 .to(PetsAdminCommand.class);
     }
+
 }

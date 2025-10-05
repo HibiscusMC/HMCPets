@@ -4,6 +4,7 @@ import lombok.extern.java.Log;
 
 @Log(topic = "HMCPets")
 public abstract class Service {
+
     private final String name;
 
     protected Service(String serviceName) {

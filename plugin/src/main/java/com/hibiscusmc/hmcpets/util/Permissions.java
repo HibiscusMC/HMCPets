@@ -1,6 +1,7 @@
 package com.hibiscusmc.hmcpets.util;
 
 public enum Permissions {
+
     USE_PET("pets.%.use");
 
     private final String permissionName;
@@ -16,4 +17,5 @@ public enum Permissions {
     public String permission(String wildcard) {
         return permissionName.replace("%", wildcard);
     }
+
 }

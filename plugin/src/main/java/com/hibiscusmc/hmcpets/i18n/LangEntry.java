@@ -1,5 +1,6 @@
 package com.hibiscusmc.hmcpets.i18n;
 
+import com.hibiscusmc.hmcpets.config.LangConfig;
 import com.hibiscusmc.hmcpets.util.Adventure;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LangEntry {
+
     private final static LegacyComponentSerializer LEGACY
             = LegacyComponentSerializer.legacyAmpersand();
     private final static MiniMessage MINI_MESSAGE
@@ -79,4 +81,5 @@ public class LangEntry {
     public String legacy() {
         return LEGACY.serialize(component());
     }
+
 }

@@ -15,5 +15,9 @@ pets:
     legendary: "<gold><b>LEGENDARY</b></gold>"
 
 constants:
+  no-pets: "<prefix><red>You don't have any pets!"
   enabled: "<green><b>ENABLED</b></green>"
   disabled: "<red><b>DISABLED</b></red>"
+  current:
+    active: "<green>"
+    inactive: "<gray>"

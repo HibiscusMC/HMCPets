@@ -1,8 +1,9 @@
 package com.hibiscusmc.hmcpets.storage;
 
+import com.hibiscusmc.hmcpets.api.data.IStorageData;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.service.Service;
-import com.hibiscusmc.hmcpets.storage.impl.Storage;
+import com.hibiscusmc.hmcpets.api.storage.Storage;
 import com.hibiscusmc.hmcpets.storage.impl.local.H2Storage;
 import com.hibiscusmc.hmcpets.storage.impl.local.SQLiteStorage;
 import com.hibiscusmc.hmcpets.storage.impl.remote.MariaDBStorage;
@@ -32,7 +33,7 @@ public class StorageService extends Service {
 
     @Override
     protected void initialize() {
-        PluginConfig.StorageConfig storageConfig = pluginConfig.storage();
+        IStorageData storageConfig = pluginConfig.storage();
 
         Storage impl = null;
 
@@ -64,4 +65,5 @@ public class StorageService extends Service {
 
         storage.close();
     }
+
 }

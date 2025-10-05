@@ -1,11 +1,13 @@
 package com.hibiscusmc.hmcpets.storage.impl.text;
 
-import com.hibiscusmc.hmcpets.config.PluginConfig;
-import com.hibiscusmc.hmcpets.model.Collar;
-import com.hibiscusmc.hmcpets.model.Pet;
-import com.hibiscusmc.hmcpets.model.Skin;
-import com.hibiscusmc.hmcpets.model.User;
-import com.hibiscusmc.hmcpets.storage.impl.Storage;
+import com.hibiscusmc.hmcpets.api.data.IStorageData;
+import com.hibiscusmc.hmcpets.api.model.enums.PetRarity;
+import com.hibiscusmc.hmcpets.api.model.CollarModel;
+import com.hibiscusmc.hmcpets.api.model.PetModel;
+import com.hibiscusmc.hmcpets.api.model.SkinModel;
+import com.hibiscusmc.hmcpets.api.model.UserModel;
+import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
+import com.hibiscusmc.hmcpets.api.storage.Storage;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Connection;
@@ -13,13 +15,14 @@ import java.util.List;
 import java.util.UUID;
 
 public class YAMLStorage implements Storage {
+
     @Override
     public String name() {
         return "YAML";
     }
 
     @Override
-    public void initialize(PluginConfig.StorageConfig config) {
+    public void initialize(IStorageData config) {
 
     }
 
@@ -34,127 +37,128 @@ public class YAMLStorage implements Storage {
     }
 
     @Override
-    public void insertPet(Pet pet) {
+    public void insertPet(PetModel pet) {
 
     }
 
     @Override
-    public Pet selectPet(User user, int petId) {
+    public PetModel selectPet(UserModel user, int petId) {
         return null;
     }
 
     @Override
-    public List<Pet> selectPets(User user) {
+    public List<PetModel> selectPets(UserModel user) {
         return List.of();
     }
 
     @Override
-    public void updatePetName(Pet pet, String newName) {
+    public void updatePetName(PetModel pet, String newName) {
 
     }
 
     @Override
-    public void updatePetLevel(Pet pet, int newLevel, int newExperience) {
+    public void updatePetLevel(PetModel pet, int newLevel, int newExperience) {
 
     }
 
     @Override
-    public void updatePetSkin(Pet pet, Skin newSkin) {
+    public void updatePetSkin(PetModel pet, SkinModel newSkin) {
 
     }
 
     @Override
-    public void updatePetRarity(Pet pet, Pet.Rarity newRarity) {
+    public void updatePetRarity(PetModel pet, PetRarity newRarity) {
 
     }
 
     @Override
-    public void updatePetCollar(Pet pet, Collar newCollar) {
+    public void updatePetCollar(PetModel pet, CollarModel newCollar) {
 
     }
 
     @Override
-    public void updatePetCraving(Pet pet, ItemStack newCraving) {
+    public void updatePetCraving(PetModel pet, ItemStack newCraving) {
 
     }
 
     @Override
-    public void updatePetStatus(Pet pet, Pet.Status newStatus) {
+    public void updatePetStatus(PetModel pet, PetStatus newStatus) {
 
     }
 
     @Override
-    public void updatePetStats(Pet pet, int power, double health, double attack, double hunger) {
+    public void updatePetStats(PetModel pet, int power, double health, double attack, double hunger) {
 
     }
 
     @Override
-    public void savePet(Pet pet) {
+    public void savePet(PetModel pet) {
 
     }
 
     @Override
-    public void deletePet(Pet pet) {
+    public void deletePet(PetModel pet) {
 
     }
 
     @Override
-    public void insertUser(User user) {
+    public void insertUser(UserModel user) {
 
     }
 
     @Override
-    public User selectUser(int userId) {
+    public UserModel selectUser(int userId) {
         return null;
     }
 
     @Override
-    public User selectUserByUuid(UUID uuid) {
+    public UserModel selectUserByUuid(UUID uuid) {
         return null;
     }
 
     @Override
-    public void updateUserPetPoints(User user, int newPoints) {
+    public void updateUserPetPoints(UserModel user, int newPoints) {
 
     }
 
     @Override
-    public void saveUser(User user) {
+    public void saveUser(UserModel user) {
 
     }
 
     @Override
-    public void deleteUser(User user) {
+    public void deleteUser(UserModel user) {
 
     }
 
     @Override
-    public void insertActivePet(User user, Pet pet) {
+    public void insertActivePet(UserModel user, PetModel pet) {
 
     }
 
     @Override
-    public List<Pet> selectActivePets(User user) {
+    public List<PetModel> selectActivePets(UserModel user) {
         return List.of();
     }
 
     @Override
-    public void deleteActivePet(User user, Pet pet) {
+    public void deleteActivePet(UserModel user, PetModel pet) {
 
     }
 
     @Override
-    public void insertFavoritePets(User user, Pet pet) {
+    public void insertFavoritePets(UserModel user, PetModel pet) {
 
     }
 
     @Override
-    public List<Pet> selectFavoritePets(User user) {
+    public List<PetModel> selectFavoritePets(UserModel user) {
         return List.of();
     }
 
     @Override
-    public void deleteFavoritePet(User user, Pet pet) {
+    public void deleteFavoritePet(UserModel user, PetModel pet) {
 
     }
+
 }

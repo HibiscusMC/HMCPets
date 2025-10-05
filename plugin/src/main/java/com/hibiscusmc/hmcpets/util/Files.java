@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Files {
+
     public static List<File> listFiles(File path) {
         if (!path.isDirectory()) {
             return null;
@@ -39,4 +40,5 @@ public class Files {
 
         return fetchedPath.toFile();
     }
+
 }

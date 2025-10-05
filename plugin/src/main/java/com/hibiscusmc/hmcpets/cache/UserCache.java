@@ -1,6 +1,6 @@
 package com.hibiscusmc.hmcpets.cache;
 
-import com.hibiscusmc.hmcpets.model.User;
+import com.hibiscusmc.hmcpets.api.model.UserModel;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.inject.Inject;
@@ -9,34 +9,34 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class UserCache extends HashMap<UUID, User> {
+public class UserCache extends HashMap<UUID, UserModel> {
 
-    private final Map<Integer, User> usersbyIndex
+    private final Map<Integer, UserModel> usersByIndex
             = new HashMap<>();
 
     @Inject
     private StorageHolder storage;
 
     @Override
-    public User put(UUID key, User value) {
-        usersbyIndex.put(value.id(), value);
+    public UserModel put(UUID key, UserModel value) {
+        usersByIndex.put(value.id(), value);
 
         return super.put(key, value);
     }
 
     @Override
-    public User remove(Object key) {
-        User user = get(key);
+    public UserModel remove(Object key) {
+        UserModel user = get(key);
         if (user == null) {
             return null;
         }
 
-        usersbyIndex.remove(user.id());
+        usersByIndex.remove(user.id());
         return super.remove(key);
     }
 
     @Nullable
-    public User fetch(UUID uuid) {
+    public UserModel fetch(UUID uuid) {
         return getOrDefault(
                 uuid,
                 storage.implementation().selectUserByUuid(uuid)
@@ -44,8 +44,8 @@ public class UserCache extends HashMap<UUID, User> {
     }
 
     @Nullable
-    public User fetch(int index) {
-        return usersbyIndex.getOrDefault(
+    public UserModel fetch(int index) {
+        return usersByIndex.getOrDefault(
                 index,
                 storage.implementation().selectUser(index)
         );

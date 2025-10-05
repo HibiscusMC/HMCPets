@@ -1,4 +1,4 @@
-package com.hibiscusmc.hmcpets.config;
+package com.hibiscusmc.hmcpets.config.internal;
 
 import lombok.extern.java.Log;
 import me.lojosho.hibiscuscommons.config.serializer.ItemSerializer;
@@ -15,7 +15,8 @@ import java.util.Arrays;
 
 @Log(topic = "HMCPets")
 public abstract class AbstractConfig {
-    private final Path path;
+
+    protected final Path path;
 
     protected YamlConfigurationLoader loader;
     protected CommentedConfigurationNode configNode;
@@ -51,4 +52,5 @@ public abstract class AbstractConfig {
     protected CommentedConfigurationNode get(String path) {
         return configNode.node(Arrays.stream(path.split("\\.")).toList());
     }
+
 }

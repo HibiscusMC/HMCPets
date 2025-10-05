@@ -1,0 +1,65 @@
+title: '<white>ꐽ'
+rows: 6
+slots:
+  - 0-44
+icons:
+  next-page:
+    dynamic: true
+    item:
+      material: nexo:cancel_icon
+      name: 'Next Page'
+      lore:
+        - 'Click to go to the next page'
+    slot: 53
+  previous-page:
+    dynamic: true
+    item:
+      material: nexo:cancel_icon
+      name: 'Previous Page'
+      lore:
+        - 'Click to go to the previous page'
+    slot: 45
+  filter:
+    item:
+      material: nexo:cancel_icon
+      name: 'Filter'
+      lore:
+        - '<current:all>All'
+        - '<current:active>Active'
+        - '<current:idle>Idle'
+        - '<current:resting>Resting'
+        - ''
+        - '<#d24c9f>Left-Click<dark_gray>: <white>Next filter'
+        - '<#d24c9f>Right-Click<dark_gray>: <white>Previous filter'
+    slot: 48
+  pet-data:
+    item:
+      material: PLAYER_HEAD
+      name: '<#d24c9f><pet:name>'
+      lore:
+        - '<dark_gray>ID: <pet:id>'
+        - ''
+        - '<#d24c9f><b>Information'
+        - '<#d24c9f>Level<dark_gray>: <white><pet:level>'
+        - '<#d24c9f>Experience<dark_gray>: <white><pet:experience>'
+        - '<#d24c9f>Rarity<dark_gray>: <white><pet:rarity>'
+        - '<#d24c9f>Collar<dark_gray>: <white><pet:collar>'
+        - '<#d24c9f>Craving<dark_gray>: <white><pet:craving>'
+        - ''
+        - '<#d24c9f><b>Stats'
+        - '<#d24c9f>Power<dark_gray>: <white><pet:power>'
+        - '<#d24c9f>Health<dark_gray>: <white><pet:health>'
+        - '<#d24c9f>Attack<dark_gray>: <white><pet:attack>'
+        - '<#d24c9f>Hunger<dark_gray>: <white><pet:hunger>'
+        - ''
+        - '<gray>Obtained <pet:obtained:short>'
+  example-button:
+    slot: 50
+    item:
+      material: nexo:cancel_icon
+      name: 'Example Icon'
+      lore:
+        - 'This is an example icon'
+    actions:
+      - 'player: me Hi!'
+      - 'console: say hello %player_name%'

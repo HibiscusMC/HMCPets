@@ -1,11 +1,12 @@
-package com.hibiscusmc.hmcpets.pet;
+package com.hibiscusmc.hmcpets.config;
 
+import com.hibiscusmc.hmcpets.pet.PetData;
 import com.hibiscusmc.hmcpets.util.Files;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.bukkit.plugin.Plugin;
 import team.unnamed.inject.Inject;
+import team.unnamed.inject.Singleton;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -14,21 +15,23 @@ import java.util.List;
 import java.util.Map;
 
 @Log(topic = "HMCPets")
-@RequiredArgsConstructor
+@Singleton
 public class PetConfig {
 
     @Getter
     private final Map<String, PetData> allPets
             = new HashMap<>();
 
-    private final Plugin plugin;
-    private final Path path;
+    @Inject
+    private Plugin plugin;
 
     public void setup() {
         log.info("Loading pets...");
         allPets.clear();
 
+        Path path = new File(plugin.getDataFolder().getPath(), "pets").toPath();
         File petsFile = path.toFile();
+
         if (!petsFile.exists()) {
             petsFile.mkdirs();
 
@@ -64,4 +67,5 @@ public class PetConfig {
 
         log.info(allPets.size() + " pets loaded.");
     }
+
 }

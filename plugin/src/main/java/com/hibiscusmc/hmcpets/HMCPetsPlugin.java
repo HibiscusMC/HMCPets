@@ -1,11 +1,14 @@
 package com.hibiscusmc.hmcpets;
 
-import com.hibiscusmc.hmcpets.cache.UserCache;
+import com.hibiscusmc.hmcpets.cache.CacheModule;
 import com.hibiscusmc.hmcpets.command.CommandModule;
-import com.hibiscusmc.hmcpets.config.ConfigModule;
-import com.hibiscusmc.hmcpets.service.Service;
+import com.hibiscusmc.hmcpets.command.CommandService;
+import com.hibiscusmc.hmcpets.config.internal.ConfigModule;
+import com.hibiscusmc.hmcpets.config.internal.ConfigService;
+import com.hibiscusmc.hmcpets.listener.ListenerService;
 import com.hibiscusmc.hmcpets.service.ServiceModule;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
+import com.hibiscusmc.hmcpets.storage.StorageService;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.plugin.Plugin;
@@ -15,12 +18,17 @@ import team.unnamed.inject.Inject;
 import team.unnamed.inject.Injector;
 import team.unnamed.inject.Module;
 
-import java.util.Set;
-
 @Log(topic = "HMCPets")
 public class HMCPetsPlugin extends JavaPlugin implements Module {
+
     @Inject
-    private Set<Service> services;
+    private ConfigService configService;
+    @Inject
+    private StorageService storageService;
+    @Inject
+    private CommandService commandService;
+    @Inject
+    private ListenerService listenerService;
 
     @Getter
     private static HMCPetsPlugin instance;
@@ -35,9 +43,10 @@ public class HMCPetsPlugin extends JavaPlugin implements Module {
 
         Injector.create(this).injectMembers(this);
 
-        for (Service service : services) {
-            service.load();
-        }
+        configService.load();
+        storageService.load();
+        commandService.load();
+        listenerService.load();
 
         long end = System.currentTimeMillis() - start;
         log.info("HMCPets loaded successfully in " + end + "ms!");
@@ -51,9 +60,10 @@ public class HMCPetsPlugin extends JavaPlugin implements Module {
 
         long start = System.currentTimeMillis();
 
-        for (Service service : services) {
-            service.unload();
-        }
+        configService.unload();
+        storageService.unload();
+        commandService.unload();
+        listenerService.unload();
 
         long end = System.currentTimeMillis() - start;
         log.info("HMCPets disabled successfully in " + end + "ms!");
@@ -67,11 +77,10 @@ public class HMCPetsPlugin extends JavaPlugin implements Module {
         binder.bind(JavaPlugin.class).to(HMCPetsPlugin.class);
         binder.bind(Plugin.class).to(HMCPetsPlugin.class);
 
-        binder.bind(StorageHolder.class).toInstance(new StorageHolder());
-        binder.bind(UserCache.class).to(UserCache.class);
-
+        binder.install(new ConfigModule(this));
         binder.install(new ServiceModule());
-        binder.install(new ConfigModule());
+        binder.bind(StorageHolder.class).to(StorageHolder.class);
+        binder.install(new CacheModule());
         binder.install(new CommandModule());
     }
 
@@ -85,4 +94,5 @@ public class HMCPetsPlugin extends JavaPlugin implements Module {
         log.info("  Made by Kiz");
         log.info("");
     }
+
 }

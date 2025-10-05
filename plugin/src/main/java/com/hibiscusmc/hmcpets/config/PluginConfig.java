@@ -1,5 +1,11 @@
 package com.hibiscusmc.hmcpets.config;
 
+import com.hibiscusmc.hmcpets.api.data.IPluginData;
+import com.hibiscusmc.hmcpets.api.data.IRemoteStorageData;
+import com.hibiscusmc.hmcpets.api.data.IStorageData;
+import com.hibiscusmc.hmcpets.api.storage.StorageMethod;
+import com.hibiscusmc.hmcpets.api.storage.StorageMethodType;
+import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,12 +13,15 @@ import lombok.ToString;
 import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.inject.Singleton;
 
 import java.nio.file.Path;
 
 @Getter
 @Log(topic = "HMCPets")
-public class PluginConfig extends AbstractConfig {
+@Singleton
+public class PluginConfig extends AbstractConfig implements IPluginData {
+
     public PluginConfig(Path path) {
         super(path);
     }
@@ -25,19 +34,21 @@ public class PluginConfig extends AbstractConfig {
         storage = new StorageConfig();
         String rawMethod = get("storage.method").getString("H2");
 
-        StorageConfig.Method method = StorageConfig.Method.fromString(rawMethod);
+        StorageMethod method = StorageMethod.fromString(rawMethod);
 
         if (method == null) {
             log.severe("Invalid storage method set in config - " + rawMethod + " | Defaulting to H2");
 
-            method = StorageConfig.Method.H2;
+            method = StorageMethod.H2;
         }
+
         storage.method(method);
 
-        if (method.type() == StorageConfig.MethodType.REMOTE) {
+        if (method.type() == StorageMethodType.REMOTE) {
             StorageConfig.Remote remote = new StorageConfig.Remote();
 
             String uri = get("storage.remote.uri").getString("");
+
             if (!uri.isEmpty()) {
                 remote.uri(uri);
             } else {
@@ -57,79 +68,41 @@ public class PluginConfig extends AbstractConfig {
     @Getter
     @Setter(AccessLevel.PRIVATE)
     @ToString
-    public static class StorageConfig {
+    public static class StorageConfig implements IStorageData {
+
         @NotNull
-        private Method method;
+        private StorageMethod method;
 
         @Nullable
         private Remote remote = null;
 
         @NotNull
         private String database;
+
         @NotNull
         private String prefix;
 
         @Getter
         @Setter(AccessLevel.PRIVATE)
         @ToString
-        public static class Remote {
+        public static class Remote implements IRemoteStorageData {
+
             @Nullable
             private String uri;
+
             @NotNull
             private String address;
+
             private int port;
+
             @NotNull
             private String username;
+
             @NotNull
             private String password;
+
         }
 
-        public enum MethodType {
-            REMOTE,
-            LOCAL,
-            TEXT
-        }
-
-        public enum Method {
-            MARIADB(MethodType.REMOTE, 3306),
-            MYSQL(MethodType.REMOTE, 3306),
-            POSTGRESQL(MethodType.REMOTE, 5432),
-            MONGODB(MethodType.REMOTE, 27017),
-
-            H2(MethodType.LOCAL),
-            SQLITE(MethodType.LOCAL),
-
-            JSON(MethodType.TEXT),
-            YAML(MethodType.TEXT),
-            CSV(MethodType.TEXT);
-
-            private final MethodType type;
-            private final int port;
-
-            Method(MethodType type, int port) {
-                this.type = type;
-                this.port = port;
-            }
-
-            Method(MethodType type) {
-                this(type, -1);
-            }
-
-            public MethodType type() {
-                return type;
-            }
-
-            public int port() {
-                return port;
-            }
-
-            static Method fromString(String method) {
-                try {
-                    return Method.valueOf(method.toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    return null;
-                }
-            }
-        }
     }
+
 }

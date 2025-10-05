@@ -1,7 +1,7 @@
 package com.hibiscusmc.hmcpets.command;
 
 import com.hibiscusmc.hmcpets.command.impl.CommandArgumentImpl;
-import com.hibiscusmc.hmcpets.i18n.LangConfig;
+import com.hibiscusmc.hmcpets.config.LangConfig;
 import com.hibiscusmc.hmcpets.service.Service;
 import me.fixeddev.commandflow.CommandManager;
 import me.fixeddev.commandflow.annotated.AnnotatedCommandTreeBuilder;
@@ -13,15 +13,16 @@ import me.fixeddev.commandflow.bukkit.factory.BukkitModule;
 import me.fixeddev.commandflow.command.Command;
 import me.fixeddev.commandflow.exception.CommandUsage;
 import me.fixeddev.commandflow.exception.NoPermissionsException;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import team.unnamed.inject.Inject;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 public class CommandService extends Service {
+
     @Inject
     private Set<CommandClass> commandClasses;
     @Inject
@@ -62,7 +63,13 @@ public class CommandService extends Service {
             langConfig.commandUsage()
                     .send(sender, Map.of(
                             "command", label,
-                            "usage", plainText.serialize(Objects.requireNonNull(command.getUsage()))
+                            "usage", plainText.serialize(
+                                    command.getUsage() == null ?
+                                            command.getDescription() == null ?
+                                                    Component.text().build() :
+                                                    command.getDescription() :
+                                            command.getUsage()
+                            )
                     ));
             return true;
         });
@@ -76,4 +83,5 @@ public class CommandService extends Service {
     protected void cleanup() {
 
     }
+
 }

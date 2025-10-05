@@ -1,6 +1,7 @@
 package com.hibiscusmc.hmcpets.storage;
 
-import com.hibiscusmc.hmcpets.config.PluginConfig;
+import com.hibiscusmc.hmcpets.api.data.IStorageData;
+import com.hibiscusmc.hmcpets.api.storage.Storage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
@@ -11,13 +12,14 @@ import team.unnamed.inject.Singleton;
 @Log(topic = "HMCPets")
 @Singleton
 public class StorageHolder {
-    private com.hibiscusmc.hmcpets.storage.impl.Storage implementation;
+
+    private Storage implementation;
 
     public String name() {
         return implementation.name();
     }
 
-    public void initialize(PluginConfig.StorageConfig config) {
+    public void initialize(IStorageData config) {
         if (implementation == null) {
             throw new IllegalStateException("Storage has not been initialized");
         }
@@ -42,4 +44,5 @@ public class StorageHolder {
             throw new RuntimeException(ex);
         }
     }
+
 }

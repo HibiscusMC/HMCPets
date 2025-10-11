@@ -1,5 +1,7 @@
-package com.hibiscusmc.hmcpets.util;
+package com.hibiscusmc.hmcpets.api.util;
 
+import com.hibiscusmc.hmcpets.api.HMCPets;
+import com.hibiscusmc.hmcpets.api.data.ILangData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -18,15 +20,15 @@ public class Adventure {
     }
 
     public static Component parse(String message) {
-        return MINI_MESSAGE.deserialize(message);
+        return MINI_MESSAGE.deserialize(withPrefix(message));
     }
 
     public static Component parse(String message, TagResolver resolver) {
-        return MINI_MESSAGE.deserialize(message, resolver);
+        return MINI_MESSAGE.deserialize(withPrefix(message), resolver);
     }
 
     public static Component parse(String message, List<TagResolver.Single> resolvers) {
-        return MINI_MESSAGE.deserialize(message, TagResolver.resolver(resolvers));
+        return MINI_MESSAGE.deserialize(withPrefix(message), TagResolver.resolver(resolvers));
     }
 
     public static Component parseForMeta(String message) {
@@ -45,6 +47,20 @@ public class Adventure {
         return parse(message, resolvers)
                 .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
                 .colorIfAbsent(NamedTextColor.WHITE);
+    }
+
+    private static String withPrefix(String message) {
+        if (!message.contains("<prefix>")) {
+            return message;
+        }
+
+        ILangData langData = HMCPets.instance()
+                .langData();
+
+        return message.replace(
+                "<prefix>",
+                langData.prefix().string()
+        );
     }
 
 }

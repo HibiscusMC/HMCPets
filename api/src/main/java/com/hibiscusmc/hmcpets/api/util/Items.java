@@ -1,4 +1,4 @@
-package com.hibiscusmc.hmcpets.util;
+package com.hibiscusmc.hmcpets.api.util;
 
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;

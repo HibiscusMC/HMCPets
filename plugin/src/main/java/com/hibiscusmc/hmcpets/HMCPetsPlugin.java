@@ -1,9 +1,11 @@
 package com.hibiscusmc.hmcpets;
 
 import com.hibiscusmc.hmcpets.api.HMCPets;
+import com.hibiscusmc.hmcpets.api.data.ILangData;
 import com.hibiscusmc.hmcpets.cache.CacheModule;
 import com.hibiscusmc.hmcpets.command.CommandModule;
 import com.hibiscusmc.hmcpets.command.CommandService;
+import com.hibiscusmc.hmcpets.config.LangConfig;
 import com.hibiscusmc.hmcpets.config.internal.ConfigModule;
 import com.hibiscusmc.hmcpets.config.internal.ConfigService;
 import com.hibiscusmc.hmcpets.listener.ListenerService;
@@ -29,6 +31,9 @@ public class HMCPetsPlugin extends HMCPets implements Module {
     private CommandService commandService;
     @Inject
     private ListenerService listenerService;
+
+    @Inject
+    private LangConfig langConfig;
 
     @Override
     public void initialize() {
@@ -65,6 +70,11 @@ public class HMCPetsPlugin extends HMCPets implements Module {
         long end = System.currentTimeMillis() - start;
         log.info("HMCPets disabled successfully in " + end + "ms!");
         log.info("-----------------------------------------");
+    }
+
+    @Override
+    public ILangData langData() {
+        return langConfig;
     }
 
     @Override

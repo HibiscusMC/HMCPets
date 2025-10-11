@@ -1,5 +1,6 @@
 package com.hibiscusmc.hmcpets.api;
 
+import com.hibiscusmc.hmcpets.api.data.ILangData;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,5 +25,7 @@ public abstract class HMCPets extends JavaPlugin {
     protected abstract void initialize();
 
     protected abstract void destroy();
+
+    public abstract ILangData langData();
 
 }

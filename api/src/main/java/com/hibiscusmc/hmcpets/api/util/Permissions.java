@@ -1,4 +1,4 @@
-package com.hibiscusmc.hmcpets.util;
+package com.hibiscusmc.hmcpets.api.util;
 
 public enum Permissions {
 

@@ -1,12 +1,13 @@
 package com.hibiscusmc.hmcpets.gui;
 
+import com.hibiscusmc.hmcpets.api.gui.Button;
 import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.UserModel;
 import com.hibiscusmc.hmcpets.config.LangConfig;
-import com.hibiscusmc.hmcpets.util.Adventure;
-import com.hibiscusmc.hmcpets.util.Pets;
+import com.hibiscusmc.hmcpets.api.util.Adventure;
+import com.hibiscusmc.hmcpets.api.util.Pets;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;

@@ -1,7 +1,8 @@
 package com.hibiscusmc.hmcpets.config;
 
+import com.hibiscusmc.hmcpets.api.data.ILangData;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
-import com.hibiscusmc.hmcpets.i18n.LangEntry;
+import com.hibiscusmc.hmcpets.api.i18n.LangEntry;
 import lombok.Getter;
 import me.lojosho.shaded.configurate.CommentedConfigurationNode;
 import me.lojosho.shaded.configurate.ConfigurateException;
@@ -14,23 +15,23 @@ import java.util.Arrays;
 
 @Getter
 @Singleton
-public class LangConfig extends AbstractConfig {
+public class LangConfig extends AbstractConfig implements ILangData {
 
     private final LangEntry prefix
             = new LangEntry("<b><gradient:#d24c9f:#FF8282>HMCPets</gradient> <dark_gray>»</dark_gray></b> <gray>");
     private final LangEntry noPermission
-            = new LangEntry(this, "<prefix><red>No permission.");
+            = new LangEntry("<prefix><red>No permission.");
 
     private final LangEntry commandAdminReload
-            = new LangEntry(this, "<prefix><gray>Reloaded <color:#d24c9f><type></color> files in <color:#d24c9f><ms>ms</color>!");
+            = new LangEntry("<prefix><gray>Reloaded <color:#d24c9f><type></color> files in <color:#d24c9f><ms>ms</color>!");
     private final LangEntry commandAdminDebug
-            = new LangEntry(this, "<prefix><gray>Debug mode: <status>");
+            = new LangEntry("<prefix><gray>Debug mode: <status>");
 
     private final LangEntry commandMainHelp
-            = new LangEntry(this, "");
+            = new LangEntry("");
 
     private final LangEntry commandUsage
-            = new LangEntry(this, "<prefix><gray>Usage: <#d24c9f>/<command> <usage>");
+            = new LangEntry("<prefix><gray>Usage: <#d24c9f>/<command> <usage>");
 
     private final LangEntry petsRarityCommon
             = new LangEntry("<gray><b>COMMON</b></gray>");
@@ -42,7 +43,7 @@ public class LangConfig extends AbstractConfig {
             = new LangEntry("<gold><b>LEGENDARY</b></gold>");
 
     private final LangEntry constantsNoPets
-            = new LangEntry(this, "<prefix><red>You don't have any pets!");
+            = new LangEntry("<prefix><red>You don't have any pets!");
     private final LangEntry constantsEnabled
             = new LangEntry("<green><b>ENABLED</b></green>");
     private final LangEntry constantsDisabled

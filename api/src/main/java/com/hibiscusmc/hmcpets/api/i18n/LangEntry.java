@@ -1,12 +1,10 @@
-package com.hibiscusmc.hmcpets.i18n;
+package com.hibiscusmc.hmcpets.api.i18n;
 
-import com.hibiscusmc.hmcpets.config.LangConfig;
-import com.hibiscusmc.hmcpets.util.Adventure;
+import com.hibiscusmc.hmcpets.api.util.Adventure;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -16,26 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Setter
+@Getter
 public class LangEntry {
 
     private final static LegacyComponentSerializer LEGACY
             = LegacyComponentSerializer.legacyAmpersand();
-    private final static MiniMessage MINI_MESSAGE
-            = MiniMessage.miniMessage();
 
-    @Getter
-    @Setter
     private String string;
 
-    private final LangConfig langConfig;
-
-    public LangEntry(LangConfig langConfig, String string) {
-        this.langConfig = langConfig;
-        this.string = string;
-    }
-
     public LangEntry(String string) {
-        this(null, string);
+        this.string = string;
     }
 
     public void send(Audience audience) {
@@ -58,24 +47,11 @@ public class LangEntry {
                     return Placeholder.parsed(key, entry.getValue());
                 }).toList());
 
-        if (langConfig != null && string.contains("<prefix>") && !data.containsKey("<prefix>")) {
-            Component prefix = langConfig
-                    .prefix().component();
-
-            placeholders.add(Placeholder.component("prefix", prefix));
-        }
-
         audience.sendMessage(Adventure.parse(string, placeholders));
     }
 
     public Component component() {
-        if (langConfig != null && string.contains("<prefix>")) {
-            Component prefix = langConfig.prefix().component();
-
-            return MINI_MESSAGE.deserialize(string, Placeholder.component("prefix", prefix));
-        } else {
-            return MINI_MESSAGE.deserialize(string);
-        }
+        return Adventure.parse(string);
     }
 
     public String legacy() {

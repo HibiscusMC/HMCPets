@@ -8,7 +8,7 @@ import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.UserModel;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import com.hibiscusmc.hmcpets.api.storage.Storage;
-import com.hibiscusmc.hmcpets.util.Adventure;
+import com.hibiscusmc.hmcpets.api.util.Adventure;
 import me.fixeddev.commandflow.annotated.CommandClass;
 import me.fixeddev.commandflow.annotated.annotation.Command;
 import me.fixeddev.commandflow.annotated.annotation.Usage;

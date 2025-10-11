@@ -1,4 +1,4 @@
-package com.hibiscusmc.hmcpets.gui;
+package com.hibiscusmc.hmcpets.api.gui;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;

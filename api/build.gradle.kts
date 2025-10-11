@@ -10,6 +10,9 @@ dependencies {
     // Lombok
     annotationProcessor("org.projectlombok:lombok:1.18.42")
     compileOnly("org.projectlombok:lombok:1.18.42")
+
+    // PlaceholderAPI
+    compileOnly("me.clip:placeholderapi:2.11.6")
 }
 
 java {

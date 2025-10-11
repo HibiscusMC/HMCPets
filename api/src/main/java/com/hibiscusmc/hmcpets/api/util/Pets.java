@@ -1,9 +1,9 @@
-package com.hibiscusmc.hmcpets.util;
+package com.hibiscusmc.hmcpets.api.util;
 
+import com.hibiscusmc.hmcpets.api.data.ILangData;
+import com.hibiscusmc.hmcpets.api.gui.Button;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.enums.PetRarity;
-import com.hibiscusmc.hmcpets.config.LangConfig;
-import com.hibiscusmc.hmcpets.gui.Button;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -25,7 +25,7 @@ public class Pets {
     private static final DateTimeFormatter DATE_FORMATTER
             = DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy HH:mm:ss");
 
-    public static ItemStack buildIcon(LangConfig langConfig, PetModel pet, Button petButton) {
+    public static ItemStack buildIcon(ILangData langData, PetModel pet, Button petButton) {
         ItemStack stack = petButton.item().withType(Material.PLAYER_HEAD);
 
         stack.editMeta(meta -> {
@@ -40,7 +40,7 @@ public class Pets {
                     case "id" -> pet.id() + "";
                     case "level" -> pet.level() + "";
                     case "experience" -> String.format("%,d", pet.experience());
-                    case "rarity" -> parsePetRarity(langConfig, pet.rarity());
+                    case "rarity" -> parsePetRarity(langData, pet.rarity());
                     case "collar" -> pet.collar() == null ? "None" : pet.collar().name();
                     case "craving" -> {
                         ItemStack craving = pet.craving();
@@ -91,12 +91,12 @@ public class Pets {
         return stack;
     }
 
-    public static String parsePetRarity(LangConfig langConfig, PetRarity rarity) {
+    public static String parsePetRarity(ILangData langData, PetRarity rarity) {
         return switch (rarity) {
-            case RARE -> langConfig.petsRarityRare().string();
-            case EPIC -> langConfig.petsRarityEpic().string();
-            case LEGENDARY -> langConfig.petsRarityLegendary().string();
-            default -> langConfig.petsRarityCommon().string();
+            case RARE -> langData.petsRarityRare().string();
+            case EPIC -> langData.petsRarityEpic().string();
+            case LEGENDARY -> langData.petsRarityLegendary().string();
+            default -> langData.petsRarityCommon().string();
         };
     }
 

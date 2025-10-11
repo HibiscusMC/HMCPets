@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.hibiscusmc.hmcpets.api.i18n.LangEntry;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
+import com.hibiscusmc.hmcpets.api.registry.Registry;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -26,8 +27,17 @@ public class PetType {
     @Setter(AccessLevel.PUBLIC)
     private LangEntry name;
 
+    public static final PetType AQUATIC
+            = new PetType(Registry.withDefaultKey("aquatic"));
+    public static final PetType BEAST
+            = new PetType(Registry.withDefaultKey("beast"));
+    public static final PetType MAGIC
+            = new PetType(Registry.withDefaultKey("magic"));
+    public static final PetType CRITTER
+            = new PetType(Registry.withDefaultKey("critter"));
+
     public String id() {
-        return key.value();
+        return key.asString();
     }
 
     public void registerSkill(ActionType action, Consumer<PetModel> skill) {

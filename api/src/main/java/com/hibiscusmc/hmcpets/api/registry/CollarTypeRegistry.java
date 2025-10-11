@@ -1,6 +1,6 @@
 package com.hibiscusmc.hmcpets.api.registry;
 
-import com.hibiscusmc.hmcpets.api.model.registry.ActionType;
+import com.hibiscusmc.hmcpets.api.model.registry.CollarType;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,32 +8,35 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ActionTypeRegistry implements Registry<ActionType> {
+public class CollarTypeRegistry implements Registry<CollarType> {
 
-    private static final Map<String, ActionType> REGISTRY
+    private static final Map<String, CollarType> REGISTRY
             = new HashMap<>();
 
     @Override
     public void load() {
-        register(ActionType.MOVES);
+        register(CollarType.BUFF);
+        register(CollarType.SHIELD);
+        register(CollarType.HEAL);
+        register(CollarType.ABILITY);
     }
 
     @Override
-    public void register(@NotNull ActionType actionType) {
-        if (isRegistered(actionType)) {
-            throw new IllegalArgumentException("ActionType " + actionType + " is already registered");
+    public void register(@NotNull CollarType collarType) {
+        if (isRegistered(collarType)) {
+            throw new IllegalArgumentException("CollarType " + collarType + " is already registered");
         }
 
-        REGISTRY.put(actionType.key().asString(), actionType);
+        REGISTRY.put(collarType.key().asString(), collarType);
     }
 
     @Override
-    public void unregister(@NotNull ActionType actionType) {
-        if (!isRegistered(actionType)) {
-            throw new IllegalArgumentException("ActionType " + actionType + " is not registered");
+    public void unregister(@NotNull CollarType collarType) {
+        if (!isRegistered(collarType)) {
+            throw new IllegalArgumentException("CollarType " + collarType + " is not registered");
         }
 
-        REGISTRY.remove(actionType.key().asString());
+        REGISTRY.remove(collarType.key().asString());
     }
 
     @Override
@@ -59,8 +62,8 @@ public class ActionTypeRegistry implements Registry<ActionType> {
     }
 
     @Override
-    public boolean isRegistered(@NotNull ActionType actionType) {
-        return REGISTRY.containsKey(actionType.key().asString());
+    public boolean isRegistered(@NotNull CollarType collarType) {
+        return REGISTRY.containsKey(collarType.key().asString());
     }
 
     @Override
@@ -74,23 +77,23 @@ public class ActionTypeRegistry implements Registry<ActionType> {
     }
 
     @Override
-    public Optional<ActionType> getRegistered(@NotNull ActionType actionType) {
-        return Optional.ofNullable(REGISTRY.get(actionType.key().asString()));
+    public Optional<CollarType> getRegistered(@NotNull CollarType collarType) {
+        return Optional.ofNullable(REGISTRY.get(collarType.key().asString()));
     }
 
     @Override
-    public Optional<ActionType> getRegistered(@NotNull Key key) {
+    public Optional<CollarType> getRegistered(@NotNull Key key) {
         return Optional.ofNullable(REGISTRY.get(key.asString()));
     }
 
     @Override
-    public Optional<ActionType> getRegistered(@NotNull String str) {
+    public Optional<CollarType> getRegistered(@NotNull String str) {
         return Optional.ofNullable(REGISTRY.get(str));
     }
 
     @Override
-    public ActionType[] getAllRegistered() {
-        return REGISTRY.values().toArray(ActionType[]::new);
+    public CollarType[] getAllRegistered() {
+        return REGISTRY.values().toArray(CollarType[]::new);
     }
-
+    
 }

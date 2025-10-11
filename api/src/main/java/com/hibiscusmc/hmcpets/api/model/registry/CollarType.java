@@ -1,27 +1,21 @@
 package com.hibiscusmc.hmcpets.api.model.registry;
 
-import lombok.Getter;
+import com.hibiscusmc.hmcpets.api.registry.Registry;
+import net.kyori.adventure.key.Key;
 
-@Getter
-public enum CollarType {
+public record CollarType(Key key) {
 
-    BUFF("collarsTypeBuff"),
-    HEAL("collarsTypeHeal"),
-    SHIELD("collarsTypeShield"),
-    ABILITY("collarsTypeAbility"),;
+    public static final CollarType BUFF
+            = new CollarType(Registry.withDefaultKey("buff"));
+    public static final CollarType HEAL
+            = new CollarType(Registry.withDefaultKey("heal"));
+    public static final CollarType SHIELD
+            = new CollarType(Registry.withDefaultKey("shield"));
+    public static final CollarType ABILITY
+            = new CollarType(Registry.withDefaultKey("ability"));
 
-    private final String id;
-
-    CollarType(String id) {
-        this.id = id;
-    }
-
-    public static CollarType of(String rarity) {
-        try {
-            return valueOf(rarity.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+    public String id() {
+        return key.asString();
     }
 
 }

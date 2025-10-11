@@ -53,6 +53,10 @@ public class PetsAdminCommand implements CommandClass {
     public void onDebugCommand(CommandSender sender) {
         boolean status = Debug.toggleDebug();
 
+        for (PetRarity rarity : instance.petRarityRegistry().getAllRegistered()) {
+            System.out.println(rarity);
+        }
+
         langConfig.commandAdminDebug().send(
                 sender,
                 Map.of("status", status ?

@@ -1,27 +1,32 @@
 package com.hibiscusmc.hmcpets.api.model.registry;
 
-import lombok.Getter;
+import com.hibiscusmc.hmcpets.api.i18n.LangEntry;
+import com.hibiscusmc.hmcpets.api.registry.Registry;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
+import net.kyori.adventure.key.Key;
 
-@Getter
-public enum PetRarity {
+@Data
+@Setter(AccessLevel.NONE)
+public class PetRarity {
 
-    COMMON("petsRarityCommon"),
-    RARE("petsRarityRare"),
-    EPIC("petsRarityEpic"),
-    LEGENDARY("petsRarityLegendary");
+    private final Key key;
 
-    private final String id;
+    @Setter(AccessLevel.PUBLIC)
+    private LangEntry name;
 
-    PetRarity(String id) {
-        this.id = id;
-    }
+    public static final PetRarity COMMON
+            = new PetRarity(Registry.withDefaultKey("common"));
+    public static final PetRarity RARE
+            = new PetRarity(Registry.withDefaultKey("rare"));
+    public static final PetRarity EPIC
+            = new PetRarity(Registry.withDefaultKey("epic"));
+    public static final PetRarity LEGENDARY
+            = new PetRarity(Registry.withDefaultKey("legendary"));
 
-    public static PetRarity of(String rarity) {
-        try {
-            return valueOf(rarity.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return PetRarity.COMMON;
-        }
+    public String id() {
+        return key.asString();
     }
 
 }

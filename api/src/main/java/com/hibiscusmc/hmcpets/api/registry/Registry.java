@@ -1,13 +1,12 @@
 package com.hibiscusmc.hmcpets.api.registry;
 
-import com.hibiscusmc.hmcpets.api.HMCPets;
 import net.kyori.adventure.key.Key;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public interface AbstractRegistry<T> {
+public interface Registry<T> {
 
     void load();
 
@@ -15,7 +14,7 @@ public interface AbstractRegistry<T> {
 
     void unregister(@NotNull T t);
 
-    void unregister(@NotNull Key key);
+    void unregister(@NotNull Key key)   ;
 
     void unregister(@NotNull String str);
 
@@ -34,7 +33,7 @@ public interface AbstractRegistry<T> {
     T[] getAllRegistered();
 
     static Key withDefaultKey(@Subst("value") @NotNull String string) {
-        return Key.key(HMCPets.instance(), string);
+        return Key.key("hmcpets", string);
     }
 
 }

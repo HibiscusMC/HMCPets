@@ -21,8 +21,8 @@ public class H2Storage extends SQLBasedStorage {
     private JdbcConnection connection;
 
     @Inject
-    public H2Storage(PluginConfig pluginConfig, PetConfig petConfig) {
-        super(pluginConfig, petConfig);
+    public H2Storage(HMCPets instance, PluginConfig pluginConfig, PetConfig petConfig) {
+        super(instance, pluginConfig, petConfig);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class H2Storage extends SQLBasedStorage {
     @Override
     public void initialize(IStorageData config) {
         try {
-            connection = new JdbcConnection("jdbc:h2:./" + HMCPets.instance().getDataFolder() + "/" + config.database(), new Properties(), null, null, false);
+            connection = new JdbcConnection("jdbc:h2:./" + instance.getDataFolder() + "/" + config.database(), new Properties(), null, null, false);
             connection.setAutoCommit(true);
         } catch (Exception ex) {
             throw new RuntimeException(ex);

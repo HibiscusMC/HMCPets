@@ -1,5 +1,6 @@
 package com.hibiscusmc.hmcpets.storage.impl.remote;
 
+import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.data.IStorageData;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.config.PetConfig;
@@ -11,8 +12,8 @@ import java.sql.Connection;
 public class MySQLStorage extends SQLBasedStorage {
 
     @Inject
-    public MySQLStorage(PluginConfig pluginConfig, PetConfig petConfig) {
-        super(pluginConfig, petConfig);
+    public MySQLStorage(HMCPets instance, PluginConfig pluginConfig, PetConfig petConfig) {
+        super(instance, pluginConfig, petConfig);
     }
 
     @Override

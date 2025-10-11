@@ -6,7 +6,7 @@ import com.hibiscusmc.hmcpets.api.model.CollarModel;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.SkinModel;
 import com.hibiscusmc.hmcpets.api.model.UserModel;
-import com.hibiscusmc.hmcpets.api.model.registry.PetStatus;
+import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Connection;

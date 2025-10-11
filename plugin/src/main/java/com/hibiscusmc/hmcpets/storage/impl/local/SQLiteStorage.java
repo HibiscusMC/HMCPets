@@ -1,5 +1,6 @@
 package com.hibiscusmc.hmcpets.storage.impl.local;
 
+import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.data.IStorageData;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.config.PetConfig;
@@ -11,8 +12,8 @@ import java.sql.Connection;
 public class SQLiteStorage extends SQLBasedStorage {
 
     @Inject
-    public SQLiteStorage(PluginConfig pluginConfig, PetConfig petConfig) {
-        super(pluginConfig, petConfig);
+    public SQLiteStorage(HMCPets instance, PluginConfig pluginConfig, PetConfig petConfig) {
+        super(instance, pluginConfig, petConfig);
     }
 
     @Override

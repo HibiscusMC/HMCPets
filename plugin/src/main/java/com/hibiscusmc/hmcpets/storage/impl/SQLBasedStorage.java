@@ -1,7 +1,9 @@
 package com.hibiscusmc.hmcpets.storage.impl;
 
+import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
-import com.hibiscusmc.hmcpets.api.model.registry.PetStatus;
+import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
+import com.hibiscusmc.hmcpets.api.registry.PetRarityRegistry;
 import com.hibiscusmc.hmcpets.api.storage.Storage;
 import com.hibiscusmc.hmcpets.api.storage.StorageMethod;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
@@ -22,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Log(topic = "HMCPets")
@@ -82,10 +85,12 @@ public abstract class SQLBasedStorage implements Storage {
     private static final String FAVORITE_PETS_SELECT_ALL = "SELECT * FROM <prefix>favorite_pets WHERE user_id = ?;";
     private static final String FAVORITE_PETS_DELETE = "DELETE FROM <prefix>favorite_pets WHERE user_id = ? AND pet_id = ?;";
 
+    protected final HMCPets instance;
     protected final PluginConfig pluginConfig;
     protected final PetConfig petConfig;
 
-    public SQLBasedStorage(PluginConfig pluginConfig, PetConfig petConfig) {
+    public SQLBasedStorage(HMCPets instance, PluginConfig pluginConfig, PetConfig petConfig) {
+        this.instance = instance;
         this.pluginConfig = pluginConfig;
         this.petConfig = petConfig;
     }
@@ -105,7 +110,7 @@ public abstract class SQLBasedStorage implements Storage {
             statement.setInt(4, pet.level());
             statement.setLong(5, pet.experience());
             statement.setString(6, pet.skin() != null ? pet.skin().id() : null);
-            statement.setString(7, pet.rarity().name().toLowerCase());
+            statement.setString(7, pet.rarity().id());
             statement.setString(8, pet.collar() != null ? pet.collar().id() : null);
             statement.setString(9, Hooks.getStringItem(pet.craving()));
             statement.setString(10, pet.status() != null ? pet.status().name().toLowerCase() : PetStatus.IDLE.name().toLowerCase());
@@ -199,8 +204,9 @@ public abstract class SQLBasedStorage implements Storage {
             pet.skin(skin);
         }
 
-        PetRarity rarity = PetRarity.of(rs.getString("rarity"));
-        pet.rarity(rarity);
+        PetRarityRegistry rarityRegistry = instance.petRarityRegistry();
+        Optional<PetRarity> rarity = rarityRegistry.getRegistered(rs.getString("rarity"));
+        pet.rarity(rarity.orElse(null));
 
         String rawCollar = rs.getString("collar");
         CollarModel collar = petData.collars().get(rawCollar);
@@ -284,7 +290,7 @@ public abstract class SQLBasedStorage implements Storage {
         Connection connection = getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_UPDATE_RARITY))) {
-            statement.setString(1, newRarity.name().toLowerCase());
+            statement.setString(1, newRarity.id());
             statement.setInt(2, pet.id());
 
             statement.execute();
@@ -375,7 +381,7 @@ public abstract class SQLBasedStorage implements Storage {
             statement.setInt(3, pet.level());
             statement.setLong(4, pet.experience());
             statement.setString(5, pet.skin().id());
-            statement.setString(6, pet.rarity().name().toLowerCase());
+            statement.setString(6, pet.rarity().id());
             statement.setString(7, pet.collar().id());
             statement.setString(8, Hooks.getStringItem(pet.craving()));
             statement.setString(9, pet.status().name().toLowerCase());

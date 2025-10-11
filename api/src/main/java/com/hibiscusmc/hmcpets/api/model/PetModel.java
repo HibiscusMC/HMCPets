@@ -2,7 +2,7 @@ package com.hibiscusmc.hmcpets.api.model;
 
 import com.hibiscusmc.hmcpets.api.data.IPetData;
 import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
-import com.hibiscusmc.hmcpets.api.model.registry.PetStatus;
+import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
 import lombok.Data;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;

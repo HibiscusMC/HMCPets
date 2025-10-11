@@ -1,4 +1,4 @@
-package com.hibiscusmc.hmcpets.api.model.registry;
+package com.hibiscusmc.hmcpets.api.model.enums;
 
 public enum PetStatus {
 

@@ -2,6 +2,7 @@ package com.hibiscusmc.hmcpets.api.registry;
 
 import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.data.ILangData;
+import com.hibiscusmc.hmcpets.api.model.registry.ActionType;
 import com.hibiscusmc.hmcpets.api.model.registry.PetType;
 import me.lojosho.hibiscuscommons.hooks.Hooks;
 import net.kyori.adventure.key.Key;
@@ -13,27 +14,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class PetTypeRegistry implements AbstractRegistry<PetType> {
+public class PetTypeRegistry implements Registry<PetType> {
 
     private static final Map<String, PetType> REGISTRY
             = new HashMap<>();
-
-    public static final PetType AQUATIC_TYPE
-            = new PetType(AbstractRegistry.withDefaultKey("aquatic"));
-    public static final PetType BEAST_TYPE
-            = new PetType(AbstractRegistry.withDefaultKey("beast"));
-    public static final PetType MAGIC_TYPE
-            = new PetType(AbstractRegistry.withDefaultKey("magic"));
-    public static final PetType CRITTER_TYPE
-            = new PetType(AbstractRegistry.withDefaultKey("critter"));
 
     @Override
     public void load() {
         ILangData lang = HMCPets.instance()
                 .langData();
 
-        AQUATIC_TYPE.name(lang.petsTypeAquatic());
-        AQUATIC_TYPE.registerSkill(ActionTypeRegistry.MOVES, pet -> {
+        PetType.AQUATIC.name(lang.petsTypeAquatic());
+        PetType.AQUATIC.registerSkill(ActionType.MOVES, pet -> {
             LivingEntity entity = pet.entity();
             if (entity == null) {
                 return;
@@ -53,17 +45,17 @@ public class PetTypeRegistry implements AbstractRegistry<PetType> {
 
             entity.setRemainingAir(entity.getMaximumAir());
         });
-        AQUATIC_TYPE.registerCraving(Objects.requireNonNull(Hooks.getItem("PAPER")));
-        register(AQUATIC_TYPE);
+        PetType.AQUATIC.registerCraving(Objects.requireNonNull(Hooks.getItem("PAPER")));
+        register(PetType.AQUATIC);
 
-        BEAST_TYPE.name(lang.petsTypeBeast());
-        register(BEAST_TYPE);
+        PetType.BEAST.name(lang.petsTypeBeast());
+        register(PetType.BEAST);
 
-        MAGIC_TYPE.name(lang.petsTypeMagic());
-        register(MAGIC_TYPE);
+        PetType.MAGIC.name(lang.petsTypeMagic());
+        register(PetType.MAGIC);
 
-        CRITTER_TYPE.name(lang.petsTypeCritter());
-        register(CRITTER_TYPE);
+        PetType.CRITTER.name(lang.petsTypeCritter());
+        register(PetType.CRITTER);
     }
 
     @Override

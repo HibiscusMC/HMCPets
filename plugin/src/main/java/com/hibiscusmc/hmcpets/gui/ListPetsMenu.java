@@ -1,7 +1,7 @@
 package com.hibiscusmc.hmcpets.gui;
 
 import com.hibiscusmc.hmcpets.api.gui.Button;
-import com.hibiscusmc.hmcpets.api.model.registry.PetStatus;
+import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.UserModel;
@@ -246,29 +246,24 @@ public class ListPetsMenu extends AbstractConfig {
 
         for (PetModel pet : pets) {
             switch (filter) {
-                case ALL: {
-                    gui.addItem(new GuiItem(Pets.buildIcon(langConfig, pet, petDataButton)));
-                    break;
-                }
                 case ACTIVE: {
                     if (pet.status() != PetStatus.ACTIVE) continue;
 
-                    gui.addItem(new GuiItem(Pets.buildIcon(langConfig, pet, petDataButton)));
                     break;
                 }
                 case IDLE: {
                     if (pet.status() != PetStatus.IDLE) continue;
 
-                    gui.addItem(new GuiItem(Pets.buildIcon(langConfig, pet, petDataButton)));
                     break;
                 }
                 case RESTING: {
                     if (pet.status() != PetStatus.RESTING) continue;
 
-                    gui.addItem(new GuiItem(Pets.buildIcon(langConfig, pet, petDataButton)));
                     break;
                 }
             }
+
+            gui.addItem(new GuiItem(Pets.buildIcon(pet, petDataButton)));
         }
     }
 

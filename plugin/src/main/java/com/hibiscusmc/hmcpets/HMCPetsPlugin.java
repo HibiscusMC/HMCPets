@@ -36,7 +36,7 @@ public class HMCPetsPlugin extends HMCPets implements Module {
         printBanner();
 
         long start = System.currentTimeMillis();
-        setInstance(this);
+        instance(this);
 
         Injector.create(this).injectMembers(this);
 

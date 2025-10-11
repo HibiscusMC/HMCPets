@@ -21,10 +21,6 @@ public abstract class HMCPets extends JavaPlugin {
         this.destroy();
     }
 
-    protected static void setInstance(HMCPets inst) {
-        instance = inst;
-    }
-
     protected abstract void initialize();
 
     protected abstract void destroy();

@@ -1,5 +1,6 @@
 package com.hibiscusmc.hmcpets.listener;
 
+import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.config.MenuConfig;
 import me.lojosho.hibiscuscommons.api.events.HibiscusHooksAllActiveEvent;
 import org.bukkit.event.EventHandler;
@@ -10,9 +11,13 @@ public class HooksListener implements Listener {
 
     @Inject
     private MenuConfig menuConfig;
+    @Inject
+    private HMCPets instance;
 
     @EventHandler
     public void onAllHooksReady(HibiscusHooksAllActiveEvent event) {
+        instance.loadRegistries();
+
         menuConfig.setup();
     }
 

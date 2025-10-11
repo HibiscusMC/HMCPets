@@ -13,6 +13,11 @@ pets:
     rare: "<blue><b>RARE</b></blue>"
     epic: "<dark_purple><b>EPIC</b></dark_purple>"
     legendary: "<gold><b>LEGENDARY</b></gold>"
+  type:
+    aquatic: "<blue><b>Aquatic</b></blue>"
+    beast: "<red><b>Beast</b></red>"
+    magic: "<dark_purple><b>Magic</b></dark_purple>"
+    critter: "<green><b>Critter</b></green>"
 
 constants:
   no-pets: "<prefix><red>You don't have any pets!"

@@ -24,6 +24,14 @@ public interface ILangData {
 
     LangEntry petsRarityLegendary();
 
+    LangEntry petsTypeAquatic();
+
+    LangEntry petsTypeBeast();
+
+    LangEntry petsTypeMagic();
+
+    LangEntry petsTypeCritter();
+
     LangEntry constantsNoPets();
 
     LangEntry constantsEnabled();

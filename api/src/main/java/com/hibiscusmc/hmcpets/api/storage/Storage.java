@@ -1,12 +1,12 @@
 package com.hibiscusmc.hmcpets.api.storage;
 
 import com.hibiscusmc.hmcpets.api.data.IStorageData;
-import com.hibiscusmc.hmcpets.api.model.enums.PetRarity;
+import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import com.hibiscusmc.hmcpets.api.model.CollarModel;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.SkinModel;
 import com.hibiscusmc.hmcpets.api.model.UserModel;
-import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
+import com.hibiscusmc.hmcpets.api.model.registry.PetStatus;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Connection;

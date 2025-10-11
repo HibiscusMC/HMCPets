@@ -1,7 +1,7 @@
 package com.hibiscusmc.hmcpets.storage.impl;
 
-import com.hibiscusmc.hmcpets.api.model.enums.PetRarity;
-import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
+import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
+import com.hibiscusmc.hmcpets.api.model.registry.PetStatus;
 import com.hibiscusmc.hmcpets.api.storage.Storage;
 import com.hibiscusmc.hmcpets.api.storage.StorageMethod;
 import com.hibiscusmc.hmcpets.config.PluginConfig;

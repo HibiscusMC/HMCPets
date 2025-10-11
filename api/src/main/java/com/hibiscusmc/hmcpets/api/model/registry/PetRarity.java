@@ -1,4 +1,4 @@
-package com.hibiscusmc.hmcpets.api.model.enums;
+package com.hibiscusmc.hmcpets.api.model.registry;
 
 import lombok.Getter;
 

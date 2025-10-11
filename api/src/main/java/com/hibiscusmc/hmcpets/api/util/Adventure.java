@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Adventure {
 
-    private final static MiniMessage MINI_MESSAGE
+    private static final MiniMessage MINI_MESSAGE
             = MiniMessage.miniMessage();
 
     public static String unparse(Component component) {

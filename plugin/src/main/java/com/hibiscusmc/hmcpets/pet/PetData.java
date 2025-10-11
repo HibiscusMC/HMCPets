@@ -3,7 +3,7 @@ package com.hibiscusmc.hmcpets.pet;
 import com.hibiscusmc.hmcpets.api.model.CollarModel;
 import com.hibiscusmc.hmcpets.api.data.IPetData;
 import com.hibiscusmc.hmcpets.api.model.SkinModel;
-import com.hibiscusmc.hmcpets.api.model.enums.PetType;
+import com.hibiscusmc.hmcpets.api.model.registry.PetType;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
 
 import java.nio.file.Path;

@@ -18,7 +18,7 @@ import java.util.Map;
 @Getter
 public class LangEntry {
 
-    private final static LegacyComponentSerializer LEGACY
+    private static final LegacyComponentSerializer LEGACY
             = LegacyComponentSerializer.legacyAmpersand();
 
     private String string;

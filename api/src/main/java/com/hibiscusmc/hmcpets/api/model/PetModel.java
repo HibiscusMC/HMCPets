@@ -1,9 +1,10 @@
 package com.hibiscusmc.hmcpets.api.model;
 
 import com.hibiscusmc.hmcpets.api.data.IPetData;
-import com.hibiscusmc.hmcpets.api.model.enums.PetRarity;
-import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
+import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
+import com.hibiscusmc.hmcpets.api.model.registry.PetStatus;
 import lombok.Data;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
 @Data
@@ -17,6 +18,8 @@ public class PetModel {
     private String name;
     private int level;
     private long experience;
+
+    private LivingEntity entity;
 
     private SkinModel skin;
     private PetRarity rarity;

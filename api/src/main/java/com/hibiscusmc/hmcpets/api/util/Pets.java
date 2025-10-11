@@ -3,7 +3,7 @@ package com.hibiscusmc.hmcpets.api.util;
 import com.hibiscusmc.hmcpets.api.data.ILangData;
 import com.hibiscusmc.hmcpets.api.gui.Button;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
-import com.hibiscusmc.hmcpets.api.model.enums.PetRarity;
+import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;

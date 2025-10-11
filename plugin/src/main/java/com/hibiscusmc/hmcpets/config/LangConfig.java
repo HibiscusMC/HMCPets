@@ -42,6 +42,18 @@ public class LangConfig extends AbstractConfig implements ILangData {
     private final LangEntry petsRarityLegendary
             = new LangEntry("<gold><b>LEGENDARY</b></gold>");
 
+    private final LangEntry petsTypeAquatic
+            = new LangEntry("<blue><b>Aquatic</b></blue>");
+
+    private final LangEntry petsTypeBeast
+            = new LangEntry("<red><b>Beast</b></red>");
+
+    private final LangEntry petsTypeMagic
+            = new LangEntry("<dark_purple><b>Magic</b></dark_purple>");
+
+    private final LangEntry petsTypeCritter
+            = new LangEntry("<green><b>Critter</b></green>");
+
     private final LangEntry constantsNoPets
             = new LangEntry("<prefix><red>You don't have any pets!");
     private final LangEntry constantsEnabled
@@ -76,6 +88,11 @@ public class LangConfig extends AbstractConfig implements ILangData {
         get("pets.rarity.rare", petsRarityRare);
         get("pets.rarity.epic", petsRarityEpic);
         get("pets.rarity.legendary", petsRarityLegendary);
+
+        get("pets.type.aquatic", petsTypeAquatic);
+        get("pets.type.beast", petsTypeBeast);
+        get("pets.type.magic", petsTypeMagic);
+        get("pets.type.critter", petsTypeCritter);
 
         get("constants.no-pets", constantsNoPets);
         get("constants.enabled", constantsEnabled);

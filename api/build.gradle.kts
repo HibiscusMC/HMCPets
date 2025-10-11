@@ -11,6 +11,8 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.42")
     compileOnly("org.projectlombok:lombok:1.18.42")
 
+    // HibiscusCommons
+    compileOnly("me.lojosho:HibiscusCommons:0.8.0-3c107b51")
     // PlaceholderAPI
     compileOnly("me.clip:placeholderapi:2.11.6")
 }

@@ -1,7 +1,7 @@
 package com.hibiscusmc.hmcpets.api.model;
 
-import com.hibiscusmc.hmcpets.api.model.enums.CollarType;
-import com.hibiscusmc.hmcpets.api.model.enums.PetType;
+import com.hibiscusmc.hmcpets.api.model.registry.CollarType;
+import com.hibiscusmc.hmcpets.api.model.registry.PetType;
 
 import java.util.Set;
 

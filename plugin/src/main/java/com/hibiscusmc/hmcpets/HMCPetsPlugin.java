@@ -1,5 +1,6 @@
 package com.hibiscusmc.hmcpets;
 
+import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.cache.CacheModule;
 import com.hibiscusmc.hmcpets.command.CommandModule;
 import com.hibiscusmc.hmcpets.command.CommandService;
@@ -9,7 +10,6 @@ import com.hibiscusmc.hmcpets.listener.ListenerService;
 import com.hibiscusmc.hmcpets.service.ServiceModule;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import com.hibiscusmc.hmcpets.storage.StorageService;
-import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,7 +19,7 @@ import team.unnamed.inject.Injector;
 import team.unnamed.inject.Module;
 
 @Log(topic = "HMCPets")
-public class HMCPetsPlugin extends JavaPlugin implements Module {
+public class HMCPetsPlugin extends HMCPets implements Module {
 
     @Inject
     private ConfigService configService;
@@ -30,16 +30,13 @@ public class HMCPetsPlugin extends JavaPlugin implements Module {
     @Inject
     private ListenerService listenerService;
 
-    @Getter
-    private static HMCPetsPlugin instance;
-
     @Override
-    public void onEnable() {
+    public void initialize() {
         log.info("-----------------------------------------");
         printBanner();
 
         long start = System.currentTimeMillis();
-        instance = this;
+        setInstance(this);
 
         Injector.create(this).injectMembers(this);
 
@@ -54,7 +51,7 @@ public class HMCPetsPlugin extends JavaPlugin implements Module {
     }
 
     @Override
-    public void onDisable() {
+    public void destroy() {
         log.info("-----------------------------------------");
         printBanner();
 
@@ -72,14 +69,16 @@ public class HMCPetsPlugin extends JavaPlugin implements Module {
 
     @Override
     public void configure(Binder binder) {
-        binder.bind(HMCPetsPlugin.class)
+        binder.bind(HMCPets.class)
                 .toInstance(this);
-        binder.bind(JavaPlugin.class).to(HMCPetsPlugin.class);
-        binder.bind(Plugin.class).to(HMCPetsPlugin.class);
+        binder.bind(JavaPlugin.class).to(HMCPets.class);
+        binder.bind(Plugin.class).to(HMCPets.class);
 
         binder.install(new ConfigModule(this));
         binder.install(new ServiceModule());
+
         binder.bind(StorageHolder.class).to(StorageHolder.class);
+
         binder.install(new CacheModule());
         binder.install(new CommandModule());
     }

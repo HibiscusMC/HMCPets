@@ -1,6 +1,6 @@
 package com.hibiscusmc.hmcpets.command;
 
-import com.hibiscusmc.hmcpets.HMCPetsPlugin;
+import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.cache.UserCache;
 import com.hibiscusmc.hmcpets.config.MenuConfig;
 import com.hibiscusmc.hmcpets.config.LangConfig;
@@ -27,7 +27,7 @@ import java.util.List;
 public class PetsCommand implements CommandClass {
 
     @Inject
-    private HMCPetsPlugin instance;
+    private HMCPets instance;
 
     @Inject
     private MenuConfig menuConfig;

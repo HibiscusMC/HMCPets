@@ -1,6 +1,6 @@
 package com.hibiscusmc.hmcpets.util;
 
-import com.hibiscusmc.hmcpets.HMCPetsPlugin;
+import com.hibiscusmc.hmcpets.api.HMCPets;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -34,7 +34,7 @@ public class Files {
         Path fetchedPath = Path.of(folder, path);
 
         if (!fetchedPath.toFile().exists()) {
-            HMCPetsPlugin.instance()
+            HMCPets.instance()
                     .saveResource(path, false);
         }
 

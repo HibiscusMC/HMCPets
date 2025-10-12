@@ -3,6 +3,7 @@ package com.hibiscusmc.hmcpets;
 import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.data.ILangData;
 import com.hibiscusmc.hmcpets.cache.CacheModule;
+import com.hibiscusmc.hmcpets.cache.UserCache;
 import com.hibiscusmc.hmcpets.command.CommandModule;
 import com.hibiscusmc.hmcpets.command.CommandService;
 import com.hibiscusmc.hmcpets.config.LangConfig;
@@ -20,6 +21,8 @@ import team.unnamed.inject.Inject;
 import team.unnamed.inject.Injector;
 import team.unnamed.inject.Module;
 
+import java.util.concurrent.CompletableFuture;
+
 @Log(topic = "HMCPets")
 public class HMCPetsPlugin extends HMCPets implements Module {
 
@@ -34,6 +37,9 @@ public class HMCPetsPlugin extends HMCPets implements Module {
 
     @Inject
     private LangConfig langConfig;
+
+    @Inject
+    private UserCache userCache;
 
     @Override
     public void initialize() {
@@ -61,6 +67,11 @@ public class HMCPetsPlugin extends HMCPets implements Module {
         printBanner();
 
         long start = System.currentTimeMillis();
+
+        CompletableFuture.allOf(userCache.keySet().stream().map(user -> userCache.save(user).exceptionally(ex -> {
+            log.severe("Failed to save user " + user + ". Error: " + ex.getMessage());
+            return null;
+        })).toArray(CompletableFuture[]::new)).join();
 
         configService.unload();
         storageService.unload();

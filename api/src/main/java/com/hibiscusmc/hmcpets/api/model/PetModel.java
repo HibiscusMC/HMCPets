@@ -4,14 +4,18 @@ import com.hibiscusmc.hmcpets.api.data.IPetData;
 import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
 @Data
+@EqualsAndHashCode(exclude = "owner")
 public class PetModel {
 
     private final int id;
 
+    @ToString.Exclude
     private final UserModel owner;
     private final IPetData config;
 

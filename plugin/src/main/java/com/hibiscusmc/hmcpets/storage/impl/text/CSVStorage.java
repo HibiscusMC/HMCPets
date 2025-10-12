@@ -1,6 +1,6 @@
 package com.hibiscusmc.hmcpets.storage.impl.text;
 
-import com.hibiscusmc.hmcpets.api.data.IStorageData;
+import com.hibiscusmc.hmcpets.api.data.IPluginStorageData;
 import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import com.hibiscusmc.hmcpets.api.model.CollarModel;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
@@ -11,7 +11,7 @@ import com.hibiscusmc.hmcpets.api.storage.Storage;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Connection;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class CSVStorage implements Storage {
@@ -22,7 +22,7 @@ public class CSVStorage implements Storage {
     }
 
     @Override
-    public void initialize(IStorageData config) {
+    public void initialize(IPluginStorageData config) {
 
     }
 
@@ -47,8 +47,8 @@ public class CSVStorage implements Storage {
     }
 
     @Override
-    public List<PetModel> selectPets(UserModel user) {
-        return List.of();
+    public Set<PetModel> selectPets(UserModel user) {
+        return Set.of();
     }
 
     @Override
@@ -137,8 +137,8 @@ public class CSVStorage implements Storage {
     }
 
     @Override
-    public List<PetModel> selectActivePets(UserModel user) {
-        return List.of();
+    public Set<PetModel> selectActivePets(UserModel user) {
+        return Set.of();
     }
 
     @Override
@@ -152,8 +152,8 @@ public class CSVStorage implements Storage {
     }
 
     @Override
-    public List<PetModel> selectFavoritePets(UserModel user) {
-        return List.of();
+    public Set<PetModel> selectFavoritePets(UserModel user) {
+        return Set.of();
     }
 
     @Override

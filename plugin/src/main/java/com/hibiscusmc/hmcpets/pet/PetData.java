@@ -5,11 +5,15 @@ import com.hibiscusmc.hmcpets.api.data.IPetData;
 import com.hibiscusmc.hmcpets.api.model.SkinModel;
 import com.hibiscusmc.hmcpets.api.model.registry.PetType;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
+import lombok.Getter;
+import me.lojosho.shaded.configurate.serialize.SerializationException;
+import org.bukkit.inventory.ItemStack;
 
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public class PetData extends AbstractConfig implements IPetData {
 
     private final String category;
@@ -19,6 +23,7 @@ public class PetData extends AbstractConfig implements IPetData {
     private final Map<String, SkinModel> skins;
 
     private PetType type;
+    private ItemStack icon;
 
     public PetData(Path path, String id, String category) {
         super(path);
@@ -32,31 +37,12 @@ public class PetData extends AbstractConfig implements IPetData {
 
     public void setup() {
         load();
-    }
 
-    @Override
-    public String category() {
-        return this.category;
-    }
-
-    @Override
-    public String id() {
-        return this.id;
-    }
-
-    @Override
-    public PetType type() {
-        return this.type;
-    }
-
-    @Override
-    public Map<String, CollarModel> collars() {
-        return this.collars;
-    }
-
-    @Override
-    public Map<String, SkinModel> skins() {
-        return this.skins;
+        try {
+            icon = get("icon").get(ItemStack.class);
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

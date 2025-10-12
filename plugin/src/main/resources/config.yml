@@ -9,7 +9,7 @@
 #                                                                         #
 #=========================================================================#
 #                                                                         #
-#       Documentation: https://docs.hibiscusmc.com                        #
+#       Documentation: https://docs.hibiscusmc.com/                       #
 #       Support:       https://discord.gg/pcm8kWrdNt                      #
 #       Issues:        https://github.com/HibiscusMC/HMCPets/issues       #
 #                                                                         #
@@ -25,12 +25,14 @@
 #  Storage Methods:                                   #
 #    Remote Database:                                 #
 #    - MariaDB (Recommended) | Default Port: 3306     #
-#    - MySQL | Default Port: 3306                     #
-#    - PostgreSQL | Default Port: 5432                #
-#    - MongoDB | Default Port: 27017                  #
+#    - MySQL                 | Default Port: 3306     #
+#    - PostgreSQL            | Default Port: 5432     #
+#    - MongoDB               | Default Port: 27017    #
+#                                                     #
 #    Local Database:                                  #
 #    - H2 (Recommended)                               #
 #    - SQLite                                         #
+#                                                     #
 #    Text file:                                       #
 #    - JSON (Recommended)                             #
 #    - YAML                                           #
@@ -56,3 +58,10 @@ storage:
   database: 'hmcpets'
   # The prefix that will be used for the tables / collections.
   prefix: 'hmcpets_'
+
+#######################################################
+#                         PETS                        #
+#=====================================================#
+pets:
+  # The maximum number of pets that can be active at the same time
+  max-active: 3

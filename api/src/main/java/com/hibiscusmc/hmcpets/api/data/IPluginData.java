@@ -2,6 +2,8 @@ package com.hibiscusmc.hmcpets.api.data;
 
 public interface IPluginData {
 
-    IStorageData storage();
+    IPluginStorageData storage();
+
+    IPluginPetData pets();
 
 }

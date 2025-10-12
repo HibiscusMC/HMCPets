@@ -2,6 +2,7 @@ package com.hibiscusmc.hmcpets.gui;
 
 import com.hibiscusmc.hmcpets.api.gui.Button;
 import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
+import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.UserModel;
@@ -16,10 +17,13 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.apache.commons.lang3.IntegerRange;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.inject.Inject;
 
@@ -27,6 +31,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ListPetsMenu extends AbstractConfig {
@@ -45,6 +50,10 @@ public class ListPetsMenu extends AbstractConfig {
 
     @Inject
     private LangConfig langConfig;
+    @Inject
+    private PluginConfig pluginConfig;
+    @Inject
+    private Plugin instance;
 
     public ListPetsMenu(Path path) {
         super(path);
@@ -107,6 +116,7 @@ public class ListPetsMenu extends AbstractConfig {
                         break;
                     }
                     case "pet-data": {
+                        configNode.node("icons", "pet-data", "item", "material").set("STONE");
                         ItemStack item = parse(get("icons.pet-data.item").get(ItemStack.class));
 
                         petDataButton = Button.of(item);
@@ -127,7 +137,7 @@ public class ListPetsMenu extends AbstractConfig {
         }
     }
 
-    public void open(Player player, UserModel user, List<PetModel> pets) {
+    public void open(Player player, UserModel user, Set<PetModel> pets) {
         PaginatedGui gui = Gui.paginated()
                 .title(Adventure.parse(title))
                 .rows(rows)
@@ -177,7 +187,7 @@ public class ListPetsMenu extends AbstractConfig {
         gui.open(player);
     }
 
-    private void handleFilterClick(ClickType click, PaginatedGui gui, Button filterButton, AtomicReference<Filter> filter, UserModel user, List<PetModel> pets) {
+    private void handleFilterClick(ClickType click, PaginatedGui gui, Button filterButton, AtomicReference<Filter> filter, UserModel user, Set<PetModel> pets) {
         filter.set(click.isRightClick() ? filter.get().previous() : filter.get().next());
 
         loadPets(gui, user, pets, filter.get());
@@ -241,13 +251,18 @@ public class ListPetsMenu extends AbstractConfig {
         return stack;
     }
 
-    private void loadPets(PaginatedGui gui, UserModel user, List<PetModel> pets, Filter filter) {
+    private void loadPets(PaginatedGui gui, UserModel user, Set<PetModel> pets, Filter filter) {
         gui.clearPageItems();
 
         for (PetModel pet : pets) {
             switch (filter) {
                 case ACTIVE: {
                     if (pet.status() != PetStatus.ACTIVE) continue;
+
+                    break;
+                }
+                case FAVORITE: {
+                    if (!user.hasFavoritePet(pet)) continue;
 
                     break;
                 }
@@ -263,13 +278,46 @@ public class ListPetsMenu extends AbstractConfig {
                 }
             }
 
-            gui.addItem(new GuiItem(Pets.buildIcon(pet, petDataButton)));
+            gui.addItem(new GuiItem(Pets.buildIcon(pet, petDataButton), event -> {
+                handlePetClick(event, user, pet);
+
+                if (!event.getClick().isRightClick()) {
+                    loadPets(gui, user, pets, filter);
+                    gui.update();
+                }
+            }));
+        }
+    }
+
+    private void handlePetClick(InventoryClickEvent event, UserModel user, PetModel pet) {
+        ClickType click = event.getClick();
+
+        if (click.isShiftClick()) {
+            if (user.hasFavoritePet(pet)) {
+                user.removeFavoritePet(pet);
+            } else {
+                user.addFavoritePet(pet);
+            }
+        } else if (click.isLeftClick()) {
+            if (pet.status() == PetStatus.ACTIVE) {
+                user.removeActivePet(pet);
+            } else {
+                if (user.countActivePets() >= pluginConfig.pets().maxActive()) {
+                    // TODO: Better handling for this
+                    System.out.println("You can't have more active pets");
+                } else {
+                    user.addActivePet(pet);
+                }
+            }
+        } else if (click.isRightClick()) {
+            // TODO: Open menu to manage pet
         }
     }
 
     enum Filter {
 
         ALL,
+        FAVORITE,
         ACTIVE,
         IDLE,
         RESTING;

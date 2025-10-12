@@ -1,7 +1,7 @@
 package com.hibiscusmc.hmcpets.storage.impl.remote;
 
 import com.hibiscusmc.hmcpets.api.HMCPets;
-import com.hibiscusmc.hmcpets.api.data.IStorageData;
+import com.hibiscusmc.hmcpets.api.data.IPluginStorageData;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.config.PetConfig;
 import com.hibiscusmc.hmcpets.storage.impl.SQLBasedStorage;
@@ -22,7 +22,7 @@ public class MariaDBStorage extends SQLBasedStorage {
     }
 
     @Override
-    public void initialize(IStorageData config) {
+    public void initialize(IPluginStorageData config) {
 
     }
 

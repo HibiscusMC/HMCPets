@@ -1,7 +1,7 @@
 package com.hibiscusmc.hmcpets.storage.impl.local;
 
 import com.hibiscusmc.hmcpets.api.HMCPets;
-import com.hibiscusmc.hmcpets.api.data.IStorageData;
+import com.hibiscusmc.hmcpets.api.data.IPluginStorageData;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.config.PetConfig;
 import com.hibiscusmc.hmcpets.storage.impl.SQLBasedStorage;
@@ -36,7 +36,7 @@ public class H2Storage extends SQLBasedStorage {
     }
 
     @Override
-    public void initialize(IStorageData config) {
+    public void initialize(IPluginStorageData config) {
         try {
             connection = new JdbcConnection("jdbc:h2:./" + instance.getDataFolder() + "/" + config.database(), new Properties(), null, null, false);
             connection.setAutoCommit(true);

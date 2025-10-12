@@ -3,7 +3,7 @@ package com.hibiscusmc.hmcpets.api.data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IRemoteStorageData {
+public interface IPluginRemoteStorageData {
 
     @Nullable
     String uri();

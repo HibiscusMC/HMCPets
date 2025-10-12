@@ -26,7 +26,6 @@ public class ConfigService extends Service {
     protected void initialize() {
         langConfig.setup();
         pluginConfig.setup();
-        petConfig.setup();
     }
 
     @Override

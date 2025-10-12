@@ -19,8 +19,6 @@ public abstract class Service {
         log.info("Reloading " + name + " service...");
         long start = System.currentTimeMillis();
 
-        System.out.println(this.name);
-
         cleanup();
         initialize();
 

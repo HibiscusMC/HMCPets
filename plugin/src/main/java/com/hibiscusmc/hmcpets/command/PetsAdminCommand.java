@@ -12,6 +12,7 @@ import com.hibiscusmc.hmcpets.config.PetConfig;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import com.hibiscusmc.hmcpets.api.storage.Storage;
 import com.hibiscusmc.hmcpets.util.Debug;
+import lombok.extern.java.Log;
 import me.fixeddev.commandflow.annotated.CommandClass;
 import me.fixeddev.commandflow.annotated.annotation.Command;
 import me.fixeddev.commandflow.annotated.annotation.OptArg;
@@ -23,14 +24,15 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import team.unnamed.inject.Inject;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Command(
         names = {"hmcpetsadmin", "petsadmin", "petadmin"},
         desc = "Admin commands for HMCPets related things",
         permission = "hmcpets.admincommands")
 @Usage(value = "[reload | debug | rename | listpets]")
+@Log(topic = "HMCPets")
 public class PetsAdminCommand implements CommandClass {
 
     @Inject
@@ -52,10 +54,6 @@ public class PetsAdminCommand implements CommandClass {
     @Command(names = {"debug"}, permission = "hmcpets.admincommands.debug")
     public void onDebugCommand(CommandSender sender) {
         boolean status = Debug.toggleDebug();
-
-        for (PetRarity rarity : instance.petRarityRegistry().getAllRegistered()) {
-            System.out.println(rarity);
-        }
 
         langConfig.commandAdminDebug().send(
                 sender,
@@ -81,22 +79,26 @@ public class PetsAdminCommand implements CommandClass {
 
         Storage impl = storage.implementation();
 
-        UserModel user = userCache.fetch(player.getUniqueId());
+        userCache.fetch(player.getUniqueId()).thenAccept(user -> {
+            if (user == null) {
+                sender.sendRichMessage("<red>User not in the database!");
+                return;
+            }
 
-        if (user == null) {
-            sender.sendRichMessage("<red>User not in the database!");
-            return;
-        }
+            PetModel pet = impl.selectPet(user, petId);
+            if (pet == null) {
+                sender.sendRichMessage("<red>Pet not found!");
+                return;
+            }
 
-        PetModel pet = impl.selectPet(user, petId);
-        if (pet == null) {
-            sender.sendRichMessage("<red>Pet not found!");
-            return;
-        }
-
-        sender.sendRichMessage("Old pet name: " + pet.name());
-        impl.updatePetName(pet, newName);
-        sender.sendRichMessage("New pet name: " + pet.name());
+            sender.sendRichMessage("Old pet name: " + pet.name());
+            impl.updatePetName(pet, newName);
+            sender.sendRichMessage("New pet name: " + pet.name());
+        }).whenComplete((v, ex) -> {
+            if (ex != null) {
+                log.severe(ex.getMessage());
+            }
+        });
     }
 
     @Command(names = {"listpets"}, permission = "hmcpets.admincommands.listpets")
@@ -109,34 +111,38 @@ public class PetsAdminCommand implements CommandClass {
 
         Storage impl = storage.implementation();
 
-        UserModel user = userCache.fetch(player.getUniqueId());
+        userCache.fetch(player.getUniqueId()).thenAccept(user -> {
+            if (user == null) {
+                user = new UserModel(-1, player.getUniqueId());
+                impl.insertUser(user);
+                sender.sendRichMessage("<red>User not in the database!");
+                return;
+            }
 
-        if (user == null) {
-            user = new UserModel(-1, player.getUniqueId());
-            impl.insertUser(user);
-            sender.sendRichMessage("<red>User not in the database!");
-            return;
-        }
+            Set<PetModel> pets = impl.selectPets(user);
+            if (pets.isEmpty()) {
+                PetModel pet = new PetModel(-1, user, petConfig.allPets().get("kitty"));
 
-        List<PetModel> pets = impl.selectPets(user);
-        if (pets.isEmpty()) {
-            PetModel pet = new PetModel(-1, user, petConfig.allPets().get("kitty"));
+                pet.name("<#d24c9f>Kitty Pet");
+                pet.level(1);
+                pet.experience(0);
+                pet.rarity(PetRarity.COMMON);
+                pet.craving(Hooks.getItem("PAPER"));
+                pet.obtainedTimestamp(System.currentTimeMillis());
 
-            pet.name("<#d24c9f>Kitty Pet");
-            pet.level(1);
-            pet.experience(0);
-            pet.rarity(PetRarity.COMMON);
-            pet.craving(Hooks.getItem("PAPER"));
-            pet.obtainedTimestamp(System.currentTimeMillis());
+                impl.insertPet(pet);
+                sender.sendRichMessage("<red>No pets found!");
+                return;
+            }
 
-            impl.insertPet(pet);
-            sender.sendRichMessage("<red>No pets found!");
-            return;
-        }
-
-        for (PetModel pet : pets) {
-            sender.sendRichMessage("<gray>- " + pet.config().id() + " (id: " + pet.id() + ")<dark_gray>: <white>" + pet.name());
-        }
+            for (PetModel pet : pets) {
+                sender.sendRichMessage("<gray>- " + pet.config().id() + " (id: " + pet.id() + ")<dark_gray>: <white>" + pet.name());
+            }
+        }).whenComplete((v, ex) -> {
+            if (ex != null) {
+                log.severe(ex.getMessage());
+            }
+        });
     }
 
     @Command(names = {"rl", "reload"}, permission = "hmcpets.admincommands.reload")

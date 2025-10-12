@@ -4,13 +4,13 @@ import com.hibiscusmc.hmcpets.api.storage.StorageMethod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IStorageData {
+public interface IPluginStorageData {
 
     @NotNull
     StorageMethod method();
 
     @Nullable
-    IRemoteStorageData remote();
+    IPluginRemoteStorageData remote();
 
     @NotNull
     String database();

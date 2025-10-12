@@ -1,6 +1,6 @@
 package com.hibiscusmc.hmcpets.storage;
 
-import com.hibiscusmc.hmcpets.api.data.IStorageData;
+import com.hibiscusmc.hmcpets.api.data.IPluginStorageData;
 import com.hibiscusmc.hmcpets.api.storage.Storage;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +19,7 @@ public class StorageHolder {
         return implementation.name();
     }
 
-    public void initialize(IStorageData config) {
+    public void initialize(IPluginStorageData config) {
         if (implementation == null) {
             throw new IllegalStateException("Storage has not been initialized");
         }

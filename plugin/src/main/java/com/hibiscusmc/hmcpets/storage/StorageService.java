@@ -1,6 +1,6 @@
 package com.hibiscusmc.hmcpets.storage;
 
-import com.hibiscusmc.hmcpets.api.data.IStorageData;
+import com.hibiscusmc.hmcpets.api.data.IPluginStorageData;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.service.Service;
 import com.hibiscusmc.hmcpets.api.storage.Storage;
@@ -33,7 +33,7 @@ public class StorageService extends Service {
 
     @Override
     protected void initialize() {
-        IStorageData storageConfig = pluginConfig.storage();
+        IPluginStorageData storageConfig = pluginConfig.storage();
 
         Storage impl = null;
 

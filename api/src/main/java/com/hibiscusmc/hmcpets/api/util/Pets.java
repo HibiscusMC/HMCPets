@@ -2,6 +2,7 @@ package com.hibiscusmc.hmcpets.api.util;
 
 import com.hibiscusmc.hmcpets.api.gui.Button;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -15,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Pets {
 
@@ -24,17 +26,19 @@ public class Pets {
             = DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy HH:mm:ss");
 
     public static ItemStack buildIcon(PetModel pet, Button petButton) {
-        ItemStack stack = petButton.item().withType(Material.PLAYER_HEAD);
+        ItemStack stack = pet.config().icon() == null ? ItemStack.of(Material.PLAYER_HEAD) : pet.config().icon();
+        stack.copyDataFrom(petButton.item(), Set.of(
+                DataComponentTypes.CUSTOM_NAME,
+                DataComponentTypes.LORE
+        )::contains);
 
         stack.editMeta(meta -> {
-            List<Component> oldLore = meta.lore();
-            List<Component> newLore = new ArrayList<>();
-
             TagResolver resolver = TagResolver.resolver("pet", (args, context) -> {
                 String switchArg = args.popOr("none").value();
 
                 String name = switch (switchArg.toLowerCase()) {
                     case "name" -> pet.name();
+                    case "type" -> pet.config().type() == null ? "unknown" : pet.config().type().name().string();
                     case "id" -> pet.id() + "";
                     case "level" -> pet.level() + "";
                     case "experience" -> String.format("%,d", pet.experience());
@@ -68,22 +72,26 @@ public class Pets {
                 return Tag.inserting(Adventure.parse(name));
             });
 
-            Component name = Adventure.parseForMeta(Adventure.unparse(meta.customName())
-                    .replace("\\<pet", "<pet"), resolver);
-            meta.customName(name);
+            if (meta.customName() != null) {
+                Component name = Adventure.parseForMeta(Adventure.unparse(meta.customName())
+                        .replace("\\<pet", "<pet"), resolver);
 
-            if (oldLore == null) {
-                return;
+                meta.customName(name);
             }
 
-            for (Component lore : oldLore) {
-                String line = Adventure.unparse(lore)
-                        .replace("\\<pet", "<pet");
+            List<Component> oldLore = meta.lore();
+            List<Component> newLore = new ArrayList<>();
 
-                newLore.add(Adventure.parseForMeta(line, resolver));
+            if (oldLore != null) {
+                for (Component lore : oldLore) {
+                    String line = Adventure.unparse(lore)
+                            .replace("\\<pet", "<pet");
+
+                    newLore.add(Adventure.parseForMeta(line, resolver));
+                }
+
+                meta.lore(newLore);
             }
-
-            meta.lore(newLore);
         });
 
         return stack;

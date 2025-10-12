@@ -25,6 +25,7 @@ icons:
       name: 'Filter'
       lore:
         - '<current:all>All'
+        - '<current:favorite>Favorite'
         - '<current:active>Active'
         - '<current:idle>Idle'
         - '<current:resting>Resting'
@@ -34,12 +35,12 @@ icons:
     slot: 48
   pet-data:
     item:
-      material: PLAYER_HEAD
       name: '<#d24c9f><pet:name>'
       lore:
         - '<dark_gray>ID: <pet:id>'
         - ''
         - '<#d24c9f><b>Information'
+        - '<#d24c9f>Type<dark_gray>: <white><pet:type>'
         - '<#d24c9f>Level<dark_gray>: <white><pet:level>'
         - '<#d24c9f>Experience<dark_gray>: <white><pet:experience>'
         - '<#d24c9f>Rarity<dark_gray>: <white><pet:rarity>'
@@ -53,6 +54,10 @@ icons:
         - '<#d24c9f>Hunger<dark_gray>: <white><pet:hunger>'
         - ''
         - '<gray>Obtained <pet:obtained:short>'
+        - ''
+        - '<#d24c9f>Left-Click<dark_gray>: <white>Summon your pet'
+        - '<#d24c9f>Right-Click<dark_gray>: <white>Manage your pet'
+        - '<#d24c9f>Shift-Click<dark_gray>: <white>Add your pet to favorites'
   example-button:
     slot: 50
     item:

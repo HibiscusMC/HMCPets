@@ -8,6 +8,8 @@ public interface ILangData {
 
     LangEntry noPermission();
 
+    LangEntry playerOnlyCommand();
+
     LangEntry commandAdminReload();
 
     LangEntry commandAdminDebug();

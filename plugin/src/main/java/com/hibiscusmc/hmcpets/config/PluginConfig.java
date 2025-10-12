@@ -1,8 +1,9 @@
 package com.hibiscusmc.hmcpets.config;
 
 import com.hibiscusmc.hmcpets.api.data.IPluginData;
-import com.hibiscusmc.hmcpets.api.data.IRemoteStorageData;
-import com.hibiscusmc.hmcpets.api.data.IStorageData;
+import com.hibiscusmc.hmcpets.api.data.IPluginPetData;
+import com.hibiscusmc.hmcpets.api.data.IPluginRemoteStorageData;
+import com.hibiscusmc.hmcpets.api.data.IPluginStorageData;
 import com.hibiscusmc.hmcpets.api.storage.StorageMethod;
 import com.hibiscusmc.hmcpets.api.storage.StorageMethodType;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
@@ -26,12 +27,13 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
         super(path);
     }
 
-    private StorageConfig storage;
+    private Storage storage;
+    private Pets pets;
 
     public void setup() {
         load();
 
-        storage = new StorageConfig();
+        storage = new Storage();
         String rawMethod = get("storage.method").getString("H2");
 
         StorageMethod method = StorageMethod.fromString(rawMethod);
@@ -45,7 +47,7 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
         storage.method(method);
 
         if (method.type() == StorageMethodType.REMOTE) {
-            StorageConfig.Remote remote = new StorageConfig.Remote();
+            Storage.Remote remote = new Storage.Remote();
 
             String uri = get("storage.remote.uri").getString("");
 
@@ -63,12 +65,24 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
 
         storage.database(get("storage.database").getString("hmcpets"))
                 .prefix(get("storage.prefix").getString("hmcpets_"));
+
+        pets = new Pets();
+        pets.maxActive(get("pets.max-active").getInt(3));
     }
 
     @Getter
     @Setter(AccessLevel.PRIVATE)
     @ToString
-    public static class StorageConfig implements IStorageData {
+    public static class Pets implements IPluginPetData {
+
+        int maxActive;
+
+    }
+
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    @ToString
+    public static class Storage implements IPluginStorageData {
 
         @NotNull
         private StorageMethod method;
@@ -85,7 +99,7 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
         @Getter
         @Setter(AccessLevel.PRIVATE)
         @ToString
-        public static class Remote implements IRemoteStorageData {
+        public static class Remote implements IPluginRemoteStorageData {
 
             @Nullable
             private String uri;

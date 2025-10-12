@@ -22,6 +22,9 @@ public class LangConfig extends AbstractConfig implements ILangData {
     private final LangEntry noPermission
             = new LangEntry("<prefix><red>No permission.");
 
+    private final LangEntry playerOnlyCommand
+            = new LangEntry("<prefix><red>This command can only be used by a player.");
+
     private final LangEntry commandAdminReload
             = new LangEntry("<prefix><gray>Reloaded <color:#d24c9f><type></color> files in <color:#d24c9f><ms>ms</color>!");
     private final LangEntry commandAdminDebug

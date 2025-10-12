@@ -22,9 +22,9 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Log(topic = "HMCPets")
@@ -63,8 +63,8 @@ public abstract class SQLBasedStorage implements Storage {
             "VALUES (?, ?);";
     private static final String USERS_SELECT_BY_ID = "SELECT * FROM <prefix>users WHERE id = ?;";
     private static final String USERS_SELECT_BY_UUID = "SELECT * FROM <prefix>users WHERE uuid = ?;";
-    private static final String USERS_UPDATE_PET_POINTS = "UPDATE <prefix>users SET points = ? WHERE id = ?;";
-    private static final String USERS_UPDATE = "UPDATE <prefix>users SET points = ? WHERE id = ?;";
+    private static final String USERS_UPDATE_PET_POINTS = "UPDATE <prefix>users SET pet_points = ? WHERE id = ?;";
+    private static final String USERS_UPDATE = "UPDATE <prefix>users SET pet_points = ? WHERE id = ?;";
     private static final String USERS_DELETE_BY_ID = "DELETE FROM <prefix>users WHERE id = ?;";
 
     // Active Pets Statements
@@ -144,9 +144,9 @@ public abstract class SQLBasedStorage implements Storage {
     }
 
     @Override
-    public List<PetModel> selectPets(UserModel user) {
+    public Set<PetModel> selectPets(UserModel user) {
         Connection connection = getConnection();
-        List<PetModel> pets = new ArrayList<>();
+        Set<PetModel> pets = new HashSet<>();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_SELECT_ALL))) {
             statement.setInt(1, user.id());
@@ -380,10 +380,10 @@ public abstract class SQLBasedStorage implements Storage {
             statement.setString(2, pet.name());
             statement.setInt(3, pet.level());
             statement.setLong(4, pet.experience());
-            statement.setString(5, pet.skin().id());
-            statement.setString(6, pet.rarity().id());
-            statement.setString(7, pet.collar().id());
-            statement.setString(8, Hooks.getStringItem(pet.craving()));
+            statement.setString(5, pet.skin() != null ? pet.skin().id() : null);
+            statement.setString(6, pet.rarity() != null ? pet.rarity().id() : null);
+            statement.setString(7, pet.collar() != null ? pet.collar().id() : null);
+            statement.setString(8, pet.craving() != null ? Hooks.getStringItem(pet.craving()) : null);
             statement.setString(9, pet.status().name().toLowerCase());
             statement.setInt(10, pet.power());
             statement.setDouble(11, pet.health());
@@ -537,9 +537,9 @@ public abstract class SQLBasedStorage implements Storage {
     }
 
     @Override
-    public List<PetModel> selectActivePets(UserModel user) {
+    public Set<PetModel> selectActivePets(UserModel user) {
         Connection connection = getConnection();
-        List<PetModel> pets = new ArrayList<>();
+        Set<PetModel> pets = new HashSet<>();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(ACTIVE_PETS_SELECT_ALL))) {
             statement.setInt(1, user.id());
@@ -591,9 +591,9 @@ public abstract class SQLBasedStorage implements Storage {
     }
 
     @Override
-    public List<PetModel> selectFavoritePets(UserModel user) {
+    public Set<PetModel> selectFavoritePets(UserModel user) {
         Connection connection = getConnection();
-        List<PetModel> pets = new ArrayList<>();
+        Set<PetModel> pets = new HashSet<>();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(FAVORITE_PETS_SELECT_ALL))) {
             statement.setInt(1, user.id());

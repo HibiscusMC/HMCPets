@@ -8,6 +8,7 @@ commands:
   usage: "<prefix><gray>Usage: <#d24c9f>/<command> <usage>"
 
 pets:
+  max-active: "<prefix><red>You can't have more active pets!"
   rarity:
     common: "<gray><b>COMMON</b></gray>"
     rare: "<blue><b>RARE</b></blue>"

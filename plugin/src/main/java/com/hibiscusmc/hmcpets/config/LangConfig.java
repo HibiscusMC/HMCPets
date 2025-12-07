@@ -36,6 +36,9 @@ public class LangConfig extends AbstractConfig implements ILangData {
     private final LangEntry commandUsage
             = new LangEntry("<prefix><gray>Usage: <#d24c9f>/<command> <usage>");
 
+    private final LangEntry petsMaxActive
+            = new LangEntry("<prefix><red>You can't have more active pets!");
+
     private final LangEntry petsRarityCommon
             = new LangEntry("<gray><b>COMMON</b></gray>");
     private final LangEntry petsRarityRare
@@ -86,6 +89,8 @@ public class LangConfig extends AbstractConfig implements ILangData {
         get("commands.admin.debug", commandAdminDebug);
 
         get("commands.usage", commandUsage);
+
+        get("pets.max-active", petsMaxActive);
 
         get("pets.rarity.common", petsRarityCommon);
         get("pets.rarity.rare", petsRarityRare);

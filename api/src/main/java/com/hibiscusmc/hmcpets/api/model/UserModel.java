@@ -39,8 +39,8 @@ public class UserModel {
         updatePetRemoval(pets, pet, CachedPet.RemoveType.PERMANENT);
     }
 
-    public int countPets() {
-        return pets.size();
+    public long countPets() {
+        return pets.values().stream().filter(pet -> pet.removed() == CachedPet.RemoveType.NONE).count();
     }
 
     public void setActivePets(Iterable<PetModel> allPets) {
@@ -64,8 +64,8 @@ public class UserModel {
         updatePetRemoval(activePets, pet, CachedPet.RemoveType.PERMANENT);
     }
 
-    public int countActivePets() {
-        return activePets.size();
+    public long countActivePets() {
+        return activePets.values().stream().filter(pet -> pet.removed() == CachedPet.RemoveType.NONE).count();
     }
 
     public void setFavoritePets(Iterable<PetModel> allPets) {
@@ -90,8 +90,8 @@ public class UserModel {
         return cached != null && cached.removed() == CachedPet.RemoveType.NONE;
     }
 
-    public int countFavoritePets() {
-        return favoritePets.size();
+    public long countFavoritePets() {
+        return favoritePets.values().stream().filter(pet -> pet.removed() == CachedPet.RemoveType.NONE).count();
     }
 
     private void addPetTo(Map<Integer, CachedPet> map, PetModel pet, PetStatus status) {

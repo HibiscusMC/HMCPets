@@ -15,8 +15,10 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class Pets {
 
@@ -25,7 +27,7 @@ public class Pets {
     private static final DateTimeFormatter DATE_FORMATTER
             = DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy HH:mm:ss");
 
-    public static ItemStack buildIcon(PetModel pet, Button petButton) {
+    public static ItemStack buildIcon(PetModel pet, Button petButton, TagResolver... resolvers) {
         ItemStack stack = pet.config().icon() == null ? ItemStack.of(Material.PLAYER_HEAD) : pet.config().icon();
         stack.copyDataFrom(petButton.item(), Set.of(
                 DataComponentTypes.CUSTOM_NAME,
@@ -71,10 +73,16 @@ public class Pets {
 
                 return Tag.inserting(Adventure.parse(name));
             });
+            List<TagResolver> resolverList = Stream.concat(
+                    Stream.of(resolver),
+                    Arrays.stream(resolvers)
+            ).toList();
 
             if (meta.customName() != null) {
                 Component name = Adventure.parseForMeta(Adventure.unparse(meta.customName())
-                        .replace("\\<pet", "<pet"), resolver);
+                                .replace("\\<pet", "<pet")
+                                .replace("\\<usage", "<usage"),
+                        TagResolver.resolver(resolverList));
 
                 meta.customName(name);
             }
@@ -85,9 +93,10 @@ public class Pets {
             if (oldLore != null) {
                 for (Component lore : oldLore) {
                     String line = Adventure.unparse(lore)
-                            .replace("\\<pet", "<pet");
+                            .replace("\\<pet", "<pet")
+                            .replace("\\<usage", "<usage");
 
-                    newLore.add(Adventure.parseForMeta(line, resolver));
+                    newLore.add(Adventure.parseForMeta(line, TagResolver.resolver(resolverList)));
                 }
 
                 meta.lore(newLore);

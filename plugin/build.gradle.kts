@@ -26,10 +26,10 @@ dependencies {
     compileOnly("me.lojosho:HibiscusCommons:0.8.0-3c107b51")
     // Configurate
     compileOnly("org.spongepowered:configurate-yaml:4.2.0")
-    // H2
-    compileOnly("com.h2database:h2:2.4.240")
     // PlaceholderAPI
     compileOnly("me.clip:placeholderapi:2.11.6")
+    // H2
+    compileOnly("com.h2database:h2:2.4.240")
 
     // Lombok
     annotationProcessor("org.projectlombok:lombok:1.18.42")

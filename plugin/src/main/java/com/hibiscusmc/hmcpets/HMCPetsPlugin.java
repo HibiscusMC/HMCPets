@@ -14,6 +14,7 @@ import com.hibiscusmc.hmcpets.service.ServiceModule;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import com.hibiscusmc.hmcpets.storage.StorageService;
 import lombok.extern.java.Log;
+import org.bukkit.entity.Zombie;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import team.unnamed.inject.Binder;

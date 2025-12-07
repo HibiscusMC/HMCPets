@@ -1,4 +1,4 @@
-title: '<white>ꐽ'
+title: '<shift:-42><white>ꐽ'
 rows: 6
 slots:
   - 0-44
@@ -11,6 +11,7 @@ icons:
       lore:
         - 'Click to go to the next page'
     slot: 53
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
   previous-page:
     dynamic: true
     item:
@@ -19,6 +20,7 @@ icons:
       lore:
         - 'Click to go to the previous page'
     slot: 45
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
   filter:
     item:
       material: nexo:cancel_icon
@@ -32,7 +34,7 @@ icons:
         - ''
         - '<#d24c9f>Left-Click<dark_gray>: <white>Next filter'
         - '<#d24c9f>Right-Click<dark_gray>: <white>Previous filter'
-    slot: 48
+    slot: 49
   pet-data:
     item:
       name: '<#d24c9f><pet:name>'
@@ -55,13 +57,28 @@ icons:
         - ''
         - '<gray>Obtained <pet:obtained:short>'
         - ''
-        - '<#d24c9f>Left-Click<dark_gray>: <white>Summon your pet'
+        - '<#d24c9f>Shift-Click<dark_gray>: <white><usage:favorites>'
         - '<#d24c9f>Right-Click<dark_gray>: <white>Manage your pet'
-        - '<#d24c9f>Shift-Click<dark_gray>: <white>Add your pet to favorites'
+        - '<usage:summon>'
+    usage:
+      add:
+        sound:
+        lore: 'Add your pet to favorites'
+      remove:
+        lore: 'Remove your pet from favorites'
+      summon:
+        summon:
+          lore: '<#d24c9f>Left-Click<dark_gray>: <white>Summon your pet'
+        unsummon:
+          lore: '<#d24c9f>Left-Click<dark_gray>: <white>Store your pet'
+        resting:
+          lore: '<red>This pet is resting!'
+        max-active:
+          lore: '<red>You can''t have more active pets'
   example-button:
     slot: 50
     item:
-      material: nexo:cancel_icon
+      material: DIAMOND
       name: 'Example Icon'
       lore:
         - 'This is an example icon'

@@ -12,12 +12,12 @@ import com.hibiscusmc.hmcpets.api.util.Pets;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
+import me.lojosho.shaded.configurate.ConfigurationNode;
 import me.lojosho.shaded.configurate.serialize.SerializationException;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.apache.commons.lang3.IntegerRange;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -45,6 +45,8 @@ public class ListPetsMenu extends AbstractConfig {
     private Button previousPageButton;
     private Button filterButton;
     private Button petDataButton;
+
+    private GuiActionUsage actionUsage;
 
     private List<Button> extraButtons;
 
@@ -116,10 +118,25 @@ public class ListPetsMenu extends AbstractConfig {
                         break;
                     }
                     case "pet-data": {
+                        ConfigurationNode usageNode = get("icons.pet-data.usage");
+
                         configNode.node("icons", "pet-data", "item", "material").set("STONE");
                         ItemStack item = parse(get("icons.pet-data.item").get(ItemStack.class));
 
                         petDataButton = Button.of(item);
+
+                        actionUsage = new GuiActionUsage(
+                                new GuiActionUsageFavorites(
+                                        usageNode.node("favorites", "add").getString(),
+                                        usageNode.node("favorites", "remove").getString()
+                                ),
+                                new GuiActionUsageSummon(
+                                        usageNode.node("summon", "summon").getString(),
+                                        usageNode.node("summon", "unsummon").getString(),
+                                        usageNode.node("summon", "resting").getString(),
+                                        usageNode.node("summon", "max-active").getString()
+                                )
+                        );
                         break;
                     }
                     default: {
@@ -200,6 +217,95 @@ public class ListPetsMenu extends AbstractConfig {
         gui.update();
     }
 
+    private void loadPets(PaginatedGui gui, UserModel user, Set<PetModel> pets, Filter filter) {
+        gui.clearPageItems();
+
+        for (PetModel pet : pets) {
+            boolean isFavorite = user.hasFavoritePet(pet);
+            boolean isActive = pet.status() == PetStatus.ACTIVE;
+            boolean isResting = pet.status() == PetStatus.RESTING;
+
+            switch (filter) {
+                case ACTIVE: {
+                    if (!isActive) continue;
+
+                    break;
+                }
+                case FAVORITE: {
+                    if (!isFavorite) continue;
+
+                    break;
+                }
+                case IDLE: {
+                    if (pet.status() != PetStatus.IDLE) continue;
+
+                    break;
+                }
+                case RESTING: {
+                    if (!isResting) continue;
+
+                    break;
+                }
+            }
+
+            TagResolver usageResolver = TagResolver.resolver("usage", (args, context) -> {
+                String arg = args.popOr("none").value();
+                String value = switch (arg.toLowerCase()) {
+                    case "favorites" -> isFavorite
+                            ? actionUsage.favorites().remove()
+                            : actionUsage.favorites().add();
+                    case "summon" -> {
+                        if (isActive) {
+                            yield actionUsage.summon().unsummon();
+                        } else {
+                            yield user.countActivePets() >= pluginConfig.pets().maxActive()
+                                    ? actionUsage.summon().maxActive()
+                                    : isResting
+                                    ? actionUsage.summon().resting()
+                                    : actionUsage.summon().summon();
+                        }
+                    }
+                    default -> "unexpected value: " + arg;
+                };
+
+                return Tag.inserting(Adventure.parse(value));
+            });
+
+            gui.addItem(new GuiItem(Pets.buildIcon(pet, petDataButton, usageResolver), event -> {
+                handlePetClick(event, user, pet);
+
+                if (!event.getClick().isRightClick()) {
+                    loadPets(gui, user, pets, filter);
+                    gui.update();
+                }
+            }));
+        }
+    }
+
+    private void handlePetClick(InventoryClickEvent event, UserModel user, PetModel pet) {
+        ClickType click = event.getClick();
+
+        if (click.isShiftClick()) {
+            if (user.hasFavoritePet(pet)) {
+                user.removeFavoritePet(pet);
+            } else {
+                user.addFavoritePet(pet);
+            }
+        } else if (click.isLeftClick()) {
+            if (pet.status() == PetStatus.ACTIVE) {
+                user.removeActivePet(pet);
+            } else {
+                if (user.countActivePets() >= pluginConfig.pets().maxActive()) {
+                    langConfig.petsMaxActive().send(event.getWhoClicked());
+                } else {
+                    user.addActivePet(pet);
+                }
+            }
+        } else if (click.isRightClick()) {
+            // TODO: Open menu to manage pet
+        }
+    }
+
     private ItemStack parse(@Nullable ItemStack stack) {
         if (stack == null) {
             return null;
@@ -251,69 +357,6 @@ public class ListPetsMenu extends AbstractConfig {
         return stack;
     }
 
-    private void loadPets(PaginatedGui gui, UserModel user, Set<PetModel> pets, Filter filter) {
-        gui.clearPageItems();
-
-        for (PetModel pet : pets) {
-            switch (filter) {
-                case ACTIVE: {
-                    if (pet.status() != PetStatus.ACTIVE) continue;
-
-                    break;
-                }
-                case FAVORITE: {
-                    if (!user.hasFavoritePet(pet)) continue;
-
-                    break;
-                }
-                case IDLE: {
-                    if (pet.status() != PetStatus.IDLE) continue;
-
-                    break;
-                }
-                case RESTING: {
-                    if (pet.status() != PetStatus.RESTING) continue;
-
-                    break;
-                }
-            }
-
-            gui.addItem(new GuiItem(Pets.buildIcon(pet, petDataButton), event -> {
-                handlePetClick(event, user, pet);
-
-                if (!event.getClick().isRightClick()) {
-                    loadPets(gui, user, pets, filter);
-                    gui.update();
-                }
-            }));
-        }
-    }
-
-    private void handlePetClick(InventoryClickEvent event, UserModel user, PetModel pet) {
-        ClickType click = event.getClick();
-
-        if (click.isShiftClick()) {
-            if (user.hasFavoritePet(pet)) {
-                user.removeFavoritePet(pet);
-            } else {
-                user.addFavoritePet(pet);
-            }
-        } else if (click.isLeftClick()) {
-            if (pet.status() == PetStatus.ACTIVE) {
-                user.removeActivePet(pet);
-            } else {
-                if (user.countActivePets() >= pluginConfig.pets().maxActive()) {
-                    // TODO: Better handling for this
-                    System.out.println("You can't have more active pets");
-                } else {
-                    user.addActivePet(pet);
-                }
-            }
-        } else if (click.isRightClick()) {
-            // TODO: Open menu to manage pet
-        }
-    }
-
     enum Filter {
 
         ALL,
@@ -336,6 +379,16 @@ public class ListPetsMenu extends AbstractConfig {
             return all[(idx - 1 + all.length) % all.length];
         }
 
+    }
+
+
+    record GuiActionUsage(GuiActionUsageFavorites favorites, GuiActionUsageSummon summon) {
+    }
+
+    record GuiActionUsageFavorites(String add, String remove) {
+    }
+
+    record GuiActionUsageSummon(String summon, String unsummon, String resting, String maxActive) {
     }
 
 }

@@ -18,6 +18,8 @@ public interface ILangData {
 
     LangEntry commandUsage();
 
+    LangEntry petsMaxActive();
+
     LangEntry petsRarityCommon();
 
     LangEntry petsRarityRare();

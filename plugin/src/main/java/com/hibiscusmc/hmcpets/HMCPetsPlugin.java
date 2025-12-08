@@ -14,7 +14,6 @@ import com.hibiscusmc.hmcpets.service.ServiceModule;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import com.hibiscusmc.hmcpets.storage.StorageService;
 import lombok.extern.java.Log;
-import org.bukkit.entity.Zombie;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import team.unnamed.inject.Binder;
@@ -112,7 +111,7 @@ public class HMCPetsPlugin extends HMCPets implements Module {
         log.info("  |_|_||_|_|_|`___/|_|  \\___. |_| /__/");
         log.info("");
         log.info("  HMCPets v" + getPluginMeta().getVersion());
-        log.info("  Made by Kiz");
+        log.info("  © Hibiscus Creative Studios");
         log.info("");
     }
 

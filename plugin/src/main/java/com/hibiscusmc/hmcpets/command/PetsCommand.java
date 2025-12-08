@@ -15,7 +15,6 @@ import me.fixeddev.commandflow.annotated.annotation.Command;
 import me.fixeddev.commandflow.annotated.annotation.Usage;
 import me.fixeddev.commandflow.bukkit.annotation.Sender;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import team.unnamed.inject.Inject;
@@ -49,8 +48,6 @@ public class PetsCommand implements CommandClass {
     @Command(names = {"", "list"}, permission = "hmcpets.commands.list")
     @Usage(value = "[player]")
     public void onListCommand(@Sender Player player) {
-        new Location()
-
         userCache.fetch(player.getUniqueId()).thenAccept(user -> {
             if (user == null) {
                 langConfig.constantsNoPets().send(player);

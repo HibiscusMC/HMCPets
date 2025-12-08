@@ -1,13 +1,11 @@
 package com.hibiscusmc.hmcpets.command;
 
 import com.hibiscusmc.hmcpets.api.HMCPets;
-import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import com.hibiscusmc.hmcpets.cache.UserCache;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.config.MenuConfig;
 import com.hibiscusmc.hmcpets.config.LangConfig;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
-import com.hibiscusmc.hmcpets.api.model.UserModel;
 import com.hibiscusmc.hmcpets.config.PetConfig;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import com.hibiscusmc.hmcpets.api.storage.Storage;
@@ -19,7 +17,6 @@ import me.fixeddev.commandflow.annotated.annotation.OptArg;
 import me.fixeddev.commandflow.annotated.annotation.Suggestions;
 import me.fixeddev.commandflow.annotated.annotation.Text;
 import me.fixeddev.commandflow.annotated.annotation.Usage;
-import me.lojosho.hibiscuscommons.hooks.Hooks;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import team.unnamed.inject.Inject;
@@ -113,24 +110,12 @@ public class PetsAdminCommand implements CommandClass {
 
         userCache.fetch(player.getUniqueId()).thenAccept(user -> {
             if (user == null) {
-                user = new UserModel(-1, player.getUniqueId());
-                impl.insertUser(user);
                 sender.sendRichMessage("<red>User not in the database!");
                 return;
             }
 
             Set<PetModel> pets = impl.selectPets(user);
             if (pets.isEmpty()) {
-                PetModel pet = new PetModel(-1, user, petConfig.allPets().get("kitty"));
-
-                pet.name("<#d24c9f>Kitty Pet");
-                pet.level(1);
-                pet.experience(0);
-                pet.rarity(PetRarity.COMMON);
-                pet.craving(Hooks.getItem("PAPER"));
-                pet.obtainedTimestamp(System.currentTimeMillis());
-
-                impl.insertPet(pet);
                 sender.sendRichMessage("<red>No pets found!");
                 return;
             }

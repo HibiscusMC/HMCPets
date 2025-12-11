@@ -23,6 +23,10 @@ public class UserModel {
     @Setter(AccessLevel.PUBLIC)
     private int petPoints;
 
+    public void despawnActivePets(){
+        activePets.values().forEach(pet -> pet.pet().despawn());
+    }
+
     public void setPets(Iterable<PetModel> allPets) {
         allPets.forEach(pet -> pets.put(pet.id(), new CachedPet(pet, false)));
     }
@@ -60,11 +64,11 @@ public class UserModel {
         pet.status(PetStatus.IDLE);
 
         updatePetRemoval(activePets, pet, CachedPet.RemoveType.TEMPORAL);
+        pet.despawn();
     }
 
     public void deleteActivePet(PetModel pet) {
         updatePetRemoval(activePets, pet, CachedPet.RemoveType.PERMANENT);
-
         pet.despawn();
     }
 

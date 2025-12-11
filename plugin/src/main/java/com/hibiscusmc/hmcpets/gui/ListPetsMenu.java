@@ -289,20 +289,29 @@ public class ListPetsMenu extends AbstractConfig {
         if (click.isShiftClick()) {
             if (user.hasFavoritePet(pet)) {
                 user.removeFavoritePet(pet);
-            } else {
-                user.addFavoritePet(pet);
+                return;
             }
-        } else if (click.isLeftClick()) {
-            if (pet.status() == PetStatus.ACTIVE) {
+
+            user.addFavoritePet(pet);
+            return;
+        }
+
+        if (click.isLeftClick()) {
+            if (pet.isSpawned()) {
                 user.removeActivePet(pet);
-            } else {
-                if (user.countActivePets() >= pluginConfig.pets().maxActive()) {
-                    langConfig.petsMaxActive().send(event.getWhoClicked());
-                } else {
-                    user.addActivePet(pet, player.getLocation());
-                }
+                return;
             }
-        } else if (click.isRightClick()) {
+
+            if (user.countActivePets() >= pluginConfig.pets().maxActive()) {
+                langConfig.petsMaxActive().send(event.getWhoClicked());
+                return;
+            }
+
+            user.addActivePet(pet, player.getLocation());
+            return;
+        }
+
+        if (click.isRightClick()) {
             // TODO: Open menu to manage pet
         }
     }

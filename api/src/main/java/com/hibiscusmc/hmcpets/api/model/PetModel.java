@@ -81,13 +81,14 @@ public class PetModel {
 
 
     public void spawn(Location location){
+        EntityType mobType = EntityType.fromName(config.mobType());
         //Get if ModelEngine is enabled
-        if(Hooks.isActiveHook("ModelEngine")){
+        if(Hooks.isActiveHook("ModelEngine") && mobType == null){
             //Spawn with ModelEngine
-            return;
+
         }else{
             try{
-                entity((LivingEntity) location.getWorld().spawnEntity(location, EntityType.valueOf(config.mobType())));
+                entity((LivingEntity) location.getWorld().spawnEntity(location, mobType));
             }catch (Exception e){
                 warn("Error whilst spawning mob " + name());
             }
@@ -137,6 +138,10 @@ public class PetModel {
                 return;
             }
         }
+    }
+
+    public boolean isSpawned(){
+        return entity != null;
     }
 
 }

@@ -22,6 +22,7 @@ public class ListenerService extends Service {
         PluginManager manager = plugin.getServer().getPluginManager();
 
         manager.registerEvents(injector.getInstance(HooksListener.class), plugin);
+        manager.registerEvents(injector.getInstance(PetOwnerDisconnectListener.class), plugin);
     }
 
     @Override

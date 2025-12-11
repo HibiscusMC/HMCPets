@@ -4,7 +4,6 @@ import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.data.ILangData;
 import com.hibiscusmc.hmcpets.cache.CacheModule;
 import com.hibiscusmc.hmcpets.cache.UserCache;
-import com.hibiscusmc.hmcpets.command.CommandModule;
 import com.hibiscusmc.hmcpets.command.CommandService;
 import com.hibiscusmc.hmcpets.config.LangConfig;
 import com.hibiscusmc.hmcpets.config.internal.ConfigModule;
@@ -31,9 +30,9 @@ public class HMCPetsPlugin extends HMCPets implements Module {
     @Inject
     private StorageService storageService;
     @Inject
-    private CommandService commandService;
-    @Inject
     private ListenerService listenerService;
+    @Inject
+    private CommandService commandService;
 
     @Inject
     private LangConfig langConfig;
@@ -51,10 +50,12 @@ public class HMCPetsPlugin extends HMCPets implements Module {
 
         Injector.create(this).injectMembers(this);
 
+        loadRegistries();
+
         configService.load();
         storageService.load();
-        commandService.load();
         listenerService.load();
+        commandService.load();
 
         long end = System.currentTimeMillis() - start;
         log.info("HMCPets loaded successfully in " + end + "ms!");
@@ -75,7 +76,6 @@ public class HMCPetsPlugin extends HMCPets implements Module {
 
         configService.unload();
         storageService.unload();
-        commandService.unload();
         listenerService.unload();
 
         long end = System.currentTimeMillis() - start;
@@ -101,7 +101,6 @@ public class HMCPetsPlugin extends HMCPets implements Module {
         binder.bind(StorageHolder.class).to(StorageHolder.class);
 
         binder.install(new CacheModule());
-        binder.install(new CommandModule());
     }
 
     private void printBanner() {

@@ -1,5 +1,9 @@
 package com.hibiscusmc.hmcpets.command;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.cache.UserCache;
 import com.hibiscusmc.hmcpets.config.MenuConfig;
@@ -9,11 +13,6 @@ import com.hibiscusmc.hmcpets.api.model.UserModel;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import com.hibiscusmc.hmcpets.api.util.Adventure;
 import lombok.extern.java.Log;
-import me.fixeddev.commandflow.annotated.CommandClass;
-import me.fixeddev.commandflow.annotated.annotation.ArgOrSub;
-import me.fixeddev.commandflow.annotated.annotation.Command;
-import me.fixeddev.commandflow.annotated.annotation.Usage;
-import me.fixeddev.commandflow.bukkit.annotation.Sender;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,15 +21,9 @@ import team.unnamed.inject.Inject;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Command(
-        names = {"hmcpets", "pets", "pet"},
-        desc = "Main commands for HMCPets related things",
-        permission = "hmcpets.commands"
-)
-@Usage(value = "[version | list]")
-@ArgOrSub(value = true)
+@CommandAlias("hmcpets|pets|pet")
 @Log(topic = "HMCPets")
-public class PetsCommand implements CommandClass {
+public class PetsCommand extends BaseCommand {
 
     @Inject
     private HMCPets instance;
@@ -45,9 +38,10 @@ public class PetsCommand implements CommandClass {
     @Inject
     private StorageHolder storage;
 
-    @Command(names = {"", "list"}, permission = "hmcpets.commands.list")
-    @Usage(value = "[player]")
-    public void onListCommand(@Sender Player player) {
+    @Default
+    @CommandAlias("list")
+    @CommandPermission("hmcpets.commands.list")
+    public void onListCommand(Player player) {
         userCache.fetch(player.getUniqueId()).thenAccept(user -> {
             if (user == null) {
                 langConfig.constantsNoPets().send(player);
@@ -68,7 +62,8 @@ public class PetsCommand implements CommandClass {
         });
     }
 
-    @Command(names = {"version"}, permission = "hmcpets.commands.version")
+    @CommandAlias("version")
+    @CommandPermission("hmcpets.commands.version")
     public void onVersionCommand(CommandSender sender) {
         String version = instance.getPluginMeta().getVersion();
 

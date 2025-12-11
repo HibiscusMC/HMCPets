@@ -2,7 +2,7 @@ name: 'HMCPets'
 main: "com.hibiscusmc.hmcpets.HMCPetsPlugin"
 version: '${hmcpets.version}'
 api-version: '1.21'
-author: iKztu
+author: AlicsMacs, iKztu
 depend:
   - HibiscusCommons
 

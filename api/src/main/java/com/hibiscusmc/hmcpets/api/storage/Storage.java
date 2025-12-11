@@ -37,8 +37,7 @@ public interface Storage {
     void deletePet(PetModel pet);
 
     void insertUser(UserModel user);
-    UserModel selectUser(int userId);
-    UserModel selectUserByUuid(UUID uuid);
+    UserModel selectUser(UUID userId);
 
     void updateUserPetPoints(UserModel user, int newPoints);
     void saveUser(UserModel user);

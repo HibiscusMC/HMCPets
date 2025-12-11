@@ -64,6 +64,8 @@ public class PetTypeRegistry implements Registry<PetType> {
             throw new IllegalArgumentException("PetType " + petType.id() + " is already registered");
         }
 
+        System.out.println("Registering PetType " + petType.key().asString());
+
         REGISTRY.put(petType.key().asString(), petType);
     }
 
@@ -124,8 +126,14 @@ public class PetTypeRegistry implements Registry<PetType> {
     }
 
     @Override
-    public Optional<PetType> getRegistered(@NotNull String str) {
-        return Optional.ofNullable(REGISTRY.get(str));
+    public Optional<PetType> getRegistered(String str) {
+        if(str == null) return Optional.empty();
+
+        //Could have different namespaces - need to retrieve the key manually
+        String retrievedKey = REGISTRY.keySet().stream().filter(s -> s.endsWith(str)).findFirst().orElse(null);
+        if(retrievedKey == null) return Optional.empty();
+
+        return Optional.ofNullable(REGISTRY.get(retrievedKey));
     }
 
     @Override

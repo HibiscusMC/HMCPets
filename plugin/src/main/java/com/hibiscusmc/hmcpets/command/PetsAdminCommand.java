@@ -1,5 +1,7 @@
 package com.hibiscusmc.hmcpets.command;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.*;
 import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.cache.UserCache;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
@@ -7,30 +9,27 @@ import com.hibiscusmc.hmcpets.config.MenuConfig;
 import com.hibiscusmc.hmcpets.config.LangConfig;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.config.PetConfig;
+import com.hibiscusmc.hmcpets.pet.PetData;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import com.hibiscusmc.hmcpets.api.storage.Storage;
 import com.hibiscusmc.hmcpets.util.Debug;
 import lombok.extern.java.Log;
-import me.fixeddev.commandflow.annotated.CommandClass;
-import me.fixeddev.commandflow.annotated.annotation.Command;
-import me.fixeddev.commandflow.annotated.annotation.OptArg;
-import me.fixeddev.commandflow.annotated.annotation.Suggestions;
-import me.fixeddev.commandflow.annotated.annotation.Text;
-import me.fixeddev.commandflow.annotated.annotation.Usage;
+
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import team.unnamed.inject.Inject;
+import team.unnamed.inject.Injector;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
-@Command(
-        names = {"hmcpetsadmin", "petsadmin", "petadmin"},
-        desc = "Admin commands for HMCPets related things",
-        permission = "hmcpets.admincommands")
-@Usage(value = "[reload | debug | rename | listpets]")
+@CommandAlias(value = "hmcpetsadmin|petsadmin|petadmin")
+@CommandPermission("hmcpets.admincommands")
 @Log(topic = "HMCPets")
-public class PetsAdminCommand implements CommandClass {
+public class PetsAdminCommand extends BaseCommand {
 
     @Inject
     private HMCPets instance;
@@ -48,8 +47,9 @@ public class PetsAdminCommand implements CommandClass {
     @Inject
     private StorageHolder storage;
 
-    @Command(names = {"debug"}, permission = "hmcpets.admincommands.debug")
-    public void onDebugCommand(CommandSender sender) {
+    @CommandAlias("debug")
+    @CommandPermission("hmcpets.admincommands.debug")
+    public void debug(CommandSender sender) {
         boolean status = Debug.toggleDebug();
 
         langConfig.commandAdminDebug().send(
@@ -61,14 +61,30 @@ public class PetsAdminCommand implements CommandClass {
         );
     }
 
-    @Command(names = {"rename"}, permission = "hmcpets.admincommands.rename")
-    @Usage(value = "<player> <pet> <new name>")
-    public void onRenameCommand(
-            CommandSender sender,
-            OfflinePlayer player,
-            int petId,
-            @Text String newName
-    ) {
+    @CommandAlias("add")
+    @CommandPermission("hmcpets.admincommands.add")
+    @CommandCompletion("@player @pets")
+    public void add(CommandSender sender, OfflinePlayer player, String petName){
+        if (player == null) {
+            sender.sendRichMessage("<red>Player not found!");
+            return;
+        }
+
+        userCache.fetch(player.getUniqueId()).thenAccept(user -> {
+            Optional<PetData> data = petConfig.getPetData(petName);
+            if(data.isEmpty()){
+                sender.sendRichMessage("<red>Pet not found!");
+                return;
+            }
+
+            user.addPet(new PetModel(UUID.randomUUID(), user, data.get()));
+            sender.sendRichMessage("<green>Pet added!");
+        });
+    }
+
+    @CommandAlias("rename")
+    @CommandPermission("hmcpets.admincommands.rename")
+    public void rename(CommandSender sender, OfflinePlayer player, int petId, String newName) {
         if (player == null) {
             sender.sendRichMessage("<red>Player not found!");
             return;
@@ -98,9 +114,9 @@ public class PetsAdminCommand implements CommandClass {
         });
     }
 
-    @Command(names = {"listpets"}, permission = "hmcpets.admincommands.listpets")
-    @Usage(value = "<player>")
-    public void onListPetsCommand(CommandSender sender, OfflinePlayer player) {
+    @CommandAlias("listpets")
+    @CommandPermission("hmcpets.admincommands.listpets")
+    public void listPets(CommandSender sender, OfflinePlayer player) {
         if (player == null) {
             sender.sendRichMessage("<red>Player not found!");
             return;
@@ -130,14 +146,10 @@ public class PetsAdminCommand implements CommandClass {
         });
     }
 
-    @Command(names = {"rl", "reload"}, permission = "hmcpets.admincommands.reload")
-    @Usage(value = "[all | lang | config | pets]")
-    public void onReloadCommand(
-            CommandSender sender,
-            @OptArg(value = "all")
-            @Suggestions(suggestions = {"", "all", "lang", "config", "pets", "menus"})
-            String category
-    ) {
+    @CommandAlias("rl|reload")
+    @CommandPermission("hmcpets.admincommands.reload")
+    @CommandCompletion("all|lang|config|pets|menus")
+    public void reload(CommandSender sender, @Default("") String category) {
         long start = System.currentTimeMillis();
 
         switch (category) {

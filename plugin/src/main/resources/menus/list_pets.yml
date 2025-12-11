@@ -57,15 +57,16 @@ icons:
         - ''
         - '<gray>Obtained <pet:obtained:short>'
         - ''
-        - '<#d24c9f>Shift-Click<dark_gray>: <white><usage:favorites>'
-        - '<#d24c9f>Right-Click<dark_gray>: <white>Manage your pet'
         - '<usage:summon>'
+        - ''
+        - '<#d24c9f>Shift-Click<dark_gray>: <white><usage:favorites>'
+        - '<#d24c9f>Right-Click<dark_gray>: <white><usage:manage>'
     usage:
-      add:
-        sound:
-        lore: 'Add your pet to favorites'
-      remove:
-        lore: 'Remove your pet from favorites'
+      favorites:
+        add:
+          lore: 'Add your pet to favorites'
+        remove:
+          lore: 'Remove your pet from favorites'
       summon:
         summon:
           lore: '<#d24c9f>Left-Click<dark_gray>: <white>Summon your pet'

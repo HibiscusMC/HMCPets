@@ -15,10 +15,9 @@ dependencies {
         exclude("net.kyori")
         exclude("com.google.gson")
     }
-    // Command-Flow
-    implementation("me.fixeddev:commandflow-bukkit:0.6.0") {
-        exclude("net.kyori")
-    }
+    // ACF
+    implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
+
     // Inject
     implementation("team.unnamed:inject:2.0.1")
 

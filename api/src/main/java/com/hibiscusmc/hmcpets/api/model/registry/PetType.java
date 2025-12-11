@@ -27,14 +27,10 @@ public class PetType {
     @Setter(AccessLevel.PUBLIC)
     private LangEntry name;
 
-    public static final PetType AQUATIC
-            = new PetType(Registry.withDefaultKey("aquatic"));
-    public static final PetType BEAST
-            = new PetType(Registry.withDefaultKey("beast"));
-    public static final PetType MAGIC
-            = new PetType(Registry.withDefaultKey("magic"));
-    public static final PetType CRITTER
-            = new PetType(Registry.withDefaultKey("critter"));
+    public static final PetType AQUATIC = new PetType(Registry.withDefaultKey("aquatic"));
+    public static final PetType BEAST = new PetType(Registry.withDefaultKey("beast"));
+    public static final PetType MAGIC = new PetType(Registry.withDefaultKey("magic"));
+    public static final PetType CRITTER = new PetType(Registry.withDefaultKey("critter"));
 
     public String id() {
         return key.asString();

@@ -26,10 +26,13 @@ public class ConfigService extends Service {
     protected void initialize() {
         langConfig.setup();
         pluginConfig.setup();
+        petConfig.setup();
+        menuConfig.setup();
     }
 
     @Override
     protected void cleanup() {
+
     }
 
 }

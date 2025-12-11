@@ -284,6 +284,7 @@ public class ListPetsMenu extends AbstractConfig {
 
     private void handlePetClick(InventoryClickEvent event, UserModel user, PetModel pet) {
         ClickType click = event.getClick();
+        Player player = (Player) event.getWhoClicked();
 
         if (click.isShiftClick()) {
             if (user.hasFavoritePet(pet)) {
@@ -298,7 +299,7 @@ public class ListPetsMenu extends AbstractConfig {
                 if (user.countActivePets() >= pluginConfig.pets().maxActive()) {
                     langConfig.petsMaxActive().send(event.getWhoClicked());
                 } else {
-                    user.addActivePet(pet);
+                    user.addActivePet(pet, player.getLocation());
                 }
             }
         } else if (click.isRightClick()) {

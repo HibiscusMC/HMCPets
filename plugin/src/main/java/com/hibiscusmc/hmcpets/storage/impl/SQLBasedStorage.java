@@ -61,11 +61,10 @@ public abstract class SQLBasedStorage implements Storage {
             " pet_points" +
             ") " +
             "VALUES (?, ?);";
-    private static final String USERS_SELECT_BY_ID = "SELECT * FROM <prefix>users WHERE id = ?;";
-    private static final String USERS_SELECT_BY_UUID = "SELECT * FROM <prefix>users WHERE uuid = ?;";
-    private static final String USERS_UPDATE_PET_POINTS = "UPDATE <prefix>users SET pet_points = ? WHERE id = ?;";
-    private static final String USERS_UPDATE = "UPDATE <prefix>users SET pet_points = ? WHERE id = ?;";
-    private static final String USERS_DELETE_BY_ID = "DELETE FROM <prefix>users WHERE id = ?;";
+    private static final String USERS_SELECT_BY_ID = "SELECT * FROM <prefix>users WHERE uuid = ?;";
+    private static final String USERS_UPDATE_PET_POINTS = "UPDATE <prefix>users SET pet_points = ? WHERE uuid = ?;";
+    private static final String USERS_UPDATE = "UPDATE <prefix>users SET pet_points = ? WHERE uuid = ?;";
+    private static final String USERS_DELETE_BY_ID = "DELETE FROM <prefix>users WHERE uuid = ?;";
 
     // Active Pets Statements
     private static final String ACTIVE_PETS_INSERT = "INSERT INTO <prefix>active_pets (" +
@@ -104,8 +103,8 @@ public abstract class SQLBasedStorage implements Storage {
         Connection connection = getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_INSERT))) {
-            statement.setString(1, pet.config().id());
-            statement.setInt(2, pet.owner().id());
+            statement.setString(1, pet.owner().uuid().toString());
+            statement.setString(2, pet.config().id());
             statement.setString(3, pet.name());
             statement.setInt(4, pet.level());
             statement.setLong(5, pet.experience());
@@ -149,7 +148,7 @@ public abstract class SQLBasedStorage implements Storage {
         Set<PetModel> pets = new HashSet<>();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_SELECT_ALL))) {
-            statement.setInt(1, user.id());
+            statement.setString(1, user.uuid().toString());
 
             try (ResultSet res = statement.executeQuery()) {
                 while (res.next()) {
@@ -166,20 +165,19 @@ public abstract class SQLBasedStorage implements Storage {
 
     private PetModel parsePet(UserModel user, ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
-        int owner = rs.getInt("owner");
+        String owner = rs.getString("owner");
         String configId = rs.getString("pet_id");
 
         if (configId == null ||
                 configId.equals("null") ||
                 id == 0 ||
-                owner == 0 ||
-                owner != user.id()
+                !owner.equals(user.uuid().toString())
         ) {
             return null;
         }
 
         PetData petData = petConfig.allPets().get(configId);
-        PetModel pet = new PetModel(id, user, petData);
+        PetModel pet = new PetModel(UUID.fromString(rs.getString("id")), user, petData);
 
         String name = rs.getString("name");
         pet.name(name);
@@ -241,7 +239,7 @@ public abstract class SQLBasedStorage implements Storage {
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_UPDATE_NAME))) {
             statement.setString(1, newName);
-            statement.setInt(2, pet.id());
+            statement.setString(2, pet.id().toString());
 
             statement.execute();
 
@@ -258,7 +256,7 @@ public abstract class SQLBasedStorage implements Storage {
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_UPDATE_LEVEL))) {
             statement.setInt(1, newLevel);
             statement.setLong(2, newExperience);
-            statement.setInt(3, pet.id());
+            statement.setString(3, pet.id().toString());
 
             statement.execute();
 
@@ -275,7 +273,7 @@ public abstract class SQLBasedStorage implements Storage {
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_UPDATE_SKIN))) {
             statement.setString(1, newSkin.id());
-            statement.setInt(2, pet.id());
+            statement.setString(2, pet.id().toString());
 
             statement.execute();
 
@@ -291,7 +289,7 @@ public abstract class SQLBasedStorage implements Storage {
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_UPDATE_RARITY))) {
             statement.setString(1, newRarity.id());
-            statement.setInt(2, pet.id());
+            statement.setString(2, pet.id().toString());
 
             statement.execute();
 
@@ -307,7 +305,7 @@ public abstract class SQLBasedStorage implements Storage {
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_UPDATE_COLLAR))) {
             statement.setString(1, newCollar.id());
-            statement.setInt(2, pet.id());
+            statement.setString(2, pet.id().toString());
 
             statement.execute();
 
@@ -323,7 +321,7 @@ public abstract class SQLBasedStorage implements Storage {
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_UPDATE_CRAVING))) {
             statement.setString(1, Hooks.getStringItem(newCraving));
-            statement.setInt(2, pet.id());
+            statement.setString(2, pet.id().toString());
 
             statement.execute();
 
@@ -339,7 +337,7 @@ public abstract class SQLBasedStorage implements Storage {
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_UPDATE_STATUS))) {
             statement.setString(1, newStatus.name().toLowerCase());
-            statement.setInt(2, pet.id());
+            statement.setString(2, pet.id().toString());
 
             statement.execute();
 
@@ -358,7 +356,7 @@ public abstract class SQLBasedStorage implements Storage {
             statement.setDouble(2, health);
             statement.setDouble(3, attack);
             statement.setDouble(4, hunger);
-            statement.setInt(5, pet.id());
+            statement.setString(5, pet.id().toString());
 
             statement.execute();
 
@@ -376,7 +374,7 @@ public abstract class SQLBasedStorage implements Storage {
         Connection connection = getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_UPDATE))) {
-            statement.setInt(1, pet.owner().id());
+            statement.setString(1, pet.owner().uuid().toString());
             statement.setString(2, pet.name());
             statement.setInt(3, pet.level());
             statement.setLong(4, pet.experience());
@@ -389,7 +387,7 @@ public abstract class SQLBasedStorage implements Storage {
             statement.setDouble(11, pet.health());
             statement.setDouble(12, pet.attack());
             statement.setDouble(13, pet.hunger());
-            statement.setInt(14, pet.id());
+            statement.setString(14, pet.id().toString());
 
             statement.execute();
         } catch (SQLException ex) {
@@ -402,7 +400,7 @@ public abstract class SQLBasedStorage implements Storage {
         Connection connection = getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_DELETE_BY_ID))) {
-            statement.setInt(1, pet.id());
+            statement.setString(1, pet.id().toString());
 
             statement.execute();
         } catch (SQLException ex) {
@@ -425,11 +423,11 @@ public abstract class SQLBasedStorage implements Storage {
     }
 
     @Override
-    public UserModel selectUser(int userId) {
+    public UserModel selectUser(UUID userId) {
         Connection connection = getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(USERS_SELECT_BY_ID))) {
-            statement.setInt(1, userId);
+            statement.setString(1, userId.toString());
 
             try (ResultSet res = statement.executeQuery()) {
                 if (res.next()) {
@@ -442,28 +440,7 @@ public abstract class SQLBasedStorage implements Storage {
         }
     }
 
-    @Override
-    public UserModel selectUserByUuid(UUID uuid) {
-        Connection connection = getConnection();
-
-        try (PreparedStatement statement = connection.prepareStatement(parsePrefix(USERS_SELECT_BY_UUID))) {
-            statement.setString(1, uuid.toString());
-
-            try (ResultSet res = statement.executeQuery()) {
-                if (res.next()) {
-                    int userId = res.getInt("id");
-                    if (userId != 0) return parseUser(res, userId);
-                }
-
-                return null;
-            }
-        } catch (SQLException ex) {
-            log.severe(ex.getMessage());
-            return null;
-        }
-    }
-
-    private UserModel parseUser(ResultSet res, int userId) throws SQLException {
+    private UserModel parseUser(ResultSet res, UUID userId) throws SQLException {
         String uuid = res.getString("uuid");
 
         if (uuid == null || uuid.equals("null")
@@ -471,7 +448,7 @@ public abstract class SQLBasedStorage implements Storage {
             return null;
         }
 
-        UserModel user = new UserModel(userId, UUID.fromString(uuid));
+        UserModel user = new UserModel(userId);
 
         int petPoints = res.getInt("pet_points");
         user.petPoints(petPoints);
@@ -485,7 +462,7 @@ public abstract class SQLBasedStorage implements Storage {
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(USERS_UPDATE_PET_POINTS))) {
             statement.setInt(1, newPoints);
-            statement.setInt(2, user.id());
+            statement.setString(2, user.uuid().toString());
 
             statement.execute();
 
@@ -501,7 +478,7 @@ public abstract class SQLBasedStorage implements Storage {
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(USERS_UPDATE))) {
             statement.setInt(1, user.petPoints());
-            statement.setInt(2, user.id());
+            statement.setString(2, user.uuid().toString());
 
             statement.execute();
         } catch (SQLException ex) {
@@ -514,7 +491,7 @@ public abstract class SQLBasedStorage implements Storage {
         Connection connection = getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(USERS_DELETE_BY_ID))) {
-            statement.setInt(1, user.id());
+            statement.setString(1, user.uuid().toString());
 
             statement.execute();
         } catch (SQLException ex) {
@@ -527,8 +504,8 @@ public abstract class SQLBasedStorage implements Storage {
         Connection connection = getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(ACTIVE_PETS_INSERT))) {
-            statement.setInt(1, user.id());
-            statement.setInt(2, pet.id());
+            statement.setString(1, user.uuid().toString());
+            statement.setString(2, pet.id().toString());
 
             statement.execute();
         } catch (SQLException ex) {
@@ -542,7 +519,7 @@ public abstract class SQLBasedStorage implements Storage {
         Set<PetModel> pets = new HashSet<>();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(ACTIVE_PETS_SELECT_ALL))) {
-            statement.setInt(1, user.id());
+            statement.setString(1, user.uuid().toString());
 
             try (ResultSet res = statement.executeQuery()) {
                 while (res.next()) {
@@ -567,8 +544,8 @@ public abstract class SQLBasedStorage implements Storage {
         Connection connection = getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(ACTIVE_PETS_DELETE))) {
-            statement.setInt(1, user.id());
-            statement.setInt(2, pet.id());
+            statement.setString(1, user.uuid().toString());
+            statement.setString(2, pet.id().toString());
 
             statement.execute();
         } catch (SQLException ex) {
@@ -581,8 +558,8 @@ public abstract class SQLBasedStorage implements Storage {
         Connection connection = getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(FAVORITE_PETS_INSERT))) {
-            statement.setInt(1, user.id());
-            statement.setInt(2, pet.id());
+            statement.setString(1, user.uuid().toString());
+            statement.setString(2, pet.id().toString());
 
             statement.execute();
         } catch (SQLException ex) {
@@ -596,7 +573,7 @@ public abstract class SQLBasedStorage implements Storage {
         Set<PetModel> pets = new HashSet<>();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(FAVORITE_PETS_SELECT_ALL))) {
-            statement.setInt(1, user.id());
+            statement.setString(1, user.uuid().toString());
 
             try (ResultSet res = statement.executeQuery()) {
                 while (res.next()) {
@@ -621,8 +598,8 @@ public abstract class SQLBasedStorage implements Storage {
         Connection connection = getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(FAVORITE_PETS_DELETE))) {
-            statement.setInt(1, user.id());
-            statement.setInt(2, pet.id());
+            statement.setString(1, user.uuid().toString());
+            statement.setString(2, pet.id().toString());
 
             statement.execute();
         } catch (SQLException ex) {

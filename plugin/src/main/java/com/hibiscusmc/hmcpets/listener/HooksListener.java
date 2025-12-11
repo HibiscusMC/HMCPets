@@ -19,10 +19,7 @@ public class HooksListener implements Listener {
 
     @EventHandler
     public void onAllHooksReady(HibiscusHooksAllActiveEvent event) {
-        instance.loadRegistries();
 
-        petConfig.setup();
-        menuConfig.setup();
     }
 
 }

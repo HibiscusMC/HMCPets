@@ -4,6 +4,7 @@ import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.bukkit.Location;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +14,11 @@ import java.util.UUID;
 @Setter(AccessLevel.NONE)
 public class UserModel {
 
-    private final int id;
     private final UUID uuid;
 
-    private final Map<Integer, CachedPet> pets = new HashMap<>();
-    private final Map<Integer, CachedPet> activePets = new HashMap<>();
-    private final Map<Integer, CachedPet> favoritePets = new HashMap<>();
+    private final Map<UUID, CachedPet> pets = new HashMap<>();
+    private final Map<UUID, CachedPet> activePets = new HashMap<>();
+    private final Map<UUID, CachedPet> favoritePets = new HashMap<>();
 
     @Setter(AccessLevel.PUBLIC)
     private int petPoints;
@@ -50,8 +50,10 @@ public class UserModel {
         });
     }
 
-    public void addActivePet(PetModel pet) {
+    public void addActivePet(PetModel pet, Location spawnLocation) {
         addPetTo(activePets, pet, PetStatus.ACTIVE);
+
+        pet.spawn(spawnLocation);
     }
 
     public void removeActivePet(PetModel pet) {
@@ -62,6 +64,8 @@ public class UserModel {
 
     public void deleteActivePet(PetModel pet) {
         updatePetRemoval(activePets, pet, CachedPet.RemoveType.PERMANENT);
+
+        pet.despawn();
     }
 
     public long countActivePets() {
@@ -94,7 +98,7 @@ public class UserModel {
         return favoritePets.values().stream().filter(pet -> pet.removed() == CachedPet.RemoveType.NONE).count();
     }
 
-    private void addPetTo(Map<Integer, CachedPet> map, PetModel pet, PetStatus status) {
+    private void addPetTo(Map<UUID, CachedPet> map, PetModel pet, PetStatus status) {
         if (pet == null) {
             return;
         }
@@ -116,7 +120,7 @@ public class UserModel {
         existing.pet(pet);
     }
 
-    private void updatePetRemoval(Map<Integer, CachedPet> map, PetModel pet, CachedPet.RemoveType type) {
+    private void updatePetRemoval(Map<UUID, CachedPet> map, PetModel pet, CachedPet.RemoveType type) {
         if (pet == null) {
             return;
         }

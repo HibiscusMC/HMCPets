@@ -10,8 +10,7 @@ import java.util.Optional;
 
 public class ActionTypeRegistry implements Registry<ActionType> {
 
-    private static final Map<String, ActionType> REGISTRY
-            = new HashMap<>();
+    private static final Map<String, ActionType> REGISTRY = new HashMap<>();
 
     @Override
     public void load() {

@@ -13,14 +13,14 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Log(topic = "HMCPets")
 @Singleton
 public class PetConfig {
 
     @Getter
-    private final Map<String, PetData> allPets
-            = new HashMap<>();
+    private final Map<String, PetData> allPets = new HashMap<>();
 
     @Inject
     private Plugin plugin;
@@ -66,6 +66,10 @@ public class PetConfig {
         }
 
         log.info(allPets.size() + " pets loaded.");
+    }
+
+    public Optional<PetData> getPetData(String petID){
+        return Optional.ofNullable(allPets.get(petID));
     }
 
 }

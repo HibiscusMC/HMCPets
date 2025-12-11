@@ -1,87 +1,40 @@
 package com.hibiscusmc.hmcpets.command;
 
-import com.hibiscusmc.hmcpets.command.impl.CommandArgumentImpl;
-import com.hibiscusmc.hmcpets.config.LangConfig;
+import co.aikar.commands.PaperCommandManager;
+import com.hibiscusmc.hmcpets.HMCPetsPlugin;
+import com.hibiscusmc.hmcpets.config.PetConfig;
 import com.hibiscusmc.hmcpets.service.Service;
-import me.fixeddev.commandflow.CommandManager;
-import me.fixeddev.commandflow.annotated.AnnotatedCommandTreeBuilder;
-import me.fixeddev.commandflow.annotated.CommandClass;
-import me.fixeddev.commandflow.annotated.part.PartInjector;
-import me.fixeddev.commandflow.annotated.part.defaults.DefaultsModule;
-import me.fixeddev.commandflow.bukkit.BukkitCommandManager;
-import me.fixeddev.commandflow.bukkit.factory.BukkitModule;
-import me.fixeddev.commandflow.command.Command;
-import me.fixeddev.commandflow.exception.CommandUsage;
-import me.fixeddev.commandflow.exception.NoPermissionsException;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import team.unnamed.inject.Inject;
-
-import java.util.Map;
-import java.util.Set;
+import team.unnamed.inject.Injector;
 
 public class CommandService extends Service {
 
-    @Inject
-    private Set<CommandClass> commandClasses;
-    @Inject
-    private LangConfig langConfig;
+	@Inject
+	private Plugin plugin;
+	@Inject
+	private Injector injector;
 
-    protected CommandService() {
-        super("Command");
-    }
+	@Inject
+	private PetConfig petConfig;
 
-    @Override
-    protected void initialize() {
-        PartInjector injector = PartInjector.create();
-        injector.install(new DefaultsModule());
-        injector.install(new BukkitModule());
+	protected CommandService() {
+		super("Command");
+	}
 
-        injector.install(new CommandArgumentImpl());
+	@Override
+	protected void initialize() {
+		PaperCommandManager manager = new PaperCommandManager(HMCPetsPlugin.instance());
 
-        AnnotatedCommandTreeBuilder treeBuilder = AnnotatedCommandTreeBuilder
-                .create(injector);
+		manager.registerCommand(injector.getInstance(PetsAdminCommand.class));
+		manager.registerCommand(injector.getInstance(PetsCommand.class));
 
-        CommandManager manager = new BukkitCommandManager("hmcpets");
+		manager.getCommandCompletions().registerCompletion("pets", c -> petConfig.allPets().keySet());
+	}
 
-        manager.getErrorHandler().addExceptionHandler(NoPermissionsException.class, (namespace, throwable) -> {
-            CommandSender sender = namespace.getObject(CommandSender.class, "SENDER");
+	@Override
+	protected void cleanup() {
 
-            langConfig.noPermission()
-                    .send(sender);
-            return true;
-        });
-
-        PlainTextComponentSerializer plainText = PlainTextComponentSerializer.plainText();
-
-        manager.getErrorHandler().addExceptionHandler(CommandUsage.class, (namespace, exx) -> {
-            CommandSender sender = namespace.getObject(CommandSender.class, "SENDER");
-            String label = namespace.getObject(String.class, "label");
-            Command command = exx.getCommand();
-
-            langConfig.commandUsage()
-                    .send(sender, Map.of(
-                            "command", label,
-                            "usage", plainText.serialize(
-                                    command.getUsage() == null ?
-                                            command.getDescription() == null ?
-                                                    Component.text().build() :
-                                                    command.getDescription() :
-                                            command.getUsage()
-                            )
-                    ));
-            return true;
-        });
-
-        for (CommandClass commandClass : commandClasses) {
-            manager.registerCommands(treeBuilder.fromClass(commandClass));
-        }
-    }
-
-    @Override
-    protected void cleanup() {
-
-    }
+	}
 
 }

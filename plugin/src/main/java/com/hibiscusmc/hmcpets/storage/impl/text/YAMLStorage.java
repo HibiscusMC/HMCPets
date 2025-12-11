@@ -107,12 +107,7 @@ public class YAMLStorage implements Storage {
     }
 
     @Override
-    public UserModel selectUser(int userId) {
-        return null;
-    }
-
-    @Override
-    public UserModel selectUserByUuid(UUID uuid) {
+    public UserModel selectUser(UUID userId) {
         return null;
     }
 

@@ -27,6 +27,8 @@ public class Pets {
     private static final DateTimeFormatter DATE_FORMATTER
             = DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy HH:mm:ss");
 
+    //TODO: This doesn't allow for i18n. Either LangConfig needs to be moved here or this needs to be
+    //TODO: moved to plugin module
     public static ItemStack buildIcon(PetModel pet, Button petButton, TagResolver... resolvers) {
         ItemStack stack = pet.config().icon() == null ? ItemStack.of(Material.PLAYER_HEAD) : pet.config().icon();
         stack.copyDataFrom(petButton.item(), Set.of(
@@ -73,8 +75,24 @@ public class Pets {
 
                 return Tag.inserting(Adventure.parse(name));
             });
+
+            TagResolver usageResolver = TagResolver.resolver("usage", (args, context) -> {
+                String switchArg = args.popOr("none").value();
+
+                String name = switch (switchArg.toLowerCase()) {
+                    case "summon" -> {
+                        if(pet.entity() == null) yield "<#d24c9f>Left-Click<dark_gray>: <white>Summon your pet";
+
+                        yield "<#d24c9f>Left-Click<dark_gray>: <white>Store your pet";
+                    }
+                    default -> "unexpected value: " + switchArg;
+                };
+
+                return Tag.inserting(Adventure.parse(name));
+            });
+
             List<TagResolver> resolverList = Stream.concat(
-                    Stream.of(resolver),
+                    Stream.of(resolver, usageResolver),
                     Arrays.stream(resolvers)
             ).toList();
 

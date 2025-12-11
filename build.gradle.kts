@@ -9,29 +9,52 @@ allprojects {
     version = version("0.1.0")
 
     repositories {
-        mavenCentral()
 
-        // Command-Flow
-        maven("https://repo.unnamed.team/repository/unnamed-releases/")
+
+        mavenCentral()
+        mavenLocal()
+
+        // ACF
+        maven("https://repo.aikar.co/content/groups/aikar/")
+        maven("https://hub.spigotmc.org/nexus/content/groups/public/")
+
         // PlaceholderAPI
         maven("https://repo.extendedclip.com/releases/")
         // HibiscusCommons
         maven("https://repo.hibiscusmc.com/releases/")
+
+        //Nexo
+        maven("https://repo.nexomc.com/releases")
     }
 }
 
 dependencies {
+    implementation(project(":api"))
     implementation(project(":plugin"))
+
+    implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
+
+    compileOnly("com.nexomc:nexo:1.15")
+
+    // Inject
+    implementation("team.unnamed:inject:2.0.1")
+
+    implementation("dev.triumphteam:triumph-gui:3.1.13") {
+        exclude("net.kyori")
+        exclude("com.google.gson")
+    }
 }
 
 tasks {
     shadowJar {
-        dependsOn(clean)
+        dependsOn(jar)
 
-        val main = "${rootProject.group}.${rootProject.name}.libs"
+        val main = "${rootProject.group}.libs"
 
         relocate("dev.triumphteam.gui", "$main.gui")
-        relocate("me.fixeddev.commandflow", "$main.commandflow")
+        relocate("co.aikar.commands", "$main.acf")
+        relocate("co.aikar.locales", "$main.acf.locales")
+        relocate("team.unnamed.inject", "$main.inject")
 
         archiveFileName.set("HMCPets-${version}.jar")
     }

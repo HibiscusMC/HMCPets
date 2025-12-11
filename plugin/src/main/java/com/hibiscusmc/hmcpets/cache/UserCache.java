@@ -4,6 +4,7 @@ import com.hibiscusmc.hmcpets.api.model.UserModel;
 import com.hibiscusmc.hmcpets.api.storage.Storage;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import lombok.extern.java.Log;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.inject.Inject;
 import team.unnamed.inject.Singleton;
@@ -18,33 +19,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 public class UserCache extends ConcurrentHashMap<UUID, UserModel> {
 
-    private final Map<Integer, UserModel> usersByIndex
-            = new ConcurrentHashMap<>();
-
     @Inject
     private StorageHolder storage;
 
     public CompletableFuture<UserModel> fetch(@NotNull UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
-            UserModel user = computeIfAbsent(
-                    uuid,
-                    id -> populate(storage.implementation().selectUserByUuid(id))
-            );
+            UserModel user = get(uuid);
+            if(user != null) return user;
 
-            usersByIndex.putIfAbsent(user.id(), user);
-            return user;
-        });
-    }
-
-    public CompletableFuture<UserModel> fetch(int index) {
-        return CompletableFuture.supplyAsync(() -> {
-            UserModel user = usersByIndex.computeIfAbsent(
-                    index,
-                    (i) -> populate(storage.implementation().selectUser(i))
-            );
-
-            putIfAbsent(user.uuid(), user);
-            return user;
+            UserModel userModel = new UserModel(uuid);
+            put(uuid, userModel);
+            return userModel;
         });
     }
 

@@ -1,6 +1,7 @@
 package com.hibiscusmc.hmcpets.api.event;
 
 import com.hibiscusmc.hmcpets.api.model.PetModel;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -13,12 +14,14 @@ public class PetSpawnEvent extends Event implements Cancellable {
 
     private final Player player;
     private final PetModel pet;
+    private final LivingEntity entity;
 
     private boolean cancelled;
 
     public PetSpawnEvent(@NotNull Player player, @NotNull PetModel pet) {
         this.player = player;
         this.pet = pet;
+        this.entity = pet.entity();
     }
 
     @NotNull

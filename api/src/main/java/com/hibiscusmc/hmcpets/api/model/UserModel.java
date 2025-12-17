@@ -23,8 +23,21 @@ public class UserModel {
     @Setter(AccessLevel.PUBLIC)
     private int petPoints;
 
+    //Despawns all active pets for a player and resets their ownerInstance, to avoid pets
+    //going to ghost players if rejoining.
     public void despawnActivePets(){
-        activePets.values().forEach(pet -> pet.pet().despawn());
+        activePets.values().forEach(pet -> {
+            pet.pet().despawn(false);
+        });
+        activePets().clear();
+    }
+
+    //Forcibly despawns active pets - used in server shutdown
+    public void destroyActivePets(){
+        activePets.values().forEach(pet -> {
+            pet.pet().destroy();
+        });
+        activePets().clear();
     }
 
     public void setPets(Iterable<PetModel> allPets) {
@@ -64,12 +77,12 @@ public class UserModel {
         pet.status(PetStatus.IDLE);
 
         updatePetRemoval(activePets, pet, CachedPet.RemoveType.TEMPORAL);
-        pet.despawn();
+        pet.despawn(true);
     }
 
     public void deleteActivePet(PetModel pet) {
         updatePetRemoval(activePets, pet, CachedPet.RemoveType.PERMANENT);
-        pet.despawn();
+        pet.despawn(false);
     }
 
     public long countActivePets() {

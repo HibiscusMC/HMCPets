@@ -43,7 +43,7 @@ public class Pets {
                 String name = switch (switchArg.toLowerCase()) {
                     case "name" -> pet.name();
                     case "type" -> pet.config().type() == null ? "unknown" : pet.config().type().name().string();
-                    case "id" -> pet.id() + "";
+                    case "id" -> pet.id().toString().substring(0, 8);
                     case "level" -> pet.level() + "";
                     case "experience" -> String.format("%,d", pet.experience());
                     case "rarity" -> pet.rarity() == null ? "unknown" : pet.rarity().name().string();

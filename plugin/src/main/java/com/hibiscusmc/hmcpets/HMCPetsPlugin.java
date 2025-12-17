@@ -2,6 +2,7 @@ package com.hibiscusmc.hmcpets;
 
 import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.data.ILangData;
+import com.hibiscusmc.hmcpets.api.model.UserModel;
 import com.hibiscusmc.hmcpets.cache.CacheModule;
 import com.hibiscusmc.hmcpets.cache.UserCache;
 import com.hibiscusmc.hmcpets.command.CommandService;
@@ -68,6 +69,8 @@ public class HMCPetsPlugin extends HMCPets implements Module {
         printBanner();
 
         long start = System.currentTimeMillis();
+
+        userCache.values().forEach(UserModel::destroyActivePets);
 
         CompletableFuture.allOf(userCache.keySet().stream().map(user -> userCache.save(user).exceptionally(ex -> {
             log.severe("Failed to save user " + user + ". Error: " + ex.getMessage());

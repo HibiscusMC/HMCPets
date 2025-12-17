@@ -15,6 +15,9 @@ dependencies {
     compileOnly("me.lojosho:HibiscusCommons:0.8.0-3c107b51")
     // PlaceholderAPI
     compileOnly("me.clip:placeholderapi:2.11.6")
+
+    //ModelEngine
+    compileOnly("com.ticxo.modelengine:ModelEngine:R4.0.4")
 }
 
 java {

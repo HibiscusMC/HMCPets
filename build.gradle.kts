@@ -25,6 +25,8 @@ allprojects {
 
         //Nexo
         maven("https://repo.nexomc.com/releases")
+
+        maven("https://mvn.lumine.io/repository/maven-public/")
     }
 }
 
@@ -43,6 +45,8 @@ dependencies {
         exclude("net.kyori")
         exclude("com.google.gson")
     }
+
+    compileOnly("com.ticxo.modelengine:ModelEngine:R4.0.4")
 }
 
 tasks {

@@ -7,7 +7,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class PetRemoveEvent extends Event implements Cancellable {
+public class PetDespawnEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
@@ -16,7 +16,7 @@ public class PetRemoveEvent extends Event implements Cancellable {
 
     private boolean cancelled;
 
-    public PetRemoveEvent(@NotNull Player player, @NotNull PetModel pet) {
+    public PetDespawnEvent(@NotNull Player player, @NotNull PetModel pet) {
         this.player = player;
         this.pet = pet;
     }

@@ -1,14 +1,13 @@
 package com.hibiscusmc.hmcpets.pet;
 
 import com.hibiscusmc.hmcpets.api.HMCPets;
-import com.hibiscusmc.hmcpets.api.model.CollarModel;
 import com.hibiscusmc.hmcpets.api.data.IPetData;
+import com.hibiscusmc.hmcpets.api.model.CollarModel;
 import com.hibiscusmc.hmcpets.api.model.SkinModel;
 import com.hibiscusmc.hmcpets.api.model.registry.PetType;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
 import lombok.Getter;
 import me.lojosho.hibiscuscommons.hooks.Hooks;
-import me.lojosho.shaded.configurate.serialize.SerializationException;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -53,6 +52,11 @@ public class PetData extends AbstractConfig implements IPetData {
 	    Material iconMat = Material.getMaterial(get("icon").getString());
 	    icon = (iconMat == null) ? Hooks.getItem(get("icon").getString()) : new ItemStack(iconMat);
 		mobType = get("mob-type").getString();
+
+        if(icon == null) {
+            System.out.println("Malformed config (icon " + get("icon").getString() + " not found): " + id + ". Aborting loading this pet!");
+            return;
+        }
 
 	    System.out.println("Loaded " + id + " pet (" + type.id() + ", icon: " + icon.getType().name() + ")");
     }

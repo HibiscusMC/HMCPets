@@ -4,13 +4,11 @@ import com.hibiscusmc.hmcpets.api.model.UserModel;
 import com.hibiscusmc.hmcpets.api.storage.Storage;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import lombok.extern.java.Log;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.inject.Inject;
 import team.unnamed.inject.Singleton;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,11 +23,22 @@ public class UserCache extends ConcurrentHashMap<UUID, UserModel> {
     public CompletableFuture<UserModel> fetch(@NotNull UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
             UserModel user = get(uuid);
-            if(user != null) return user;
 
-            UserModel userModel = new UserModel(uuid);
-            put(uuid, userModel);
-            return userModel;
+            if(user != null) {
+                return user;
+            }
+
+            //Try loading user from storage
+            user = storage.implementation().selectUser(uuid);
+            if(user != null){ //Found the user, populate and go
+                return populate(user);
+            }
+
+            user = new UserModel(uuid);
+            put(uuid, user);
+            storage.implementation().insertUser(user);
+
+            return user;
         });
     }
 

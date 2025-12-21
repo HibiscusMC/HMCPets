@@ -74,6 +74,7 @@ public class HMCPetsPlugin extends HMCPets implements Module {
 
         CompletableFuture.allOf(userCache.keySet().stream().map(user -> userCache.save(user).exceptionally(ex -> {
             log.severe("Failed to save user " + user + ". Error: " + ex.getMessage());
+            ex.printStackTrace();
             return null;
         })).toArray(CompletableFuture[]::new)).join();
 

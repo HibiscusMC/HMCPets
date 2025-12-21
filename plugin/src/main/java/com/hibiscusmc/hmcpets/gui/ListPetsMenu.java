@@ -1,14 +1,16 @@
 package com.hibiscusmc.hmcpets.gui;
 
 import com.hibiscusmc.hmcpets.api.gui.Button;
-import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
-import com.hibiscusmc.hmcpets.config.PluginConfig;
-import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.UserModel;
-import com.hibiscusmc.hmcpets.config.LangConfig;
+import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
 import com.hibiscusmc.hmcpets.api.util.Adventure;
 import com.hibiscusmc.hmcpets.api.util.Pets;
+import com.hibiscusmc.hmcpets.config.LangConfig;
+import com.hibiscusmc.hmcpets.config.MenuConfig;
+import com.hibiscusmc.hmcpets.config.PluginConfig;
+import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
+import com.hibiscusmc.hmcpets.gui.internal.PetMenu;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
@@ -34,7 +36,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ListPetsMenu extends AbstractConfig {
+public class ListPetsMenu extends AbstractConfig implements PetMenu {
 
     private String title;
     private int rows;
@@ -55,12 +57,16 @@ public class ListPetsMenu extends AbstractConfig {
     @Inject
     private PluginConfig pluginConfig;
     @Inject
+    public MenuConfig menuConfig;
+
+    @Inject
     private Plugin instance;
 
     public ListPetsMenu(Path path) {
         super(path);
     }
 
+    @Override
     public void setup() {
         load();
 
@@ -312,7 +318,12 @@ public class ListPetsMenu extends AbstractConfig {
         }
 
         if (click.isRightClick()) {
-            // TODO: Open menu to manage pet
+            if(!pet.isSpawned()){
+                player.sendMessage("Pet is not spawned! Spawn it first to be able to modify it!");
+                return;
+            }
+
+            menuConfig.myPetMenu().open(player, pet);
         }
     }
 

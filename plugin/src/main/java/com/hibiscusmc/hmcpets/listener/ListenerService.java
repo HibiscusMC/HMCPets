@@ -23,6 +23,8 @@ public class ListenerService extends Service {
 
         manager.registerEvents(injector.getInstance(HooksListener.class), plugin);
         manager.registerEvents(injector.getInstance(PetOwnerDisconnectListener.class), plugin);
+        manager.registerEvents(injector.getInstance(PetEntityInteractionListener.class), plugin);
+        manager.registerEvents(injector.getInstance(PetInteractListener.class), plugin);
     }
 
     @Override

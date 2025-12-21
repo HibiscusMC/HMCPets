@@ -8,9 +8,13 @@ import com.hibiscusmc.hmcpets.api.registry.PetTypeRegistry;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class HMCPets extends JavaPlugin {
+
+    public final NamespacedKey PET_ID_KEY = new NamespacedKey(this, "pet_id");
+    public final NamespacedKey PET_OWNER_KEY = new NamespacedKey(this, "pet_owner");
 
     @Getter
     private final PetTypeRegistry petTypeRegistry
@@ -52,4 +56,7 @@ public abstract class HMCPets extends JavaPlugin {
 
     public abstract ILangData langData();
 
+    public static HMCPets getInstance(){
+        return instance;
+    }
 }

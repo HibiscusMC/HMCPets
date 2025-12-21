@@ -1,12 +1,11 @@
 package com.hibiscusmc.hmcpets.storage.impl.text;
 
 import com.hibiscusmc.hmcpets.api.data.IPluginStorageData;
-import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import com.hibiscusmc.hmcpets.api.model.CollarModel;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.SkinModel;
 import com.hibiscusmc.hmcpets.api.model.UserModel;
-import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
+import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import com.hibiscusmc.hmcpets.api.storage.Storage;
 import org.bukkit.inventory.ItemStack;
 
@@ -42,7 +41,7 @@ public class YAMLStorage implements Storage {
     }
 
     @Override
-    public PetModel selectPet(UserModel user, int petId) {
+    public PetModel selectPet(UserModel user, UUID petId) {
         return null;
     }
 
@@ -81,10 +80,6 @@ public class YAMLStorage implements Storage {
 
     }
 
-    @Override
-    public void updatePetStatus(PetModel pet, PetStatus newStatus) {
-
-    }
 
     @Override
     public void updatePetStats(PetModel pet, int power, double health, double attack, double hunger) {

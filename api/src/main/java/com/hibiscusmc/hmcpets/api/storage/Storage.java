@@ -1,12 +1,11 @@
 package com.hibiscusmc.hmcpets.api.storage;
 
 import com.hibiscusmc.hmcpets.api.data.IPluginStorageData;
-import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import com.hibiscusmc.hmcpets.api.model.CollarModel;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.SkinModel;
 import com.hibiscusmc.hmcpets.api.model.UserModel;
-import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
+import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Connection;
@@ -23,7 +22,7 @@ public interface Storage {
     Connection getConnection();
 
     void insertPet(PetModel pet);
-    PetModel selectPet(UserModel user, int petId);
+    PetModel selectPet(UserModel user, UUID petId);
     Set<PetModel> selectPets(UserModel user);
     void updatePetName(PetModel pet, String newName);
     void updatePetLevel(PetModel pet, int newLevel, int newExperience);
@@ -31,7 +30,6 @@ public interface Storage {
     void updatePetRarity(PetModel pet, PetRarity newRarity);
     void updatePetCollar(PetModel pet, CollarModel newCollar);
     void updatePetCraving(PetModel pet, ItemStack newCraving);
-    void updatePetStatus(PetModel pet, PetStatus newStatus);
     void updatePetStats(PetModel pet, int power, double health, double attack, double hunger);
     void savePet(PetModel pet);
     void deletePet(PetModel pet);

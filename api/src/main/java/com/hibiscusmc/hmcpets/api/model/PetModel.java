@@ -19,6 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -70,6 +71,9 @@ public class PetModel {
 
         //Beautify name
 	    this.name = Character.toUpperCase(config.id().charAt(0)) + config.id().substring(1).replace("_", " ");
+
+        obtainedTimestamp = System.currentTimeMillis();
+        lastFed = System.currentTimeMillis();
     }
 
 
@@ -99,6 +103,9 @@ public class PetModel {
         mob.setAware(true);
         mob.customName(Component.text(name()));
         mob.setCustomNameVisible(true);
+
+        mob.getPersistentDataContainer().set(HMCPets.getInstance().PET_ID_KEY, PersistentDataType.STRING, id.toString());
+        mob.getPersistentDataContainer().set(HMCPets.getInstance().PET_OWNER_KEY, PersistentDataType.STRING, ownerInstance.getUniqueId().toString());
 
         nameDisplay(mob.getWorld().spawn(mob.getLocation().add(0, 2, 0), TextDisplay.class));
         nameDisplay().setBillboard(Display.Billboard.CENTER);

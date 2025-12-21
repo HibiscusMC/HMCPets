@@ -1,25 +1,25 @@
 package com.hibiscusmc.hmcpets.command;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import com.hibiscusmc.hmcpets.api.HMCPets;
-import com.hibiscusmc.hmcpets.cache.UserCache;
-import com.hibiscusmc.hmcpets.config.PluginConfig;
-import com.hibiscusmc.hmcpets.config.MenuConfig;
-import com.hibiscusmc.hmcpets.config.LangConfig;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
+import com.hibiscusmc.hmcpets.api.storage.Storage;
+import com.hibiscusmc.hmcpets.cache.UserCache;
+import com.hibiscusmc.hmcpets.config.LangConfig;
+import com.hibiscusmc.hmcpets.config.MenuConfig;
 import com.hibiscusmc.hmcpets.config.PetConfig;
+import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.pet.PetData;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
-import com.hibiscusmc.hmcpets.api.storage.Storage;
 import com.hibiscusmc.hmcpets.util.Debug;
 import lombok.extern.java.Log;
-
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import team.unnamed.inject.Inject;
-import team.unnamed.inject.Injector;
 
 import java.util.Map;
 import java.util.Optional;
@@ -84,7 +84,7 @@ public class PetsAdminCommand extends BaseCommand {
 
     @CommandAlias("rename")
     @CommandPermission("hmcpets.admincommands.rename")
-    public void rename(CommandSender sender, OfflinePlayer player, int petId, String newName) {
+    public void rename(CommandSender sender, OfflinePlayer player, String petId, String newName) {
         if (player == null) {
             sender.sendRichMessage("<red>Player not found!");
             return;
@@ -92,7 +92,8 @@ public class PetsAdminCommand extends BaseCommand {
 
         Storage impl = storage.implementation();
 
-        userCache.fetch(player.getUniqueId()).thenAccept(user -> {
+        //TODO: Why is this using direct SQL access on a command? This is supposed to edit the cached version!
+        /*userCache.fetch(player.getUniqueId()).thenAccept(user -> {
             if (user == null) {
                 sender.sendRichMessage("<red>User not in the database!");
                 return;
@@ -111,7 +112,7 @@ public class PetsAdminCommand extends BaseCommand {
             if (ex != null) {
                 log.severe(ex.getMessage());
             }
-        });
+        });*/
     }
 
     @CommandAlias("listpets")

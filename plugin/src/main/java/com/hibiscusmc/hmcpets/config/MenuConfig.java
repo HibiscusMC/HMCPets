@@ -1,6 +1,9 @@
 package com.hibiscusmc.hmcpets.config;
 
 import com.hibiscusmc.hmcpets.gui.ListPetsMenu;
+import com.hibiscusmc.hmcpets.gui.MyPetMenu;
+import com.hibiscusmc.hmcpets.gui.internal.PetMenu;
+import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.plugin.Plugin;
 import team.unnamed.inject.Inject;
@@ -9,6 +12,7 @@ import team.unnamed.inject.Singleton;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
 @Log(topic = "HMCPets")
 @Singleton
@@ -19,7 +23,11 @@ public class MenuConfig {
     @Inject
     private Injector injector;
 
+    @Getter
     private ListPetsMenu listPetsMenu;
+
+    @Getter
+    private MyPetMenu myPetMenu;
 
     public void setup() {
         log.info("Loading menus...");
@@ -34,14 +42,16 @@ public class MenuConfig {
         }
 
         listPetsMenu = new ListPetsMenu(path.resolve("list_pets.yml"));
-        injector.injectMembers(listPetsMenu);
-        listPetsMenu.setup();
+        myPetMenu = new MyPetMenu(path.resolve("my_pet.yml"));
+
+        List<PetMenu> menusToLoad = List.of(listPetsMenu, myPetMenu);
+
+        for (PetMenu menu : menusToLoad) {
+            injector.injectMembers(menu);
+            menu.setup();
+        }
 
         log.info("All menus loaded.");
-    }
-
-    public ListPetsMenu listPetsMenu() {
-        return listPetsMenu;
     }
 
 }

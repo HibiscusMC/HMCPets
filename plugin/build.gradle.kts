@@ -4,6 +4,10 @@ plugins {
 }
 
 dependencies {
+    //Lombok
+    annotationProcessor("org.projectlombok:lombok:1.18.42")
+    compileOnly("org.projectlombok:lombok:1.18.42")
+
     // Paper dev-bundle
     paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
 

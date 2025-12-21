@@ -8,6 +8,7 @@ import org.bukkit.Location;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Data
@@ -38,6 +39,20 @@ public class UserModel {
             pet.pet().destroy();
         });
         activePets().clear();
+    }
+
+    public Optional<PetModel> getPet(UUID uuid){
+        CachedPet cachedPet = pets.get(uuid);
+        if(cachedPet == null) return Optional.empty();
+
+        return Optional.of(cachedPet.pet());
+    }
+
+    public Optional<PetModel> getActivePet(UUID uuid){
+        CachedPet cachedPet = activePets.get(uuid);
+        if(cachedPet == null) return Optional.empty();
+
+        return Optional.of(cachedPet.pet());
     }
 
     public void setPets(Iterable<PetModel> allPets) {
@@ -175,6 +190,45 @@ public class UserModel {
             NONE,
             TEMPORAL,
             PERMANENT
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("CachedPet{");
+            sb.append("cached=").append(cached);
+            sb.append(", removed=").append(removed);
+            sb.append(", pet=");
+
+            if (pet == null) {
+                sb.append("null");
+            } else {
+                sb.append("PetModel{");
+                sb.append("id=").append(pet.id());
+                sb.append(", owner=").append(pet.owner() != null ? pet.owner().uuid() : "null");
+                sb.append(", config=").append(pet.config() != null ? pet.config().id() : "null");
+                sb.append(", name='").append(pet.name()).append('\'');
+                sb.append(", level=").append(pet.level());
+                sb.append(", experience=").append(pet.experience());
+                sb.append(", skin=").append(pet.skin() != null ? pet.skin().id() : "null");
+                sb.append(", rarity=").append(pet.rarity() != null ? pet.rarity().id() : "null");
+                sb.append(", collar=").append(pet.collar() != null ? pet.collar().id() : "null");
+                sb.append(", craving=").append(pet.craving() != null ? pet.craving().getType() : "null");
+                sb.append(", obtainedTimestamp=").append(pet.obtainedTimestamp());
+                sb.append(", lastFed=").append(pet.lastFed());
+                sb.append(", status=").append(pet.status());
+                sb.append(", power=").append(pet.power());
+                sb.append(", health=").append(pet.health());
+                sb.append(", attack=").append(pet.attack());
+                sb.append(", hunger=").append(pet.hunger());
+                sb.append(", isSpawned=").append(pet.isSpawned());
+                sb.append(", entity=").append(pet.entity() != null ? pet.entity().getType() : "null");
+                sb.append(", ownerInstance=").append(pet.ownerInstance() != null ? pet.ownerInstance().getName() : "null");
+                sb.append('}');
+            }
+
+            sb.append('}');
+            return sb.toString();
         }
 
     }

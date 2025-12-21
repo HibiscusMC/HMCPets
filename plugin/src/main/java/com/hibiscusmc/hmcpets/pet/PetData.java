@@ -25,7 +25,7 @@ public class PetData extends AbstractConfig implements IPetData {
     private final Map<String, SkinModel> skins;
 
     private PetType type;
-    private ItemStack icon;
+    private ItemStack icon, rawIcon;
 
 	private String mobType;
 
@@ -58,7 +58,8 @@ public class PetData extends AbstractConfig implements IPetData {
             return;
         }
 
+        rawIcon = icon.clone();
+
 	    System.out.println("Loaded " + id + " pet (" + type.id() + ", icon: " + icon.getType().name() + ")");
     }
-
 }

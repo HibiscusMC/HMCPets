@@ -31,8 +31,12 @@ public class PetEntityInteractionListener implements Listener {
         UserModel user = userCache.get(ownerUUID);
         if(user == null) return;
 
-        Optional<PetModel> pet = user.getActivePet(UUID.fromString(petID));
+        Optional<PetModel> pet = user.getPet(UUID.fromString(petID));
         if(pet.isEmpty()) return;
+        if(!pet.get().isSpawned()){ //Well this is awkward... the ID was manipulated in some way.
+            Bukkit.getLogger().severe("Impossible pet ID detected on " + petID);
+            return;
+        }
 
         PetInteractEvent petInteractEvent = new PetInteractEvent(event.getPlayer(), pet.get());
         Bukkit.getPluginManager().callEvent(petInteractEvent);

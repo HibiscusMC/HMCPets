@@ -18,6 +18,9 @@ dependencies {
 
     //ModelEngine
     compileOnly("com.ticxo.modelengine:ModelEngine:R4.0.4")
+
+    // Inject
+    implementation("team.unnamed:inject:2.0.1")
 }
 
 java {

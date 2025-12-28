@@ -1,15 +1,11 @@
 package com.hibiscusmc.hmcpets.storage;
 
 import com.hibiscusmc.hmcpets.api.data.IPluginStorageData;
+import com.hibiscusmc.hmcpets.api.storage.Storage;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.service.Service;
-import com.hibiscusmc.hmcpets.api.storage.Storage;
-import com.hibiscusmc.hmcpets.storage.impl.local.H2Storage;
-import com.hibiscusmc.hmcpets.storage.impl.local.SQLiteStorage;
-import com.hibiscusmc.hmcpets.storage.impl.remote.MariaDBStorage;
-import com.hibiscusmc.hmcpets.storage.impl.remote.MongoDBStorage;
-import com.hibiscusmc.hmcpets.storage.impl.remote.MySQLStorage;
-import com.hibiscusmc.hmcpets.storage.impl.remote.PostgreSQLStorage;
+import com.hibiscusmc.hmcpets.storage.impl.mongo.MongoDBStorage;
+import com.hibiscusmc.hmcpets.storage.impl.sql.*;
 import com.hibiscusmc.hmcpets.storage.impl.text.CSVStorage;
 import com.hibiscusmc.hmcpets.storage.impl.text.JSONStorage;
 import com.hibiscusmc.hmcpets.storage.impl.text.YAMLStorage;

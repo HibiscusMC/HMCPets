@@ -227,9 +227,9 @@ public class ListPetsMenu extends AbstractConfig implements PetMenu {
         gui.clearPageItems();
 
         for (PetModel pet : pets) {
-            boolean isFavorite = user.hasFavoritePet(pet);
-            boolean isActive = pet.status() == PetStatus.ACTIVE;
-            boolean isResting = pet.status() == PetStatus.RESTING;
+            boolean isFavorite = pet.favorite();
+            boolean isActive = pet.isSpawned();
+            boolean isResting = pet.isResting();
 
             switch (filter) {
                 case ACTIVE: {
@@ -262,9 +262,10 @@ public class ListPetsMenu extends AbstractConfig implements PetMenu {
                             : actionUsage.favorites().add();
                     case "summon" -> {
                         if (isActive) {
+                            System.out.println();
                             yield actionUsage.summon().unsummon();
                         } else {
-                            yield user.countActivePets() >= pluginConfig.pets().maxActive()
+                            yield user.spawnedPets() >= pluginConfig.pets().maxActive()
                                     ? actionUsage.summon().maxActive()
                                     : isResting
                                     ? actionUsage.summon().resting()
@@ -278,42 +279,43 @@ public class ListPetsMenu extends AbstractConfig implements PetMenu {
             });
 
             gui.addItem(new GuiItem(Pets.buildIcon(pet, petDataButton, usageResolver), event -> {
-                handlePetClick(event, user, pet);
+                handlePetClick(event, gui, user, pet);
 
                 if (!event.getClick().isRightClick()) {
                     loadPets(gui, user, pets, filter);
-                    gui.update();
                 }
+
+                gui.update();
             }));
         }
     }
 
-    private void handlePetClick(InventoryClickEvent event, UserModel user, PetModel pet) {
+    private void handlePetClick(InventoryClickEvent event, PaginatedGui gui, UserModel user, PetModel pet) {
         ClickType click = event.getClick();
         Player player = (Player) event.getWhoClicked();
 
         if (click.isShiftClick()) {
-            if (user.hasFavoritePet(pet)) {
-                user.removeFavoritePet(pet);
+            if (pet.favorite()) {
+                pet.favorite(false);
                 return;
             }
 
-            user.addFavoritePet(pet);
+            pet.favorite(true);
             return;
         }
 
         if (click.isLeftClick()) {
             if (pet.isSpawned()) {
-                user.removeActivePet(pet);
+                pet.despawn(true);
                 return;
             }
 
-            if (user.countActivePets() >= pluginConfig.pets().maxActive()) {
+            if (user.spawnedPets() >= pluginConfig.pets().maxActive()) {
                 langConfig.petsMaxActive().send(event.getWhoClicked());
                 return;
             }
 
-            user.addActivePet(pet, player.getLocation());
+            pet.spawn(player.getLocation());
             return;
         }
 

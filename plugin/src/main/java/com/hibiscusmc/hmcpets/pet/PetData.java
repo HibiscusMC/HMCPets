@@ -4,6 +4,7 @@ import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.data.IPetData;
 import com.hibiscusmc.hmcpets.api.model.CollarModel;
 import com.hibiscusmc.hmcpets.api.model.SkinModel;
+import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import com.hibiscusmc.hmcpets.api.model.registry.PetType;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
 import lombok.Getter;
@@ -20,6 +21,9 @@ public class PetData extends AbstractConfig implements IPetData {
 
     private final String category;
     private final String id;
+
+    private PetRarity rarity;
+    private int petPoints;
 
     private final Map<String, CollarModel> collars;
     private final Map<String, SkinModel> skins;
@@ -47,11 +51,14 @@ public class PetData extends AbstractConfig implements IPetData {
 			return;
 		}
 
-	    type = HMCPets.instance().petTypeRegistry().getRegistered(get("type").getString()).orElseThrow(NoSuchFieldError::new);
+	    type = HMCPets.instance().petTypeRegistry().getRegistered(get("type").getString().toLowerCase()).orElseThrow(NoSuchFieldError::new);
 
-	    Material iconMat = Material.getMaterial(get("icon").getString());
-	    icon = (iconMat == null) ? Hooks.getItem(get("icon").getString()) : new ItemStack(iconMat);
+	    Material iconMat = Material.getMaterial(get("icon").getString("STONE"));
+	    icon = (iconMat == null) ? Hooks.getItem(get("icon").getString("STONE")) : new ItemStack(iconMat);
 		mobType = get("mob-type").getString();
+
+        petPoints = get("pet-points").getInt();
+        rarity = HMCPets.instance().petRarityRegistry().getRegistered(get("rarity").getString("common").toLowerCase()).orElseThrow(NoSuchFieldError::new);
 
         if(icon == null) {
             System.out.println("Malformed config (icon " + get("icon").getString() + " not found): " + id + ". Aborting loading this pet!");

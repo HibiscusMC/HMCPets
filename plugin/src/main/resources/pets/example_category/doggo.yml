@@ -1,0 +1,17 @@
+#Example config file for HMCPets
+#DOGGO
+#Refer to the HMCPets Wiki for further information.
+
+type: critter
+
+#Can either be a Vanilla Material (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html) or a Nexo/ItemsAdder item. Refer to the Wiki for patterns.
+icon: nexo:dog_item
+
+#Input either a Vanilla EntityType (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html) or a ModelEngine model ID.
+mob-type: dog
+
+#Pet Points user get from selling this pet
+pet-points: 100
+
+#Rarity of this mob
+rarity: COMMON

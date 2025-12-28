@@ -1,15 +1,10 @@
 package com.hibiscusmc.hmcpets.api.model;
 
-import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import org.bukkit.Location;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Data
 @Setter(AccessLevel.NONE)
@@ -18,8 +13,9 @@ public class UserModel {
     private final UUID uuid;
 
     private final Map<UUID, CachedPet> pets = new HashMap<>();
-    private final Map<UUID, CachedPet> activePets = new HashMap<>();
-    private final Map<UUID, CachedPet> favoritePets = new HashMap<>();
+
+    //List of deleted pets at runtime - updated on saving.
+    private final List<UUID> deletedPets = new ArrayList<>();
 
     @Setter(AccessLevel.PUBLIC)
     private int petPoints;
@@ -27,18 +23,16 @@ public class UserModel {
     //Despawns all active pets for a player and resets their ownerInstance, to avoid pets
     //going to ghost players if rejoining.
     public void despawnActivePets(){
-        activePets.values().forEach(pet -> {
+        pets.values().forEach(pet -> {
             pet.pet().despawn(false);
         });
-        activePets().clear();
     }
 
     //Forcibly despawns active pets - used in server shutdown
     public void destroyActivePets(){
-        activePets.values().forEach(pet -> {
+        pets.values().forEach(pet -> {
             pet.pet().destroy();
         });
-        activePets().clear();
     }
 
     public Optional<PetModel> getPet(UUID uuid){
@@ -48,11 +42,12 @@ public class UserModel {
         return Optional.of(cachedPet.pet());
     }
 
-    public Optional<PetModel> getActivePet(UUID uuid){
-        CachedPet cachedPet = activePets.get(uuid);
-        if(cachedPet == null) return Optional.empty();
+    public int spawnedPets(){
+        return (int)pets.values().stream().filter(pet -> pet.pet().isSpawned()).count();
+    }
 
-        return Optional.of(cachedPet.pet());
+    public Optional<PetModel> getPet(String partialUUID){
+        return pets.values().stream().map(CachedPet::pet).filter(pet -> pet.id().toString().startsWith(partialUUID)).findAny();
     }
 
     public void setPets(Iterable<PetModel> allPets) {
@@ -60,114 +55,20 @@ public class UserModel {
     }
 
     public void addPet(PetModel pet) {
-        addPetTo(pets, pet, null);
+        pets.put(pet.id(), new CachedPet(pet));
     }
 
     public void removePet(PetModel pet) {
-        updatePetRemoval(pets, pet, CachedPet.RemoveType.TEMPORAL);
-    }
+        pet.despawn(false);
+        pet.destroy();
 
-    public void deletePet(PetModel pet) {
-        updatePetRemoval(pets, pet, CachedPet.RemoveType.PERMANENT);
+        pets.remove(pet.id());
+
+        deletedPets.add(pet.id());
     }
 
     public long countPets() {
         return pets.values().stream().filter(pet -> pet.removed() == CachedPet.RemoveType.NONE).count();
-    }
-
-    public void setActivePets(Iterable<PetModel> allPets) {
-        allPets.forEach(pet -> {
-            pet.status(PetStatus.ACTIVE);
-            activePets.put(pet.id(), new CachedPet(pet, false));
-        });
-    }
-
-    public void addActivePet(PetModel pet, Location spawnLocation) {
-        addPetTo(activePets, pet, PetStatus.ACTIVE);
-
-        pet.spawn(spawnLocation);
-    }
-
-    public void removeActivePet(PetModel pet) {
-        pet.status(PetStatus.IDLE);
-
-        updatePetRemoval(activePets, pet, CachedPet.RemoveType.TEMPORAL);
-        pet.despawn(true);
-    }
-
-    public void deleteActivePet(PetModel pet) {
-        updatePetRemoval(activePets, pet, CachedPet.RemoveType.PERMANENT);
-        pet.despawn(false);
-    }
-
-    public long countActivePets() {
-        return activePets.values().stream().filter(pet -> pet.removed() == CachedPet.RemoveType.NONE).count();
-    }
-
-    public void setFavoritePets(Iterable<PetModel> allPets) {
-        allPets.forEach(pet -> favoritePets.put(pet.id(), new CachedPet(pet, false)));
-    }
-
-    public void addFavoritePet(PetModel pet) {
-        addPetTo(favoritePets, pet, null);
-    }
-
-    public void removeFavoritePet(PetModel pet) {
-        updatePetRemoval(favoritePets, pet, CachedPet.RemoveType.TEMPORAL);
-    }
-
-    public void deleteFavoritePet(PetModel pet) {
-        updatePetRemoval(favoritePets, pet, CachedPet.RemoveType.PERMANENT);
-    }
-
-    public boolean hasFavoritePet(PetModel pet) {
-        CachedPet cached = favoritePets.get(pet.id());
-
-        return cached != null && cached.removed() == CachedPet.RemoveType.NONE;
-    }
-
-    public long countFavoritePets() {
-        return favoritePets.values().stream().filter(pet -> pet.removed() == CachedPet.RemoveType.NONE).count();
-    }
-
-    private void addPetTo(Map<UUID, CachedPet> map, PetModel pet, PetStatus status) {
-        if (pet == null) {
-            return;
-        }
-
-        if (status != null) {
-            pet.status(status);
-        }
-
-        CachedPet existing = map.get(pet.id());
-        if (existing == null) {
-            map.put(pet.id(), new CachedPet(pet));
-            return;
-        }
-
-        if (existing.removed() != CachedPet.RemoveType.NONE) {
-            existing.removed(CachedPet.RemoveType.NONE);
-        }
-
-        existing.pet(pet);
-    }
-
-    private void updatePetRemoval(Map<UUID, CachedPet> map, PetModel pet, CachedPet.RemoveType type) {
-        if (pet == null) {
-            return;
-        }
-
-        CachedPet cached = map.get(pet.id());
-        if (cached == null) {
-            return;
-        }
-
-        if (type == CachedPet.RemoveType.PERMANENT) {
-            map.remove(pet.id());
-            return;
-        }
-
-        cached.removed(type);
     }
 
     @Data

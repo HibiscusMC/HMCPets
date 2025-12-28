@@ -1,10 +1,7 @@
 package com.hibiscusmc.hmcpets.command;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.*;
 import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.storage.Storage;
@@ -63,7 +60,7 @@ public class PetsAdminCommand extends BaseCommand {
 
     @CommandAlias("add")
     @CommandPermission("hmcpets.admincommands.add")
-    @CommandCompletion("@player @pets")
+    @CommandCompletion("@players @pets")
     public void add(CommandSender sender, OfflinePlayer player, String petName){
         if (player == null) {
             sender.sendRichMessage("<red>Player not found!");
@@ -183,6 +180,39 @@ public class PetsAdminCommand extends BaseCommand {
         long end = System.currentTimeMillis();
 
         langConfig.commandAdminReload().send(sender, Map.of("type", category, "ms", (end - start) + ""));
+    }
+
+
+    @Subcommand("points")
+    @CommandPermission("hmcpets.admincommands.points")
+    public class PointsCommands extends BaseCommand{
+
+        @Subcommand("add")
+        @CommandCompletion("@players points")
+        @CommandPermission("hmcpets.admincommands.points.add")
+        public void addPoints(CommandSender sender, OfflinePlayer player, int points){
+            userCache.fetch(player.getUniqueId()).thenAccept(user -> {
+                user.petPoints(user.petPoints() + points);
+
+                sender.sendMessage(points + " Pet Points added to player " + player.getName());
+            });
+        }
+
+        @Subcommand("remove")
+        @CommandCompletion("@players points")
+        @CommandPermission("hmcpets.admincommands.points.remove")
+        public void removePoints(CommandSender sender, OfflinePlayer player, int points){
+            userCache.fetch(player.getUniqueId()).thenAccept(user -> {
+               user.petPoints(user.petPoints() - points);
+
+               if(!pluginConfig.users().allowNegativePetPointsBalance()){
+                   user.petPoints(0);
+               }
+
+               sender.sendMessage(points + " Pet Points deducted from player " + player.getName());
+            });
+        }
+
     }
 
 }

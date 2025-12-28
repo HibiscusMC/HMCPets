@@ -13,6 +13,7 @@ import com.hibiscusmc.hmcpets.listener.ListenerService;
 import com.hibiscusmc.hmcpets.service.ServiceModule;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import com.hibiscusmc.hmcpets.storage.StorageService;
+import com.hibiscusmc.hmcpets.util.hooks.PlaceholderAPIHook;
 import lombok.extern.java.Log;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,6 +42,9 @@ public class HMCPetsPlugin extends HMCPets implements Module {
     @Inject
     private UserCache userCache;
 
+    @Inject
+    private Injector injector;
+
     @Override
     public void initialize() {
         log.info("-----------------------------------------");
@@ -57,6 +61,8 @@ public class HMCPetsPlugin extends HMCPets implements Module {
         storageService.load();
         listenerService.load();
         commandService.load();
+
+        injector.getInstance(PlaceholderAPIHook.class).register();
 
         long end = System.currentTimeMillis() - start;
         log.info("HMCPets loaded successfully in " + end + "ms!");

@@ -32,7 +32,7 @@ public interface Storage {
     void updatePetCraving(PetModel pet, ItemStack newCraving);
     void updatePetStats(PetModel pet, int power, double health, double attack, double hunger);
     void savePet(PetModel pet);
-    void deletePet(PetModel pet);
+    void deletePet(UUID petID);
 
     void insertUser(UserModel user);
     UserModel selectUser(UUID userId);

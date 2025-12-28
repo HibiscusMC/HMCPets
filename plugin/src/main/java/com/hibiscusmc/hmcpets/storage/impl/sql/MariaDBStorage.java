@@ -1,9 +1,9 @@
-package com.hibiscusmc.hmcpets.storage.impl.remote;
+package com.hibiscusmc.hmcpets.storage.impl.sql;
 
 import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.data.IPluginStorageData;
-import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.config.PetConfig;
+import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.storage.impl.SQLBasedStorage;
 import team.unnamed.inject.Inject;
 

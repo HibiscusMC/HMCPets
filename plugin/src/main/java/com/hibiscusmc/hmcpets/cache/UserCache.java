@@ -11,11 +11,10 @@ import team.unnamed.inject.Singleton;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Log(topic = "HMCPets")
 @Singleton
-public class UserCache extends ConcurrentHashMap<UUID, UserModel> {
+public class UserCache extends HashMap<UUID, UserModel> {
 
     @Inject
     private StorageHolder storage;
@@ -53,50 +52,25 @@ public class UserCache extends ConcurrentHashMap<UUID, UserModel> {
 
             impl.saveUser(user);
 
+            for(UUID deletedPet : user.deletedPets()){
+                impl.deletePet(deletedPet);
+            }
+
+            user.deletedPets().clear();
+
             for (UserModel.CachedPet cachedPet : new HashMap<>(user.pets()).values()) {
                 if (cachedPet.removed() != UserModel.CachedPet.RemoveType.NONE) {
                     if (!cachedPet.cached()) {
-                        impl.deletePet(cachedPet.pet());
+                        impl.deletePet(cachedPet.pet().id());
                     }
 
-                    user.deletePet(cachedPet.pet());
+                    user.removePet(cachedPet.pet());
                 } else {
                     if (cachedPet.cached()) {
                         impl.insertPet(cachedPet.pet());
                         cachedPet.cached(false);
                     } else {
                         impl.savePet(cachedPet.pet());
-                    }
-                }
-            }
-
-            for (UserModel.CachedPet cachedPet : new HashMap<>(user.activePets()).values()) {
-                if (cachedPet.removed() != UserModel.CachedPet.RemoveType.NONE) {
-                    if (!cachedPet.cached()) {
-                        impl.deleteActivePet(user, cachedPet.pet());
-                    }
-
-                    user.deleteActivePet(cachedPet.pet());
-                } else {
-                    if (cachedPet.cached()) {
-                        impl.insertActivePet(user, cachedPet.pet());
-                        cachedPet.cached(false);
-                    }
-                }
-            }
-
-
-            for (UserModel.CachedPet cachedPet : new HashMap<>(user.favoritePets()).values()) {
-                if (cachedPet.removed() != UserModel.CachedPet.RemoveType.NONE) {
-                    if (!cachedPet.cached()) {
-                        impl.deleteFavoritePet(user, cachedPet.pet());
-                    }
-
-                    user.deleteFavoritePet(cachedPet.pet());
-                } else {
-                    if (cachedPet.cached()) {
-                        impl.insertFavoritePets(user, cachedPet.pet());
-                        cachedPet.cached(false);
                     }
                 }
             }
@@ -109,8 +83,8 @@ public class UserCache extends ConcurrentHashMap<UUID, UserModel> {
         Storage impl = storage.implementation();
 
         user.setPets(impl.selectPets(user));
-        user.setActivePets(impl.selectActivePets(user));
-        user.setFavoritePets(impl.selectFavoritePets(user));
+
+        put(user.uuid(), user);
 
         return user;
     }

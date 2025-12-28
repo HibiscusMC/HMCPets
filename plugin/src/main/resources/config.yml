@@ -65,3 +65,11 @@ storage:
 pets:
   # The maximum number of pets that can be active at the same time
   max-active: 3
+
+
+#######################################################
+#                         USERS                       #
+#=====================================================#
+
+#Should players be allowed to have a negative balance of Pet Points? (Allows infinite purchases)
+allow-negative-pet-points: false

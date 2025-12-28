@@ -63,6 +63,8 @@ public class PetModel {
     private double attack;
     private double hunger;
 
+    private boolean favorite;
+
 
     public PetModel(UUID id, UserModel owner, IPetData config){
         this.id = id;
@@ -146,6 +148,8 @@ public class PetModel {
     }
 
     public void despawn(boolean callEvent){
+        if(!isSpawned()) return;
+
         if(callEvent){
             PetDespawnEvent event = new PetDespawnEvent(ownerInstance(), this);
             if(event.isCancelled()) return;
@@ -153,26 +157,32 @@ public class PetModel {
 
         ownerInstance(null);
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(HMCPets.instance(), () -> {
-            if(entity() != null){
-                System.out.println("Destroying pet model");
-                //Remove le entity
-                entity().remove();
-                entity(null);
-            }
+        if(entity() != null){
+            System.out.println("Destroying pet model");
+            //Remove le entity
+            entity().remove();
+            entity(null);
+        }
 
-            if(nameDisplay() != null){
-                System.out.println("Destroying name model");
-                //Remove le name
-                nameDisplay().remove();
-                nameDisplay(null);
-            }
-        });
+        if(nameDisplay() != null){
+            System.out.println("Destroying name model");
+            //Remove le name
+            nameDisplay().remove();
+            nameDisplay(null);
+        }
     }
 
     public void destroy(){
+        if(!isSpawned()) return;
+
         entity().remove();
         nameDisplay().remove();
+    }
+
+
+    //TODO: Resting feature
+    public boolean isResting(){
+        return false;
     }
 
     private void retrieveOwnerInstance(){

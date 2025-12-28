@@ -1,4 +1,4 @@
-package com.hibiscusmc.hmcpets.storage.impl.remote;
+package com.hibiscusmc.hmcpets.storage.impl.mongo;
 
 import com.hibiscusmc.hmcpets.api.data.IPluginStorageData;
 import com.hibiscusmc.hmcpets.api.model.CollarModel;
@@ -91,7 +91,7 @@ public class MongoDBStorage implements Storage {
     }
 
     @Override
-    public void deletePet(PetModel pet) {
+    public void deletePet(UUID petID) {
 
     }
 

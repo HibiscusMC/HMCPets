@@ -5,6 +5,7 @@ import com.hibiscusmc.hmcpets.api.data.ILangData;
 import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +39,8 @@ public class PetRarityRegistry implements Registry<PetRarity> {
         if (isRegistered(petRarity)) {
             throw new IllegalArgumentException("PetRarity " + petRarity.id() + " is already registered");
         }
+
+        System.out.println("Registering PetRarity " + petRarity.key().asString());
 
         REGISTRY.put(petRarity.key().asString(), petRarity);
     }
@@ -90,19 +93,22 @@ public class PetRarityRegistry implements Registry<PetRarity> {
 
     @Override
     public Optional<PetRarity> getRegistered(@NotNull PetRarity petRarity) {
-        return Optional.ofNullable(REGISTRY.get(petRarity.key().asString()));
+        return getRegistered(petRarity.key().asString());
     }
 
     @Override
     public Optional<PetRarity> getRegistered(@NotNull Key key) {
-        return Optional.ofNullable(REGISTRY.get(key.asString()));
+        return getRegistered(key.asString());
     }
 
     @Override
-    public Optional<PetRarity> getRegistered(@NotNull String str) {
-        return Optional.ofNullable(REGISTRY.get(str));
-    }
+    public Optional<PetRarity> getRegistered(@NonNull String str) {
+        //Could have different namespaces - need to retrieve the key manually
+        String retrievedKey = REGISTRY.keySet().stream().filter(s -> s.endsWith(str.toLowerCase())).findFirst().orElse(null);
+        if(retrievedKey == null) return Optional.empty();
 
+        return Optional.ofNullable(REGISTRY.get(retrievedKey));
+    }
     @Override
     public PetRarity[] getAllRegistered() {
         return REGISTRY.values().toArray(PetRarity[]::new);

@@ -1,9 +1,6 @@
 package com.hibiscusmc.hmcpets.config;
 
-import com.hibiscusmc.hmcpets.api.data.IPluginData;
-import com.hibiscusmc.hmcpets.api.data.IPluginPetData;
-import com.hibiscusmc.hmcpets.api.data.IPluginRemoteStorageData;
-import com.hibiscusmc.hmcpets.api.data.IPluginStorageData;
+import com.hibiscusmc.hmcpets.api.data.*;
 import com.hibiscusmc.hmcpets.api.storage.StorageMethod;
 import com.hibiscusmc.hmcpets.api.storage.StorageMethodType;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
@@ -29,6 +26,7 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
 
     private Storage storage;
     private Pets pets;
+    private Users users;
 
     public void setup() {
         load();
@@ -68,6 +66,9 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
 
         pets = new Pets();
         pets.maxActive(get("pets.max-active").getInt(3));
+
+        users = new Users();
+        users.allowNegativePetPointsBalance(get("allow-negative-pet-points").getBoolean(false));
     }
 
     @Getter
@@ -76,6 +77,16 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
     public static class Pets implements IPluginPetData {
 
         int maxActive;
+
+    }
+
+
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    @ToString
+    public static class Users implements IPluginUsersData {
+
+        boolean allowNegativePetPointsBalance;
 
     }
 

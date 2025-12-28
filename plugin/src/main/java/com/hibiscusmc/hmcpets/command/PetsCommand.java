@@ -5,19 +5,22 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import com.hibiscusmc.hmcpets.api.HMCPets;
-import com.hibiscusmc.hmcpets.cache.UserCache;
-import com.hibiscusmc.hmcpets.config.MenuConfig;
-import com.hibiscusmc.hmcpets.config.LangConfig;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.UserModel;
-import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import com.hibiscusmc.hmcpets.api.util.Adventure;
+import com.hibiscusmc.hmcpets.cache.UserCache;
+import com.hibiscusmc.hmcpets.config.LangConfig;
+import com.hibiscusmc.hmcpets.config.MenuConfig;
+import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import lombok.extern.java.Log;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import team.unnamed.inject.Inject;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,6 +62,23 @@ public class PetsCommand extends BaseCommand {
             if (ex != null) {
                 log.severe(ex.getMessage());
             }
+        });
+    }
+
+
+    @CommandAlias("sell")
+    @CommandPermission("hmcpets.commands.sell")
+    public void onPetSellCommand(Player player, String petID){
+        userCache.fetch(player.getUniqueId()).thenAccept(user -> {
+            Optional<PetModel> pet = user.getPet(petID);
+            if(pet.isEmpty()){
+                player.sendMessage(Component.text("There is no pet with that ID!").color(TextColor.color(1, 0, 0)));
+                return;
+            }
+
+            user.petPoints(user.petPoints() + pet.get().config().petPoints());
+            user.removePet(pet.get());
+            player.sendMessage(Component.text("Pet sold for " + pet.get().config().petPoints() + " points!"));
         });
     }
 

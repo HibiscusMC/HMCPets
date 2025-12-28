@@ -92,7 +92,7 @@ public class YAMLStorage implements Storage {
     }
 
     @Override
-    public void deletePet(PetModel pet) {
+    public void deletePet(UUID petID) {
 
     }
 

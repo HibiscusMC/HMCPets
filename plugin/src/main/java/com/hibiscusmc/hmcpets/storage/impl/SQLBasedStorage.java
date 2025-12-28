@@ -369,11 +369,11 @@ public abstract class SQLBasedStorage implements Storage {
     }
 
     @Override
-    public void deletePet(PetModel pet) {
+    public void deletePet(UUID petID) {
         Connection connection = getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_DELETE_BY_ID))) {
-            statement.setString(1, pet.id().toString());
+            statement.setString(1, petID.toString());
 
             statement.execute();
         } catch (SQLException ex) {

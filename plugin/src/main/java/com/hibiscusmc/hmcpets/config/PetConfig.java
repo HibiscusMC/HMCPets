@@ -36,10 +36,8 @@ public class PetConfig {
             petsFile.mkdirs();
 
             new File(path.toString(), "example_category").mkdirs();
-            new File(path.toString(), "example_category2").mkdirs();
 
             plugin.saveResource("pets" + File.separator + "example_category" + File.separator + "doggo.yml", false);
-            plugin.saveResource("pets" + File.separator + "example_category2" + File.separator + "kitty.yml", false);
         }
 
         List<File> folders = Files.listDirs(petsFile);

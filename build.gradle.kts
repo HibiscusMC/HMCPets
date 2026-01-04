@@ -27,6 +27,9 @@ allprojects {
         maven("https://repo.nexomc.com/releases")
 
         maven("https://mvn.lumine.io/repository/maven-public/")
+
+        //MythicMobs
+        maven("https://mvn.lumine.io/repository/maven-public/")
     }
 }
 
@@ -46,7 +49,11 @@ dependencies {
         exclude("com.google.gson")
     }
 
+    //ModelEngine
     compileOnly("com.ticxo.modelengine:ModelEngine:R4.0.4")
+
+    //MythicMobs
+    compileOnly("io.lumine:Mythic-Dist:5.6.1")
 }
 
 tasks {

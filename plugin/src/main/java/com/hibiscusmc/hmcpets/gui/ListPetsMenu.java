@@ -3,7 +3,6 @@ package com.hibiscusmc.hmcpets.gui;
 import com.hibiscusmc.hmcpets.api.gui.Button;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.UserModel;
-import com.hibiscusmc.hmcpets.api.model.enums.PetStatus;
 import com.hibiscusmc.hmcpets.api.util.Adventure;
 import com.hibiscusmc.hmcpets.api.util.Pets;
 import com.hibiscusmc.hmcpets.config.LangConfig;
@@ -100,30 +99,27 @@ public class ListPetsMenu extends AbstractConfig implements PetMenu {
                 String iconKey = entry.getKey().toString();
 
                 switch (iconKey) {
-                    case "next-page": {
+                    case "next-page" -> {
                         ItemStack item = parse(get("icons.next-page.item").get(ItemStack.class));
                         boolean dynamic = get("icons.next-page.dynamic").getBoolean();
                         int slot = get("icons.next-page.slot").getInt();
 
                         nextPageButton = Button.of(item, slot, dynamic);
-                        break;
                     }
-                    case "previous-page": {
+                    case "previous-page" -> {
                         ItemStack item = parse(get("icons.previous-page.item").get(ItemStack.class));
                         boolean dynamic = get("icons.previous-page.dynamic").getBoolean();
                         int slot = get("icons.previous-page.slot").getInt();
 
                         previousPageButton = Button.of(item, slot, dynamic);
-                        break;
                     }
-                    case "filter": {
+                    case "filter" -> {
                         ItemStack item = parse(get("icons.filter.item").get(ItemStack.class));
                         int slot = get("icons.filter.slot").getInt();
 
                         filterButton = Button.of(item, slot);
-                        break;
                     }
-                    case "pet-data": {
+                    case "pet-data" -> {
                         ConfigurationNode usageNode = get("icons.pet-data.usage");
 
                         configNode.node("icons", "pet-data", "item", "material").set("STONE");
@@ -143,15 +139,13 @@ public class ListPetsMenu extends AbstractConfig implements PetMenu {
                                         usageNode.node("summon", "max-active").getString()
                                 )
                         );
-                        break;
                     }
-                    default: {
+                    default -> {
                         ItemStack item = parse(get("icons." + iconKey + ".item").get(ItemStack.class));
                         int slot = get("icons." + iconKey + ".slot").getInt();
                         List<String> actions = get("icons." + iconKey + ".actions").getList(String.class);
 
                         extraButtons.add(Button.of(item, slot, actions));
-                        break;
                     }
                 }
             }
@@ -242,11 +236,6 @@ public class ListPetsMenu extends AbstractConfig implements PetMenu {
 
                     break;
                 }
-                case IDLE: {
-                    if (pet.status() != PetStatus.IDLE) continue;
-
-                    break;
-                }
                 case RESTING: {
                     if (!isResting) continue;
 
@@ -260,9 +249,9 @@ public class ListPetsMenu extends AbstractConfig implements PetMenu {
                     case "favorites" -> isFavorite
                             ? actionUsage.favorites().remove()
                             : actionUsage.favorites().add();
+
                     case "summon" -> {
                         if (isActive) {
-                            System.out.println();
                             yield actionUsage.summon().unsummon();
                         } else {
                             yield user.spawnedPets() >= pluginConfig.pets().maxActive()
@@ -272,6 +261,7 @@ public class ListPetsMenu extends AbstractConfig implements PetMenu {
                                     : actionUsage.summon().summon();
                         }
                     }
+
                     default -> "unexpected value: " + arg;
                 };
 

@@ -41,5 +41,4 @@ public class PetEntityInteractionListener implements Listener {
         PetInteractEvent petInteractEvent = new PetInteractEvent(event.getPlayer(), pet.get());
         Bukkit.getPluginManager().callEvent(petInteractEvent);
     }
-
 }

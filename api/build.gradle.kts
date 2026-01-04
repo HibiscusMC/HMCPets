@@ -21,6 +21,9 @@ dependencies {
 
     // Inject
     implementation("team.unnamed:inject:2.0.1")
+
+    //MythicMobs
+    compileOnly("io.lumine:Mythic-Dist:5.6.1")
 }
 
 java {

@@ -8,10 +8,15 @@ type: critter
 icon: nexo:dog_item
 
 #Input either a Vanilla EntityType (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html) or a ModelEngine model ID.
-mob-type: dog
+mob-id: dog
+mob-type: MODELENGINE #Either VANILLA, MODELENGINE or MYTHICMOBS
 
 #Pet Points user get from selling this pet
 pet-points: 100
 
 #Rarity of this mob
 rarity: COMMON
+
+#Should this pet use HMCPets' default following algorithm? Set this to false if you have another owner follow
+#technique set up for this pet(e.g. MythicMobs' follow owner feature)
+use-default-follow-algorithm: true

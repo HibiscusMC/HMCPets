@@ -117,7 +117,6 @@ public class UserModel {
                 sb.append(", craving=").append(pet.craving() != null ? pet.craving().getType() : "null");
                 sb.append(", obtainedTimestamp=").append(pet.obtainedTimestamp());
                 sb.append(", lastFed=").append(pet.lastFed());
-                sb.append(", status=").append(pet.status());
                 sb.append(", power=").append(pet.power());
                 sb.append(", health=").append(pet.health());
                 sb.append(", attack=").append(pet.attack());

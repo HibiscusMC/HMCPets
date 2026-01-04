@@ -24,6 +24,7 @@ public class PetTypeRegistry implements Registry<PetType> {
         ILangData lang = HMCPets.instance()
                 .langData();
 
+        //TODO: Implement actual skills with support for MythicMobs ones
         PetType.AQUATIC.name(lang.petsTypeAquatic());
         PetType.AQUATIC.registerSkill(ActionType.MOVES, pet -> {
             LivingEntity entity = pet.entity();

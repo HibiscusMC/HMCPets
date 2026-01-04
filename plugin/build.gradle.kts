@@ -37,6 +37,9 @@ dependencies {
     // Lombok
     annotationProcessor("org.projectlombok:lombok:1.18.42")
     compileOnly("org.projectlombok:lombok:1.18.42")
+
+    //MythicMobs
+    compileOnly("io.lumine:Mythic-Dist:5.6.1")
 }
 
 java {

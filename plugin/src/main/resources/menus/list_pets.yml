@@ -1,7 +1,8 @@
-title: '<shift:-42><white>ꐽ'
+title: '<shift:-42><white><papi:nexo_all_pets_gui>'
 rows: 6
 slots:
   - 0-44
+
 icons:
   next-page:
     dynamic: true
@@ -60,7 +61,7 @@ icons:
         - '<usage:summon>'
         - ''
         - '<#d24c9f>Shift-Click<dark_gray>: <white><usage:favorites>'
-        - '<#d24c9f>Right-Click<dark_gray>: <white><usage:manage>'
+        - '<#d24c9f>Right-Click<dark_gray>: <white>Manage this pet'
     usage:
       favorites:
         add:
@@ -76,13 +77,3 @@ icons:
           lore: '<red>This pet is resting!'
         max-active:
           lore: '<red>You can''t have more active pets'
-  example-button:
-    slot: 50
-    item:
-      material: DIAMOND
-      name: 'Example Icon'
-      lore:
-        - 'This is an example icon'
-    actions:
-      - 'player: me Hi!'
-      - 'console: say hello %player_name%'

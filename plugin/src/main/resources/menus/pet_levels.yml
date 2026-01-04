@@ -1,0 +1,19 @@
+starting-title: '<shift:-42><papi:nexo_leveling_pet_gui_start_gui>'
+continue-title: '<shift:-42><papi:nexo_leveling_pet_gui_continue_gui>'
+end-title: '<shift:-42><papi:nexo_leveling_pet_gui_end_gui>'
+
+rows: 6
+
+prev-page-slot: 40
+next-page-slot: 49
+
+levels-slots:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9

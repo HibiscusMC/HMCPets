@@ -5,14 +5,12 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.TextDisplay;
 
 import java.util.EnumSet;
 
 public class PetFollowGoal extends Goal {
 
 	private final Mob pet;
-	private final TextDisplay petHologram;
 	private final Player owner;
 	private final double speed;
 	private final double minDistance;
@@ -21,15 +19,13 @@ public class PetFollowGoal extends Goal {
 	public PetFollowGoal(Mob pet, org.bukkit.entity.Player ownerBukkit,
 	                     double speed,
 	                     double minDistance,
-						 double maxDistance,
-						 TextDisplay petHologram) {
+						 double maxDistance) {
 		this.pet = pet;
 		this.owner = ((CraftPlayer) ownerBukkit).getHandle();
 		this.speed = speed;
 		this.minDistance = minDistance;
 		this.maxDistance = maxDistance * maxDistance;
 		this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
-		this.petHologram = petHologram;
 	}
 
 	@Override

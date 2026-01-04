@@ -2,3 +2,130 @@ title: '<shift:-42><papi:nexo_my_pet_gui>'
 rows: 6
 
 pet-preview-slot: 10
+
+levels-slots:
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+
+icons:
+  levels-btn: #Invisible clickable item to open the Levels Menu
+    dynamic: false
+    item:
+      material: nexo:invisible_item
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 3
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  levels-indicator: #Item that displays the actual level bar.
+    dynamic: false
+    item:
+      material: nexo:pet_bar_exp_0
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 6
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  #EXP and HP bars have to follow the "hp-NUMBER" and "exp-NUMBER" formatting to be read successfully
+  exp-0: #Exp bar: 0/10
+    dynamic: false
+    item:
+      material: nexo:pet_bar_exp_0
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 6
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  exp-1: #Exp bar: 1/10
+    dynamic: false
+    item:
+      material: nexo:pet_bar_exp_1
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 6
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  exp-2: #Exp bar: 2/10
+    dynamic: false
+    item:
+      material: nexo:pet_bar_exp_2
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 6
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  exp-3: #Exp bar: 3/10
+    dynamic: false
+    item:
+      material: nexo:pet_bar_exp_3
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 6
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  exp-4: #Exp bar: 4/10
+    dynamic: false
+    item:
+      material: nexo:pet_bar_exp_4
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 6
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  exp-5: #Exp bar: 5/10
+    dynamic: false
+    item:
+      material: nexo:pet_bar_exp_5
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 6
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  exp-6: #Exp bar: 6/10
+    dynamic: false
+    item:
+      material: nexo:pet_bar_exp_6
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 6
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  exp-7: #Exp bar: 7/10
+    dynamic: false
+    item:
+      material: nexo:pet_bar_exp_7
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 6
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  exp-8: #Exp bar: 8/10
+    dynamic: false
+    item:
+      material: nexo:pet_bar_exp_8
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 6
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  exp-9: #Exp bar: 9/10
+    dynamic: false
+    item:
+      material: nexo:pet_bar_exp_9
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 6
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  exp-10: #Exp bar: 10/10
+    dynamic: false
+    item:
+      material: nexo:pet_bar_exp_10
+      name: 'Levels'
+      lore:
+        - 'Click to go to the Levels Menu'
+    slot: 6
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'

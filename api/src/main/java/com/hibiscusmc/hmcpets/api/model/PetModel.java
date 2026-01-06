@@ -49,7 +49,9 @@ public class PetModel {
     private CollarModel collar;
     private ItemStack craving;
 
-    private long obtainedTimestamp;
+
+    //
+    private long obtainedTimestamp = -1;
     private long lastFed;
 
     private int power;
@@ -60,7 +62,7 @@ public class PetModel {
     private boolean favorite;
 
 
-    public PetModel(UUID id, UserModel owner, IPetData config){
+    protected PetModel(UUID id, UserModel owner, IPetData config){
         this.id = id;
         this.owner = owner;
         this.config = config;
@@ -69,6 +71,18 @@ public class PetModel {
 	    this.name = Character.toUpperCase(config.id().charAt(0)) + config.id().substring(1).replace("_", " ");
 
         obtainedTimestamp = System.currentTimeMillis();
+        lastFed = System.currentTimeMillis();
+    }
+
+    protected PetModel(UUID id, UserModel owner, IPetData config, long obtainedTimestamp){
+        this.id = id;
+        this.owner = owner;
+        this.config = config;
+
+        //Beautify name
+        this.name = Character.toUpperCase(config.id().charAt(0)) + config.id().substring(1).replace("_", " ");
+
+        obtainedTimestamp = obtainedTimestamp;
         lastFed = System.currentTimeMillis();
     }
 
@@ -175,6 +189,12 @@ public class PetModel {
         return entity != null;
     }
 
+    /**
+     * Determines if the pet can be sold based on the way it was obtained through.
+     *
+     * @return true if the pet was not obtained via permissibles (cannot sell those)
+     */
+    public boolean isObtainedViaPerms() { return obtainedTimestamp != -1; }
 
     private void setupFollowOwner(){
         /*net.minecraft.world.entity.LivingEntity craftLivingEntity = ((CraftLivingEntity)entity).getHandle();
@@ -195,4 +215,19 @@ public class PetModel {
         nmsEntity.goalSelector.addGoal(1, new PetFollowGoal(nmsEntity, ownerInstance, 1.2, 3, 10));
     }
 
+    public static PetModel fromPermissible(UUID id, UserModel owner, IPetData config){
+        return new PetModel(id, owner, config);
+    }
+
+    public static PetModel fromPermissible(UserModel owner, IPetData config){
+        return new PetModel(UUID.randomUUID(), owner, config);
+    }
+
+    public static PetModel of(UUID id, UserModel owner, IPetData config){
+        return new PetModel(id, owner, config, System.currentTimeMillis());
+    }
+
+    public static PetModel of(UserModel owner, IPetData config){
+        return new PetModel(UUID.randomUUID(), owner, config, System.currentTimeMillis());
+    }
 }

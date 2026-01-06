@@ -14,7 +14,6 @@ import com.hibiscusmc.hmcpets.config.MenuConfig;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import lombok.extern.java.Log;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -72,7 +71,12 @@ public class PetsCommand extends BaseCommand {
         userCache.fetch(player.getUniqueId()).thenAccept(user -> {
             Optional<PetModel> pet = user.getPet(petID);
             if(pet.isEmpty()){
-                player.sendMessage(Component.text("There is no pet with that ID!").color(TextColor.color(1, 0, 0)));
+                player.sendMessage(Component.text("There is no pet with that ID!"));
+                return;
+            }
+
+            if(pet.get().isObtainedViaPerms()){
+                player.sendMessage(Component.text("You cannot sell this pet!"));
                 return;
             }
 

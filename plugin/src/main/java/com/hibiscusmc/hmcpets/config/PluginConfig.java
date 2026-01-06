@@ -69,6 +69,7 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
 
         users = new Users();
         users.allowNegativePetPointsBalance(get("allow-negative-pet-points").getBoolean(false));
+        users.allowDuplicatePets(get("allow-duplicate-pets").getBoolean(true));
     }
 
     @Getter
@@ -87,6 +88,7 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
     public static class Users implements IPluginUsersData {
 
         boolean allowNegativePetPointsBalance;
+        boolean allowDuplicatePets;
 
     }
 

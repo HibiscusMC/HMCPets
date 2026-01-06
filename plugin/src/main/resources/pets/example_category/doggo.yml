@@ -7,6 +7,10 @@ type: critter
 #Can either be a Vanilla Material (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html) or a Nexo/ItemsAdder item. Refer to the Wiki for patterns.
 icon: nexo:dog_item
 
+#Permission for this pet - optional, if a player has this permission they'll receive a non-sellable pet of this type.
+#Removing this permission removes access to the pet.
+permission: hmcpets.pet.doggo
+
 #Input either a Vanilla EntityType (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html) or a ModelEngine model ID.
 mob-id: dog
 mob-type: MODELENGINE #Either VANILLA, MODELENGINE or MYTHICMOBS

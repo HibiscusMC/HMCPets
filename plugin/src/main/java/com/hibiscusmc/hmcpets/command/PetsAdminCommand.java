@@ -21,7 +21,6 @@ import team.unnamed.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 @CommandAlias(value = "hmcpetsadmin|petsadmin|petadmin")
 @CommandPermission("hmcpets.admincommands")
@@ -74,7 +73,7 @@ public class PetsAdminCommand extends BaseCommand {
                 return;
             }
 
-            user.addPet(new PetModel(UUID.randomUUID(), user, data.get()));
+            user.addPet(PetModel.of(user, data.get()));
             sender.sendRichMessage("<green>Pet added!");
         });
     }

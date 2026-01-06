@@ -15,6 +15,8 @@ public interface IPetData {
     String category();
     String id();
 
+    String permission();
+
     String mobID();
     MobType mobType();
 

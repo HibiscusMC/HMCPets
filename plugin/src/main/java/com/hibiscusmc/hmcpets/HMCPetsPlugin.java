@@ -13,6 +13,7 @@ import com.hibiscusmc.hmcpets.listener.ListenerService;
 import com.hibiscusmc.hmcpets.service.ServiceModule;
 import com.hibiscusmc.hmcpets.storage.StorageHolder;
 import com.hibiscusmc.hmcpets.storage.StorageService;
+import com.hibiscusmc.hmcpets.tasks.TasksService;
 import com.hibiscusmc.hmcpets.util.hooks.PlaceholderAPIHook;
 import lombok.extern.java.Log;
 import org.bukkit.plugin.Plugin;
@@ -35,6 +36,8 @@ public class HMCPetsPlugin extends HMCPets implements Module {
     private ListenerService listenerService;
     @Inject
     private CommandService commandService;
+    @Inject
+    private TasksService tasksService;
 
     @Inject
     private LangConfig langConfig;
@@ -61,6 +64,7 @@ public class HMCPetsPlugin extends HMCPets implements Module {
         storageService.load();
         listenerService.load();
         commandService.load();
+        tasksService.load();
 
         injector.getInstance(PlaceholderAPIHook.class).register();
 

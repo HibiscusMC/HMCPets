@@ -59,8 +59,10 @@ public class UserModel {
     }
 
     public void removePet(PetModel pet) {
-        pet.despawn(false);
-        pet.destroy();
+        if(pet.isSpawned()){
+            pet.despawn(false);
+            pet.destroy();
+        }
 
         pets.remove(pet.id());
 

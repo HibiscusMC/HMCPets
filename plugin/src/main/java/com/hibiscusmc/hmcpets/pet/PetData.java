@@ -25,6 +25,8 @@ public class PetData extends AbstractConfig implements IPetData {
     private final String category;
     private final String id;
 
+    private String permission;
+
     private PetRarity rarity;
     private int petPoints;
 
@@ -79,6 +81,7 @@ public class PetData extends AbstractConfig implements IPetData {
 
         rawIcon = icon.clone();
 
+        permission = get("permission").getString("hmcpets.pet." + id);
 
         useDefaultFollowAlgorithm = get("use-default-follow-algorithm").getBoolean(true);
 

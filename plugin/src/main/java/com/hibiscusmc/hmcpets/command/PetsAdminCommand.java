@@ -43,7 +43,7 @@ public class PetsAdminCommand extends BaseCommand {
     @Inject
     private StorageHolder storage;
 
-    @CommandAlias("debug")
+    @Subcommand("debug")
     @CommandPermission("hmcpets.admincommands.debug")
     public void debug(CommandSender sender) {
         boolean status = Debug.toggleDebug();
@@ -57,7 +57,7 @@ public class PetsAdminCommand extends BaseCommand {
         );
     }
 
-    @CommandAlias("add")
+    @Subcommand("add")
     @CommandPermission("hmcpets.admincommands.add")
     @CommandCompletion("@players @pets")
     public void add(CommandSender sender, OfflinePlayer player, String petName){
@@ -78,7 +78,7 @@ public class PetsAdminCommand extends BaseCommand {
         });
     }
 
-    @CommandAlias("rename")
+    @Subcommand("rename")
     @CommandPermission("hmcpets.admincommands.rename")
     public void rename(CommandSender sender, OfflinePlayer player, String petId, String newName) {
         if (player == null) {
@@ -111,7 +111,7 @@ public class PetsAdminCommand extends BaseCommand {
         });*/
     }
 
-    @CommandAlias("listpets")
+    @Subcommand("listpets")
     @CommandPermission("hmcpets.admincommands.listpets")
     public void listPets(CommandSender sender, OfflinePlayer player) {
         if (player == null) {
@@ -143,7 +143,7 @@ public class PetsAdminCommand extends BaseCommand {
         });
     }
 
-    @CommandAlias("rl|reload")
+    @Subcommand("rl|reload")
     @CommandPermission("hmcpets.admincommands.reload")
     @CommandCompletion("all|lang|config|pets|menus")
     public void reload(CommandSender sender, @Default("") String category) {

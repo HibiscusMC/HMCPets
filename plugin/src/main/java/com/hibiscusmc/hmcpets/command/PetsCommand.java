@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Subcommand;
 import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.UserModel;
@@ -41,7 +42,7 @@ public class PetsCommand extends BaseCommand {
     private StorageHolder storage;
 
     @Default
-    @CommandAlias("list")
+    @Subcommand("list")
     @CommandPermission("hmcpets.commands.list")
     public void onListCommand(Player player) {
         userCache.fetch(player.getUniqueId()).thenAccept(user -> {
@@ -65,7 +66,7 @@ public class PetsCommand extends BaseCommand {
     }
 
 
-    @CommandAlias("sell")
+    @Subcommand("sell")
     @CommandPermission("hmcpets.commands.sell")
     public void onPetSellCommand(Player player, String petID){
         userCache.fetch(player.getUniqueId()).thenAccept(user -> {
@@ -86,7 +87,7 @@ public class PetsCommand extends BaseCommand {
         });
     }
 
-    @CommandAlias("version")
+    @Subcommand("version")
     @CommandPermission("hmcpets.commands.version")
     public void onVersionCommand(CommandSender sender) {
         String version = instance.getPluginMeta().getVersion();

@@ -11,6 +11,7 @@ import com.hibiscusmc.hmcpets.api.model.registry.PetType;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
 import lombok.Getter;
 import me.lojosho.hibiscuscommons.hooks.Hooks;
+import me.lojosho.shaded.configurate.CommentedConfigurationNode;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -51,16 +52,17 @@ public class PetData extends AbstractConfig implements IPetData {
         this.id = id;
         this.category = category;
 
+        levels = new HashMap<>();
         collars = new HashMap<>();
         skins = new HashMap<>();
     }
 
-    public void setup() {
+    public boolean setup() {
         load();
 
 		if(get("type").getString() == null) {
 			System.out.println("Malformed config: " + id + ". Aborting loading this pet!");
-			return;
+			return false;
 		}
 
 	    type = HMCPets.instance().petTypeRegistry().getRegistered(get("type").getString().toLowerCase()).orElseThrow(NoSuchFieldError::new);
@@ -75,8 +77,8 @@ public class PetData extends AbstractConfig implements IPetData {
         rarity = HMCPets.instance().petRarityRegistry().getRegistered(get("rarity").getString("common").toLowerCase()).orElseThrow(NoSuchFieldError::new);
 
         if(icon == null) {
-            System.out.println("Malformed config (icon " + get("icon").getString() + " not found): " + id + ". Aborting loading this pet!");
-            return;
+            System.out.println("Malformed config (icon " + get("icon").getString() + " not found): " + id + "!");
+            return false;
         }
 
         rawIcon = icon.clone();
@@ -85,7 +87,24 @@ public class PetData extends AbstractConfig implements IPetData {
 
         useDefaultFollowAlgorithm = get("use-default-follow-algorithm").getBoolean(true);
 
+        for(CommentedConfigurationNode node : get("levels").childrenMap().values()){
+            try{
+                int level = Integer.parseInt(node.key().toString());
+                PetLevelData levelData = new PetLevelData(get("levels." + level + ".health").getInt(100),
+                        level,
+                        get("levels." + level + ".exp-required").getInt(100),
+                        get("levels." + level + ".mythicmobs.tick-skill").getString(""),
+                        get("levels." + level + ".mythicmobs.spawn-skill").getString(""),
+                        get("levels." + level + ".mythicmobs.death-skill").getString(""));
+                levels.put(level, levelData);
+            } catch (NumberFormatException e){
+                System.out.println("Malformed config (level " + node.key().toString() + " is not a number): " + id + ". Aborting loading this level!");
+                return false;
+            }
+        }
+
 	    System.out.println("Loaded " + id + " pet (" + type.id() + ", icon: " + icon.getType().name() + ")");
+        return true;
     }
 
     @Override

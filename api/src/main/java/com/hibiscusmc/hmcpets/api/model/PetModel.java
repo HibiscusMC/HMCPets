@@ -165,13 +165,29 @@ public class PetModel {
     }
 
     public int expToNextLevel(){
-        Optional<IPetLevelData> levelData = config.getLevel(level);
+        int nextLevel = config.levels().keySet().stream().filter(i -> i > level).min(Integer::compareTo).orElse(Integer.MAX_VALUE);
+        if(nextLevel == Integer.MAX_VALUE){
+            return Integer.MAX_VALUE;
+        }
+
+        Optional<IPetLevelData> levelData = config.getLevel(nextLevel);
         if(levelData.isEmpty()){
             Bukkit.getLogger().severe("A pet (" + config.id() + ") is currently on a level (" + level + ") which is undefined!");
             return Integer.MAX_VALUE;
         }
 
-        return Math.toIntExact(levelData.get().expToNextLevel() - experience);
+        System.out.println("Current exp: " + experience);
+        System.out.println("Next level exp: " + levelData.get().expRequired());
+        return Math.toIntExact(levelData.get().expRequired() - experience);
+    }
+
+    public Optional<IPetLevelData> getNextLevelData(){
+        int nextLevel = config.levels().keySet().stream().filter(i -> i > level).min(Integer::compareTo).orElse(Integer.MAX_VALUE);
+        if(nextLevel == Integer.MAX_VALUE){
+            return Optional.empty();
+        }
+
+        return config.getLevel(nextLevel);
     }
 
     public void levelUp(){
@@ -213,6 +229,14 @@ public class PetModel {
         nmsEntity.targetSelector.removeAllGoals(goal -> true);
 
         nmsEntity.goalSelector.addGoal(1, new PetFollowGoal(nmsEntity, ownerInstance, 1.2, 3, 10));
+    }
+
+    public void name(String name){
+        this.name = name;
+
+        //Update nametag if spawned
+        if(!isSpawned()) return;
+        config().mobType().editNameplate(entity(), Component.text(name).appendNewline().append(Component.text(ownerInstance.getName() + "'s pet")));
     }
 
     public static PetModel fromPermissible(UUID id, UserModel owner, IPetData config){

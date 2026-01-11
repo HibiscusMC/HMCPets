@@ -24,3 +24,19 @@ rarity: COMMON
 #Should this pet use HMCPets' default following algorithm? Set this to false if you have another owner follow
 #technique set up for this pet(e.g. MythicMobs' follow owner feature)
 use-default-follow-algorithm: true
+
+levels:
+  1:
+    health: 10
+    exp-required: 0
+    mythicmobs:
+      spawn-skill: LEVEL_1_DOGGO_SPAWN
+      tick-skill: LEVEL_1_DOGGO_TICK
+      death-skill: LEVEL_1_DOGGO_DEATH
+  2:
+    health: 15
+    exp-required: 20
+    mythicmobs:
+      spawn-skill: LEVEL_1_DOGGO_SPAWN
+      tick-skill: LEVEL_1_DOGGO_TICK
+      death-skill: LEVEL_1_DOGGO_DEATH

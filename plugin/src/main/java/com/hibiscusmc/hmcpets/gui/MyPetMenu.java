@@ -9,7 +9,8 @@ import com.hibiscusmc.hmcpets.config.MenuConfig;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
 import com.hibiscusmc.hmcpets.gui.internal.PetMenu;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
+import com.hibiscusmc.hmcpets.listener.ListenerService;
+import com.hibiscusmc.hmcpets.listener.PetRenameChatListener;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import me.lojosho.shaded.configurate.serialize.SerializationException;
@@ -30,7 +31,10 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
 
     private int petPreviewSlot;
 
-    private Button levelMenuBtn, levelIndicator;
+    private Button renameBtn;
+
+    private ItemStack levelMenuBtn, levelIndicator;
+    private int levelIndicatorSlot;
 
     private List<Integer> levelBtnSlots;
     private Map<Integer, ItemStack> expBars, hpBars;
@@ -47,6 +51,8 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
     @Inject
     private Plugin instance;
 
+    private ListenerService listenerService;
+
     public MyPetMenu(Path path) {
         super(path);
     }
@@ -60,6 +66,7 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
         rows = 0;
         levelIndicator = null;
         levelMenuBtn = null;
+        renameBtn = null;
 
         levelBtnSlots = new ArrayList<>();
         extraButtons = new ArrayList<>();
@@ -86,18 +93,17 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
                 }
 
                 switch (iconKey) {
-                    case "levels-btn" -> {
-                        ItemStack item = parse(get("icons.levels-btn.item").get(ItemStack.class));
-                        int slot = get("icons.levels-btn.slot").getInt();
+                    case "rename-btn" -> {
+                        renameBtn = Button.of(parse(get("icons.rename-btn.item").get(ItemStack.class)), get("icons.rename-btn.slot").getInt());
+                    }
 
-                        levelMenuBtn = Button.of(item, slot);
+                    case "levels-btn" -> {
+                        levelMenuBtn = parse(get("icons.levels-btn.item").get(ItemStack.class));
                     }
 
                     case "levels-indicator" -> {
-                        ItemStack item = parse(get("icons.levels-indicator.item").get(ItemStack.class));
-                        int slot = get("icons.levels-indicator.slot").getInt();
-
-                        levelIndicator = Button.of(item, slot);
+                        levelIndicator = parse(get("icons.levels-indicator.item").get(ItemStack.class));
+                        levelIndicatorSlot = get("icons.levels-indicator.slot").getInt();
                     }
 
                     default -> {
@@ -129,28 +135,42 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
 
         //Add all the interactable invisible buttons for the Levels Menu
         for(int slot : levelBtnSlots){
-            gui.setItem(slot, new GuiItem(levelMenuBtn.item().clone(), event -> menuConfig.petLevelsMenu().open(player, 0)));
+            gui.setItem(slot, new GuiItem(levelMenuBtn.clone(), event -> menuConfig.petLevelsMenu().open(player, 0)));
         }
 
         //Dynamically create the right bar for the pet level & assign it to the bar indicator
-        gui.setItem(levelIndicator.slot(), new GuiItem(createLevelBarItem(pet), event -> menuConfig.petLevelsMenu().open(player, 0)));
+        gui.setItem(levelIndicatorSlot, new GuiItem(createLevelBarItem(pet), event -> menuConfig.petLevelsMenu().open(player, 0)));
+
+        gui.setItem(renameBtn.slot(), new GuiItem(renameBtn.item(), event -> renamePressed(player, pet)));
+
+        extraButtons.forEach(button -> gui.setItem(button.slot(), new GuiItem(button.item(), event -> button.runActions(player))));
 
         gui.open(player);
     }
 
     private ItemStack createLevelBarItem(PetModel pet){
-        Optional<IPetLevelData> levelData = pet.config().getLevel(pet.level());
-        if(levelData.isEmpty()) return levelMenuBtn.item().clone(); //Make this transparent if no level has been found, defaults to empty as per the underlying art
+        Optional<IPetLevelData> levelData = pet.getNextLevelData();
+        if(levelData.isEmpty()) return levelMenuBtn.clone(); //Make this transparent if no level has been found, defaults to empty as per the underlying art
 
-        int levelPercentage = Math.toIntExact(pet.experience() / levelData.get().expToNextLevel() * 10);
+        int levelPercentage = Math.toIntExact(pet.experience() / levelData.get().expRequired() * 10);
 
         ItemStack expBarItem = expBars.get(levelPercentage);
-        if(expBarItem == null) expBarItem = levelMenuBtn.item().clone();
+        if(expBarItem == null) expBarItem = levelMenuBtn;
 
-        return ItemBuilder.from(expBarItem)
-                .name(levelIndicator.item().displayName())
-                .lore(levelIndicator.item().lore() == null ? new ArrayList<>() : levelIndicator.item().lore())
-                .build();
+        expBarItem = expBarItem.clone();
+        expBarItem.editMeta(meta -> {
+           meta.customName(levelIndicator.effectiveName());
+           if(levelIndicator.lore() != null) meta.lore(levelIndicator.lore());
+        });
+
+        return expBarItem;
+    }
+
+    private void renamePressed(Player player, PetModel pet){
+        player.closeInventory();
+
+        PetRenameChatListener.addRenameReq(player, pet);
+        player.sendMessage(Component.text("What's the new name for your pet? (write 'cancel' to cancel)"));
     }
 
 

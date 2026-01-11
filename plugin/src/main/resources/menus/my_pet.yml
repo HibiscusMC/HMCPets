@@ -11,6 +11,15 @@ levels-slots:
   - 7
 
 icons:
+  rename-btn:
+    dynamic: false
+    item:
+      material: nexo:invisible_item
+      name: 'Rename'
+      lore:
+        - 'Click to rename your pet'
+    slot: 8
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
   levels-btn: #Invisible clickable item to open the Levels Menu
     dynamic: false
     item:

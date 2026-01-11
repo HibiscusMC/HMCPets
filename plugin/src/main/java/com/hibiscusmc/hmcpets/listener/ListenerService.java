@@ -1,6 +1,7 @@
 package com.hibiscusmc.hmcpets.listener;
 
 import com.hibiscusmc.hmcpets.service.Service;
+import lombok.Getter;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import team.unnamed.inject.Inject;
@@ -17,6 +18,9 @@ public class ListenerService extends Service {
         super("Listener");
     }
 
+    @Getter
+    private PetRenameChatListener renameListener;
+
     @Override
     protected void initialize() {
         PluginManager manager = plugin.getServer().getPluginManager();
@@ -26,10 +30,13 @@ public class ListenerService extends Service {
         manager.registerEvents(injector.getInstance(PetEntityInteractionListener.class), plugin);
         manager.registerEvents(injector.getInstance(PetInteractListener.class), plugin);
         manager.registerEvents(injector.getInstance(PlayerJoinListener.class), plugin);
+        renameListener = injector.getInstance(PetRenameChatListener.class);
+
+        manager.registerEvents(renameListener, plugin);
     }
 
     @Override
     protected void cleanup() {
-
+        renameListener = null;
     }
 }

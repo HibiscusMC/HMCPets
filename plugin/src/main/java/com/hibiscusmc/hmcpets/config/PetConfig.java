@@ -56,7 +56,8 @@ public class PetConfig {
 
             for (File file : files) {
                 PetData petData = new PetData(file.toPath(), file.getName().split("\\.")[0], category);
-                petData.setup();
+                boolean loaded = petData.setup();
+                if(!loaded) continue;
 
                 allPets.put(petData.id(), petData);
                 log.info(file.getName().split("\\.")[0] + " pet loaded.");

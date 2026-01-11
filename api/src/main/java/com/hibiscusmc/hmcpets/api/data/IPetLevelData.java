@@ -2,6 +2,7 @@ package com.hibiscusmc.hmcpets.api.data;
 
 public interface IPetLevelData {
 
+    int maxHealth();
     int level();
 
     //Skills for MythicMobs support TODO
@@ -9,5 +10,5 @@ public interface IPetLevelData {
     String mmSpawnSkill();
     String mmDeathSkill();
 
-    int expToNextLevel();
+    int expRequired();
 }

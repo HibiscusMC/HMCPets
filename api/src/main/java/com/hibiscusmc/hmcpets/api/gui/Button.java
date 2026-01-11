@@ -35,14 +35,12 @@ public record Button(ItemStack item, int slot, boolean dynamic, List<String> act
 
             String actionData = PlaceholderAPI.setPlaceholders(player, split[1].trim());
             switch (split[0].toLowerCase()) {
-                case "player": {
+                case "player" -> {
                     player.performCommand(actionData);
-                    break;
                 }
 
-                case "console": {
+                case "console" -> {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), actionData);
-                    break;
                 }
             }
         }

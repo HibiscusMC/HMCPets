@@ -56,11 +56,6 @@ public class YAMLStorage implements Storage {
     }
 
     @Override
-    public void updatePetLevel(PetModel pet, int newLevel, int newExperience) {
-
-    }
-
-    @Override
     public void updatePetSkin(PetModel pet, SkinModel newSkin) {
 
     }

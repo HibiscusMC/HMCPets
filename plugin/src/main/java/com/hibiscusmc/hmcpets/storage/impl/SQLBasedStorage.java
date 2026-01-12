@@ -28,22 +28,21 @@ public abstract class SQLBasedStorage implements Storage {
 
     // Pets Statements
     private static final String PETS_INSERT = "INSERT INTO <prefix>pets (" +
-            " pet_id, owner, pet_type, pet_name, pet_level, experience," +
+            " pet_id, owner, pet_type, pet_name, experience," +
             " skin, rarity, collar, craving, obtained_timestamp, last_fed_timestamp," +
             " power, health, attack, hunger" +
             ") " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
     private static final String PETS_SELECT_ALL = "SELECT * FROM <prefix>pets WHERE owner = ?;";
     private static final String PETS_SELECT_BY_ID = "SELECT * FROM <prefix>pets WHERE pet_id = ?;";
     private static final String PETS_UPDATE_NAME = "UPDATE <prefix>pets SET pet_name = ? WHERE pet_id = ?;";
-    private static final String PETS_UPDATE_LEVEL = "UPDATE <prefix>pets SET pet_level = ?, experience = ? WHERE pet_id = ?;";
     private static final String PETS_UPDATE_SKIN = "UPDATE <prefix>pets SET skin = ? WHERE pet_id = ?;";
     private static final String PETS_UPDATE_RARITY = "UPDATE <prefix>pets SET rarity = ? WHERE pet_id = ?;";
     private static final String PETS_UPDATE_COLLAR = "UPDATE <prefix>pets SET collar = ? WHERE pet_id = ?;";
     private static final String PETS_UPDATE_CRAVING = "UPDATE <prefix>pets SET craving = ? WHERE pet_id = ?;";
     private static final String PETS_UPDATE_STATS = "UPDATE <prefix>pets SET power = ?, health = ?, attack = ?, hunger = ? WHERE pet_id = ?;";
     private static final String PETS_UPDATE = "UPDATE <prefix>pets" +
-            " SET owner = ?, pet_type = ?, pet_name = ?, pet_level = ?, experience = ?," +
+            " SET owner = ?, pet_type = ?, pet_name = ?, experience = ?," +
             " skin = ?, rarity = ?, collar = ?, craving = ?," +
             " obtained_timestamp = ?, last_fed_timestamp = ?," +
             " power = ?, health = ?, attack = ?, hunger = ?" +
@@ -102,18 +101,17 @@ public abstract class SQLBasedStorage implements Storage {
             statement.setString(2, pet.owner().uuid().toString());
             statement.setString(3, pet.config().id());
             statement.setString(4, pet.name());
-            statement.setInt(5, pet.level());
-            statement.setLong(6, pet.experience());
-            statement.setString(7, pet.skin() != null ? pet.skin().id() : null);
-            statement.setString(8, pet.rarity().id());
-            statement.setString(9, pet.collar() != null ? pet.collar().id() : null);
-            statement.setString(10, pet.craving() != null ? Hooks.getStringItem(pet.craving()) : null);
-            statement.setTimestamp(11, Timestamp.from(Instant.ofEpochMilli(pet.obtainedTimestamp())));
-            statement.setTimestamp(12, pet.lastFed() > 0 ? Timestamp.from(Instant.ofEpochMilli(pet.lastFed())) : null);
-            statement.setInt(13, pet.power());
-            statement.setDouble(14, pet.health());
-            statement.setDouble(15, pet.attack());
-            statement.setDouble(16, pet.hunger());
+            statement.setLong(5, pet.experience());
+            statement.setString(6, pet.skin() != null ? pet.skin().id() : null);
+            statement.setString(7, pet.rarity().id());
+            statement.setString(8, pet.collar() != null ? pet.collar().id() : null);
+            statement.setString(9, pet.craving() != null ? Hooks.getStringItem(pet.craving()) : null);
+            statement.setTimestamp(10, Timestamp.from(Instant.ofEpochMilli(pet.obtainedTimestamp())));
+            statement.setTimestamp(11, pet.lastFed() > 0 ? Timestamp.from(Instant.ofEpochMilli(pet.lastFed())) : null);
+            statement.setInt(12, pet.power());
+            statement.setDouble(13, pet.health());
+            statement.setDouble(14, pet.attack());
+            statement.setDouble(15, pet.hunger());
 
             statement.execute();
         } catch (SQLException ex) {
@@ -177,7 +175,6 @@ public abstract class SQLBasedStorage implements Storage {
         pet.name(name);
 
         int power = rs.getInt("power");
-        int level = rs.getInt("pet_level");
         long exp = rs.getLong("experience");
         double health = rs.getDouble("health");
         double attack = rs.getDouble("attack");
@@ -186,7 +183,6 @@ public abstract class SQLBasedStorage implements Storage {
         Timestamp lastFedTime = rs.getTimestamp("last_fed_timestamp");
 
         pet.power(power);
-        pet.level(level);
         pet.experience(exp);
         pet.health(health);
         pet.attack(attack);
@@ -231,24 +227,6 @@ public abstract class SQLBasedStorage implements Storage {
             statement.execute();
 
             pet.name(newName);
-        } catch (SQLException ex) {
-            log.severe(ex.getMessage());
-        }
-    }
-
-    @Override
-    public void updatePetLevel(PetModel pet, int newLevel, int newExperience) {
-        Connection connection = getConnection();
-
-        try (PreparedStatement statement = connection.prepareStatement(parsePrefix(PETS_UPDATE_LEVEL))) {
-            statement.setInt(1, newLevel);
-            statement.setLong(2, newExperience);
-            statement.setString(3, pet.id().toString());
-
-            statement.execute();
-
-            pet.level(newLevel);
-            pet.experience(newExperience);
         } catch (SQLException ex) {
             log.severe(ex.getMessage());
         }
@@ -348,19 +326,18 @@ public abstract class SQLBasedStorage implements Storage {
             statement.setString(1, pet.owner().uuid().toString());
             statement.setString(2, pet.config().id());
             statement.setString(3, pet.name());
-            statement.setInt(4, pet.level());
-            statement.setLong(5, pet.experience());
-            statement.setString(6, pet.skin() != null ? pet.skin().id() : null);
-            statement.setString(7, pet.rarity() != null ? pet.rarity().id() : null);
-            statement.setString(8, pet.collar() != null ? pet.collar().id() : null);
-            statement.setString(9, pet.craving() != null ? Hooks.getStringItem(pet.craving()) : null);
-            statement.setTimestamp(10, Timestamp.from(Instant.ofEpochMilli(pet.obtainedTimestamp())));
-            statement.setTimestamp(11, pet.lastFed() > 0 ? Timestamp.from(Instant.ofEpochMilli(pet.lastFed())) : null);
-            statement.setInt(12, pet.power());
-            statement.setDouble(13, pet.health());
-            statement.setDouble(14, pet.attack());
-            statement.setDouble(15, pet.hunger());
-            statement.setString(16, pet.id().toString()); //<-- Search index
+            statement.setLong(4, pet.experience());
+            statement.setString(5, pet.skin() != null ? pet.skin().id() : null);
+            statement.setString(6, pet.rarity() != null ? pet.rarity().id() : null);
+            statement.setString(7, pet.collar() != null ? pet.collar().id() : null);
+            statement.setString(8, pet.craving() != null ? Hooks.getStringItem(pet.craving()) : null);
+            statement.setTimestamp(9, Timestamp.from(Instant.ofEpochMilli(pet.obtainedTimestamp())));
+            statement.setTimestamp(10, pet.lastFed() > 0 ? Timestamp.from(Instant.ofEpochMilli(pet.lastFed())) : null);
+            statement.setInt(11, pet.power());
+            statement.setDouble(12, pet.health());
+            statement.setDouble(13, pet.attack());
+            statement.setDouble(14, pet.hunger());
+            statement.setString(15, pet.id().toString()); //<-- Search index
 
             statement.execute();
         } catch (SQLException ex) {

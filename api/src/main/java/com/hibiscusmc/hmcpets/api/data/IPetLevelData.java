@@ -3,6 +3,7 @@ package com.hibiscusmc.hmcpets.api.data;
 public interface IPetLevelData {
 
     int maxHealth();
+    int maxHunger();
     int level();
 
     //Skills for MythicMobs support TODO

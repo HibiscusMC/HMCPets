@@ -181,6 +181,38 @@ public class PetsAdminCommand extends BaseCommand {
         langConfig.commandAdminReload().send(sender, Map.of("type", category, "ms", (end - start) + ""));
     }
 
+    @Subcommand("exp")
+    @CommandPermission("hmcpets.admincommands.exp")
+    public class ExpCommands extends BaseCommand {
+
+        @Subcommand("add")
+        @CommandCompletion("@players points")
+        @CommandPermission("hmcpets.admincommands.points.add")
+        public void addPoints(CommandSender sender, OfflinePlayer player, int points, String petPartialID) {
+            userCache.fetch(player.getUniqueId()).thenAccept(user -> {
+                Optional<PetModel> pet = user.getPet(petPartialID);
+                if (pet.isEmpty()) return;
+
+                pet.get().experience(pet.get().experience() + points);
+                sender.sendMessage("Exp added to pet " + petPartialID + " for player " + player.getName());
+            });
+        }
+
+        @Subcommand("remove")
+        @CommandCompletion("@players points")
+        @CommandPermission("hmcpets.admincommands.points.remove")
+        public void removePoints(CommandSender sender, OfflinePlayer player, int points, String petPartialID) {
+            userCache.fetch(player.getUniqueId()).thenAccept(user -> {
+                Optional<PetModel> pet = user.getPet(petPartialID);
+                if (pet.isEmpty()) return;
+
+                pet.get().experience(pet.get().experience() + points);
+
+                if (pet.get().experience() < 0) pet.get().experience(0);
+                sender.sendMessage("Exp removed from pet " + petPartialID + " for player " + player.getName());
+            });
+        }
+    }
 
     @Subcommand("points")
     @CommandPermission("hmcpets.admincommands.points")

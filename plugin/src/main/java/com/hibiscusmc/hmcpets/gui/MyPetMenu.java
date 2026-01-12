@@ -15,6 +15,7 @@ import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import me.lojosho.shaded.configurate.serialize.SerializationException;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -33,11 +34,11 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
 
     private Button renameBtn;
 
-    private ItemStack levelMenuBtn, levelIndicator;
-    private int levelIndicatorSlot;
+    private ItemStack levelMenuBtn, levelIndicator, hpIndicator, hungerIndicator;
+    private int levelIndicatorSlot, hpIndicatorSlot, hungerIndicatorSlot;
 
     private List<Integer> levelBtnSlots;
-    private Map<Integer, ItemStack> expBars, hpBars;
+    private Map<Integer, ItemStack> expBars, hpBars, hungerBars;
 
     private List<Button> extraButtons;
 
@@ -70,6 +71,7 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
 
         levelBtnSlots = new ArrayList<>();
         extraButtons = new ArrayList<>();
+        hungerBars = new HashMap<>();
 
         expBars = new HashMap<>();
         hpBars = new HashMap<>();
@@ -86,10 +88,18 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
 
                 if(iconKey.startsWith("exp-")){
                     expBars.put(Integer.parseInt(iconKey.substring("exp-".length())), parse(get("icons." + iconKey + ".item").get(ItemStack.class)));
+                    System.out.println("Added EXP bar n. " + Integer.parseInt(iconKey.substring("exp-".length())));
+                    continue;
                 }
 
                 if(iconKey.startsWith("hp-")){
                     hpBars.put(Integer.parseInt(iconKey.substring("hp-".length())), parse(get("icons." + iconKey + ".item").get(ItemStack.class)));
+                    continue;
+                }
+
+                if(iconKey.startsWith("hunger-")){
+                    hungerBars.put(Integer.parseInt(iconKey.substring("hunger-".length())), parse(get("icons." + iconKey + ".item").get(ItemStack.class)));
+                    continue;
                 }
 
                 switch (iconKey) {
@@ -104,6 +114,16 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
                     case "levels-indicator" -> {
                         levelIndicator = parse(get("icons.levels-indicator.item").get(ItemStack.class));
                         levelIndicatorSlot = get("icons.levels-indicator.slot").getInt();
+                    }
+
+                    case "food-indicator" -> {
+                        hungerIndicator = parse(get("icons.food-indicator.item").get(ItemStack.class));
+                        hungerIndicatorSlot = get("icons.food-indicator.slot").getInt();
+                    }
+
+                    case "health-indicator" -> {
+                        hpIndicator = parse(get("icons.health-indicator.item").get(ItemStack.class));
+                        hpIndicatorSlot = get("icons.health-indicator.slot").getInt();
                     }
 
                     default -> {
@@ -143,16 +163,20 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
 
         gui.setItem(renameBtn.slot(), new GuiItem(renameBtn.item(), event -> renamePressed(player, pet)));
 
+        gui.setItem(hungerIndicatorSlot, new GuiItem(createHungerBarItem(pet), event -> menuConfig.petLevelsMenu().open(player, 0)));
+        gui.setItem(hpIndicatorSlot, new GuiItem(createHealthBarItem(pet), event -> menuConfig.petLevelsMenu().open(player, 0)));
+
         extraButtons.forEach(button -> gui.setItem(button.slot(), new GuiItem(button.item(), event -> button.runActions(player))));
 
         gui.open(player);
     }
 
+    //Create EXP bar display
     private ItemStack createLevelBarItem(PetModel pet){
         Optional<IPetLevelData> levelData = pet.getNextLevelData();
         if(levelData.isEmpty()) return levelMenuBtn.clone(); //Make this transparent if no level has been found, defaults to empty as per the underlying art
 
-        int levelPercentage = Math.toIntExact(pet.experience() / levelData.get().expRequired() * 10);
+        int levelPercentage = levelData.get().expRequired() == 0 ? 0 : (int)Math.floor((double)pet.experience() / (double)levelData.get().expRequired() * 10D);
 
         ItemStack expBarItem = expBars.get(levelPercentage);
         if(expBarItem == null) expBarItem = levelMenuBtn;
@@ -164,6 +188,44 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
         });
 
         return expBarItem;
+    }
+
+    //Create HP bar display
+    private ItemStack createHealthBarItem(PetModel pet){
+        System.out.println("a");
+        Optional<IPetLevelData> levelData = pet.getLevelData();
+        if(levelData.isEmpty()) return new ItemStack(Material.AIR); //Make this transparent if no level has been found, defaults to empty as per the underlying art
+        System.out.println("b");
+        int hpPercentage = levelData.get().maxHealth() == 0 ? 0 : (int)Math.floor((double)pet.health() / (double)levelData.get().maxHealth() * 6D);
+        System.out.println(hpPercentage + " hp (" + pet.health() + "/" + levelData.get().maxHealth() + ")");
+        ItemStack hpBarItem = hpBars.get(hpPercentage);
+        if(hpBarItem == null) hpBarItem = new ItemStack(Material.AIR);
+
+        System.out.println("c");
+        hpBarItem = hpBarItem.clone();
+        hpBarItem.editMeta(meta -> {
+           meta.displayName(Component.text("HP: " + pet.health() + "/" + levelData.get().maxHealth()));
+        });
+
+        return hpBarItem;
+    }
+
+    //Create hunger bar display
+    private ItemStack createHungerBarItem(PetModel pet){
+        Optional<IPetLevelData> levelData = pet.getLevelData();
+        if(levelData.isEmpty()) return new ItemStack(Material.AIR); //Make this transparent if no level has been found, defaults to empty as per the underlying art
+
+        int hpPercentage = levelData.get().maxHunger() == 0 ? 0 : (int)Math.floor((double)pet.hunger() / (double)levelData.get().maxHunger() * 6D);
+
+        ItemStack hpBarItem = hungerBars.get(hpPercentage);
+        if(hpBarItem == null) hpBarItem = new ItemStack(Material.AIR);
+
+        hpBarItem = hpBarItem.clone();
+        hpBarItem.editMeta(meta -> {
+            meta.displayName(Component.text("Hunger: " + pet.health() + "/" + levelData.get().maxHealth()));
+        });
+
+        return hpBarItem;
     }
 
     private void renamePressed(Player player, PetModel pet){

@@ -29,6 +29,18 @@ icons:
         - 'Click to go to the Levels Menu'
     slot: 3
     sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  health-indicator: #Item that displays the actual health bar.
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hp_0
+      name: 'HP'
+    slot: 29
+  food-indicator: #Item that displays the actual hunger bar.
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hunger_0
+      name: 'Hunger'
+    slot: 38
   levels-indicator: #Item that displays the actual level bar.
     dynamic: false
     item:
@@ -38,7 +50,7 @@ icons:
         - 'Click to go to the Levels Menu'
     slot: 6
     sound: 'minecraft:item.book.page_turn;master;1;1;0'
-  #EXP and HP bars have to follow the "hp-NUMBER" and "exp-NUMBER" formatting to be read successfully
+  #EXP, HP, and Hunger bars have to follow the "exp-NUMBER", "hp-NUMBER", and "hunger-NUMBER" formatting to be read successfully
   exp-0: #Exp bar: 0/10
     dynamic: false
     item:
@@ -138,3 +150,87 @@ icons:
         - 'Click to go to the Levels Menu'
     slot: 6
     sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  hp-0: #HP bar: 0/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hp_0
+      name: 'HP'
+    slot: 28
+  hp-1: #HP bar: 1/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hp_1
+      name: 'HP'
+    slot: 28
+  hp-2: #HP bar: 2/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hp_2
+      name: 'HP'
+    slot: 28
+  hp-3: #HP bar: 3/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hp_3
+      name: 'HP'
+    slot: 28
+  hp-4: #HP bar: 4/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hp_4
+      name: 'HP'
+    slot: 28
+  hp-5: #HP bar: 5/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hp_5
+      name: 'HP'
+    slot: 28
+  hp-6: #HP bar: 6/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hp_6
+      name: 'HP'
+    slot: 28
+  hunger-0: #Hunger bar: 0/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hunger_0
+      name: 'Hunger'
+    slot: 37
+  hunger-1: #Hunger bar: 1/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hunger_1
+      name: 'Hunger'
+    slot: 37
+  hunger-2: #Hunger bar: 2/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hunger_2
+      name: 'Hunger'
+    slot: 37
+  hunger-3: #Hunger bar: 3/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hunger_3
+      name: 'Hunger'
+    slot: 37
+  hunger-4: #Hunger bar: 4/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hunger_4
+      name: 'Hunger'
+    slot: 37
+  hunger-5: #Hunger bar: 5/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hunger_5
+      name: 'Hunger'
+    slot: 37
+  hunger-6: #Hunger bar: 6/6
+    dynamic: false
+    item:
+      material: nexo:pet_bar_hunger_6
+      name: 'Hunger'
+    slot: 37

@@ -23,6 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,7 +39,6 @@ public class PetModel {
     private final IPetData config;
 
     private String name;
-    private int level;
     private long experience;
 
     private LivingEntity entity;
@@ -55,9 +55,9 @@ public class PetModel {
     private long lastFed;
 
     private int power;
-    private double health;
+    private double health = 5;
     private double attack;
-    private double hunger;
+    private double hunger = 5;
 
     private boolean favorite;
 
@@ -165,14 +165,14 @@ public class PetModel {
     }
 
     public int expToNextLevel(){
-        int nextLevel = config.levels().keySet().stream().filter(i -> i > level).min(Integer::compareTo).orElse(Integer.MAX_VALUE);
+        int nextLevel = config.levels().keySet().stream().filter(i -> i > level()).min(Integer::compareTo).orElse(Integer.MAX_VALUE);
         if(nextLevel == Integer.MAX_VALUE){
             return Integer.MAX_VALUE;
         }
 
         Optional<IPetLevelData> levelData = config.getLevel(nextLevel);
         if(levelData.isEmpty()){
-            Bukkit.getLogger().severe("A pet (" + config.id() + ") is currently on a level (" + level + ") which is undefined!");
+            Bukkit.getLogger().severe("A pet (" + config.id() + ") is currently on a level (" + level() + ") which is undefined!");
             return Integer.MAX_VALUE;
         }
 
@@ -182,7 +182,7 @@ public class PetModel {
     }
 
     public Optional<IPetLevelData> getNextLevelData(){
-        int nextLevel = config.levels().keySet().stream().filter(i -> i > level).min(Integer::compareTo).orElse(Integer.MAX_VALUE);
+        int nextLevel = config.levels().keySet().stream().filter(i -> i > level()).min(Integer::compareTo).orElse(Integer.MAX_VALUE);
         if(nextLevel == Integer.MAX_VALUE){
             return Optional.empty();
         }
@@ -193,12 +193,18 @@ public class PetModel {
     public void levelUp(){
         if(level() >= config().maxLevel()) return;
 
-        level(level + 1);
-        experience(0);
-
         if(ownerInstance != null){
             ownerInstance.showTitle(Title.title(Component.text("Pet leveled up!"), Component.text(name() + " leveled up to Level " + level() + "!")));
         }
+    }
+
+    public Optional<IPetLevelData> getLevelData(){
+        return config().getLevel(level());
+    }
+
+    public int level(){
+        Optional<IPetLevelData> levelData = config().levels().values().stream().filter(data -> data.expRequired() <= experience).max(Comparator.comparingInt(IPetLevelData::level));
+        return levelData.map(IPetLevelData::level).orElse(0);
     }
 
     public boolean isSpawned(){

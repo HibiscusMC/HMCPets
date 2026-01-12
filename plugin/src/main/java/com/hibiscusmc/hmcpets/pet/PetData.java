@@ -90,12 +90,21 @@ public class PetData extends AbstractConfig implements IPetData {
         for(CommentedConfigurationNode node : get("levels").childrenMap().values()){
             try{
                 int level = Integer.parseInt(node.key().toString());
-                PetLevelData levelData = new PetLevelData(get("levels." + level + ".health").getInt(100),
+
+                CommentedConfigurationNode levelNode = get("levels").node(level);
+                CommentedConfigurationNode mmNode = levelNode.node("mythicmobs");
+
+                System.out.println("Level " + level);
+                PetLevelData levelData = new PetLevelData(
+                        levelNode.node("health").getInt(100),
+                        levelNode.node("hunger").getInt(100),
                         level,
-                        get("levels." + level + ".exp-required").getInt(100),
-                        get("levels." + level + ".mythicmobs.tick-skill").getString(""),
-                        get("levels." + level + ".mythicmobs.spawn-skill").getString(""),
-                        get("levels." + level + ".mythicmobs.death-skill").getString(""));
+                        levelNode.node("exp-required").getInt(100),
+                        mmNode.node("tick-skill").getString(""),
+                        mmNode.node("spawn-skill").getString(""),
+                        mmNode.node("death-skill").getString("")
+                );
+                System.out.println(levelData);
                 levels.put(level, levelData);
             } catch (NumberFormatException e){
                 System.out.println("Malformed config (level " + node.key().toString() + " is not a number): " + id + ". Aborting loading this level!");

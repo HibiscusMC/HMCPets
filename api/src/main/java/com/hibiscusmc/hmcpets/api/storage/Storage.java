@@ -25,7 +25,6 @@ public interface Storage {
     PetModel selectPet(UserModel user, UUID petId);
     Set<PetModel> selectPets(UserModel user);
     void updatePetName(PetModel pet, String newName);
-    void updatePetLevel(PetModel pet, int newLevel, int newExperience);
     void updatePetSkin(PetModel pet, SkinModel newSkin);
     void updatePetRarity(PetModel pet, PetRarity newRarity);
     void updatePetCollar(PetModel pet, CollarModel newCollar);

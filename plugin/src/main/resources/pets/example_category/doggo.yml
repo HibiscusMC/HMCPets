@@ -28,6 +28,7 @@ use-default-follow-algorithm: true
 levels:
   1:
     health: 10
+    hunger: 10
     exp-required: 0
     mythicmobs:
       spawn-skill: LEVEL_1_DOGGO_SPAWN
@@ -35,6 +36,7 @@ levels:
       death-skill: LEVEL_1_DOGGO_DEATH
   2:
     health: 15
+    hunger: 15
     exp-required: 20
     mythicmobs:
       spawn-skill: LEVEL_1_DOGGO_SPAWN

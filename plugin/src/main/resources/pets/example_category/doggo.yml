@@ -12,8 +12,8 @@ icon: nexo:dog_item
 permission: hmcpets.pet.doggo
 
 #Input either a Vanilla EntityType (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html) or a ModelEngine model ID.
-mob-id: dog
-mob-type: MODELENGINE #Either VANILLA, MODELENGINE or MYTHICMOBS
+mob-id: HMCPetsDog
+mob-type: MYTHICMOBS #Either VANILLA, MODELENGINE or MYTHICMOBS
 
 #Pet Points user get from selling this pet
 pet-points: 100
@@ -25,8 +25,22 @@ rarity: COMMON
 #technique set up for this pet(e.g. MythicMobs' follow owner feature)
 use-default-follow-algorithm: true
 
+skins:
+  blue:
+    skin-id: HMCPetsBlueDog
+    skin-type: MYTHICMOBS
+    skin-icon: LIGHT_BLUE_DYE
+
 levels:
   1:
+    lore:
+      - "&7The basic doggo."
+      - ""
+      - "&7Health: &f10"
+      - "&7Hunger: &f10"
+      - "Experience Required: &f0 EXP"
+      - ""
+      - "<level-status>"
     health: 10
     hunger: 10
     exp-required: 0
@@ -35,6 +49,14 @@ levels:
       tick-skill: LEVEL_1_DOGGO_TICK
       death-skill: LEVEL_1_DOGGO_DEATH
   2:
+    lore:
+      - "&6NOW WE'RE TALKING DOGS!"
+      - ""
+      - "&7Health: &f15"
+      - "&7Hunger: &f15"
+      - "Experience Required: &f20 EXP"
+      - ""
+      - "<level-status>"
     health: 15
     hunger: 15
     exp-required: 20

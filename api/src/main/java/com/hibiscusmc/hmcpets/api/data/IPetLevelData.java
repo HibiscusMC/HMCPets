@@ -1,6 +1,10 @@
 package com.hibiscusmc.hmcpets.api.data;
 
+import java.util.List;
+
 public interface IPetLevelData {
+
+    List<String> lore();
 
     int maxHealth();
     int maxHunger();

@@ -1,5 +1,6 @@
 package com.hibiscusmc.hmcpets.api.model.mobtypes;
 
+import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.registry.MobType;
 import com.hibiscusmc.hmcpets.api.registry.Registry;
 import com.ticxo.modelengine.api.ModelEngineAPI;
@@ -42,6 +43,18 @@ public class ModelEngineMobType extends MobType {
             Bukkit.getLogger().warning(id + " Mythicmob mob doesn't exist! Aborting pet spawn!");
             return null;
         }
+    }
+
+    @Override
+    public void despawn(Object entity) {
+        if(!(entity instanceof LivingEntity le)) return;
+
+        le.remove();
+    }
+
+    @Override
+    public void tick(Object entity, PetModel pet) {
+        //Nothing to do
     }
 
     @Override

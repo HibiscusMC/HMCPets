@@ -30,7 +30,9 @@ public class Pets {
     //TODO: This doesn't allow for i18n. Either LangConfig needs to be moved here or this needs to be
     //TODO: moved to plugin module
     public static ItemStack buildIcon(PetModel pet, Button petButton, TagResolver... resolvers) {
-        ItemStack stack = pet.config().icon() == null ? ItemStack.of(Material.PLAYER_HEAD) : pet.config().icon();
+        ItemStack stack = pet.config().icon() == null ? ItemStack.of(Material.PLAYER_HEAD) : pet.config().icon().clone();
+        if(pet.skin() != null) stack = pet.skin().icon().clone();
+
         stack.copyDataFrom(petButton.item(), Set.of(
                 DataComponentTypes.CUSTOM_NAME,
                 DataComponentTypes.LORE

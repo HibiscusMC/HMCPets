@@ -3,9 +3,9 @@ package com.hibiscusmc.hmcpets.api.model;
 import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.data.IPetData;
 import com.hibiscusmc.hmcpets.api.data.IPetLevelData;
-import com.hibiscusmc.hmcpets.api.event.PetDespawnEvent;
-import com.hibiscusmc.hmcpets.api.event.PetSpawnEvent;
+import com.hibiscusmc.hmcpets.api.event.*;
 import com.hibiscusmc.hmcpets.api.model.pathfinding.PetFollowGoal;
+import com.hibiscusmc.hmcpets.api.model.registry.MobType;
 import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -49,8 +49,6 @@ public class PetModel {
     private CollarModel collar;
     private ItemStack craving;
 
-
-    //
     private long obtainedTimestamp = -1;
     private long lastFed;
 
@@ -70,7 +68,7 @@ public class PetModel {
         //Beautify name
 	    this.name = Character.toUpperCase(config.id().charAt(0)) + config.id().substring(1).replace("_", " ");
 
-        obtainedTimestamp = System.currentTimeMillis();
+        this.obtainedTimestamp = System.currentTimeMillis();
         lastFed = System.currentTimeMillis();
     }
 
@@ -82,14 +80,17 @@ public class PetModel {
         //Beautify name
         this.name = Character.toUpperCase(config.id().charAt(0)) + config.id().substring(1).replace("_", " ");
 
-        obtainedTimestamp = obtainedTimestamp;
+        this.obtainedTimestamp = obtainedTimestamp;
         lastFed = System.currentTimeMillis();
     }
 
 
     public void spawn(Location location){
+        String finalMobId = skin == null ? config.mobID() : skin.mobId();
+        MobType finalMobType = skin == null ? config.mobType() : skin.mobType();
+
         //Spawn the mob via the MobType
-        entity(config().mobType().spawn(config().mobID(), location));
+        entity(finalMobType.spawn(finalMobId, location));
 
         //Catch errors whilst spawning
         if(entity == null){
@@ -107,7 +108,7 @@ public class PetModel {
         mob.getPersistentDataContainer().set(HMCPets.getInstance().PET_ID_KEY, PersistentDataType.STRING, id.toString());
         mob.getPersistentDataContainer().set(HMCPets.getInstance().PET_OWNER_KEY, PersistentDataType.STRING, ownerInstance.getUniqueId().toString());
 
-        config().mobType().addNameplate(entity(), Component.text(name()).appendNewline().append(Component.text(ownerInstance.getName() + "'s pet")));
+        updateNametag();
 
         if(config.useDefaultFollowAlgorithm()){
             setupFollowOwner();
@@ -133,9 +134,11 @@ public class PetModel {
         if(entity() != null){
             System.out.println("Destroying pet model");
             //Remove le entity and le nameplate
-            config().mobType().removeNameplate(entity());
 
-            entity().remove();
+            MobType mobType = skin == null ? config.mobType() : skin.mobType();
+
+            mobType.removeNameplate(entity());
+            mobType.despawn(entity());
             entity(null);
         }
     }
@@ -207,6 +210,113 @@ public class PetModel {
         return levelData.map(IPetLevelData::level).orElse(0);
     }
 
+    public void skin(SkinModel skin){
+        skin(skin.id());
+    }
+
+    public void skin(String skinID){
+        if(skinID == null) {
+            skin = null;
+            respawn();
+            return;
+        }
+
+        SkinModel skinModel = config.skins().get(skinID);
+        if(skinModel == null){
+            respawn();
+            return;
+        }
+
+        skin = skinModel;
+        if(!isSpawned()) return;
+
+        respawn();
+    }
+
+    public void respawn(){
+        Location currentLocation = entity().getLocation().clone();
+        destroy();
+
+        spawn(currentLocation);
+    }
+
+    public int maxHunger(){
+        return getLevelData().map(IPetLevelData::maxHunger).orElse(-1);
+    }
+
+    public int maxHealth(){
+        return getLevelData().map(IPetLevelData::maxHealth).orElse(-1);
+    }
+
+    public void hurt(double amount){
+        if(!isSpawned()) return;
+
+        PetHPLostEvent event = new PetHPLostEvent(this, amount);
+        if(event.isCancelled()) return;
+
+        health -= event.amount();
+        if(health <= 0){
+            ownerInstance.sendMessage(Component.text("Your pet " + name() +  " was downed!"));
+            despawn(true);
+            return;
+        }
+
+        updateNametag();
+    }
+
+    public void regainHP(double amount){
+        int maxHealth = maxHealth();
+        if(health >= maxHealth) return;
+
+        PetHPGainedEvent event = new PetHPGainedEvent(this, health + amount > maxHealth ? maxHealth - health : amount);
+        if(event.isCancelled()) return;
+
+        health += event.amount();
+        if(health > maxHealth) health = maxHealth;
+
+        if(isSpawned()) updateNametag();
+    }
+
+    public void spendFood(double amount){
+        if(!isSpawned()) return;
+
+        PetHungerLostEvent event = new PetHungerLostEvent(this, amount);
+        if(event.isCancelled()) return;
+
+        hunger -= event.amount();
+        if(hunger <= 0){
+            ownerInstance.sendMessage(Component.text("Your pet " + name() +  " was downed (Too hungry!)"));
+            despawn(true);
+            return;
+        }
+
+        updateNametag();
+    }
+
+    public void regainHunger(double amount){
+        int maxHunger = maxHunger();
+        if(hunger >= maxHunger) return;
+
+        PetHungerGainedEvent event = new PetHungerGainedEvent(this, hunger + amount > maxHunger ? maxHunger - hunger : amount);
+        if(event.isCancelled()) return;
+
+        hunger += event.amount();
+        if(hunger > maxHunger) hunger = maxHunger;
+
+        if(isSpawned()) updateNametag();
+    }
+
+    public void updateNametag(){
+        config().mobType().editNameplate(entity(),
+                Component.text(name())
+                        .appendNewline()
+                        .append(Component.text(ownerInstance.getName() + "'s pet"))
+                        .appendNewline()
+                        .append(Component
+                                .text("HP - " + health  + " / " + maxHealth() + ", Food - " + hunger  + " / " + maxHunger())));
+
+    }
+
     public boolean isSpawned(){
         return entity != null;
     }
@@ -235,6 +345,13 @@ public class PetModel {
         nmsEntity.targetSelector.removeAllGoals(goal -> true);
 
         nmsEntity.goalSelector.addGoal(1, new PetFollowGoal(nmsEntity, ownerInstance, 1.2, 3, 10));
+    }
+
+    public void experience(long experience){
+        PetExpChangedEvent event = new PetExpChangedEvent(this, experience);
+        if(event.isCancelled()) return;
+
+        this.experience = event.amount();
     }
 
     public void name(String name){

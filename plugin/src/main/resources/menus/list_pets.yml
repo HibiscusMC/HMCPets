@@ -7,7 +7,7 @@ icons:
   next-page:
     dynamic: true
     item:
-      material: nexo:cancel_icon
+      material: nexo:invisible_item
       name: 'Next Page'
       lore:
         - 'Click to go to the next page'
@@ -16,7 +16,7 @@ icons:
   previous-page:
     dynamic: true
     item:
-      material: nexo:cancel_icon
+      material: nexo:invisible_item
       name: 'Previous Page'
       lore:
         - 'Click to go to the previous page'

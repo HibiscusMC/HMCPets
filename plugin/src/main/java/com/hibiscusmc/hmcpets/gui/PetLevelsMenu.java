@@ -1,6 +1,8 @@
 package com.hibiscusmc.hmcpets.gui;
 
+import com.hibiscusmc.hmcpets.api.data.IPetLevelData;
 import com.hibiscusmc.hmcpets.api.gui.Button;
+import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.util.Adventure;
 import com.hibiscusmc.hmcpets.config.LangConfig;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
@@ -19,6 +21,7 @@ import team.unnamed.inject.Inject;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PetLevelsMenu extends AbstractConfig implements PetMenu {
 
@@ -27,7 +30,9 @@ public class PetLevelsMenu extends AbstractConfig implements PetMenu {
 
     private int prevPageSlot, nextPageSlot;
 
-    private List<Integer> levelSlots;
+    private ItemStack levelUnlockedIcon, currentLevelIcon, levelLockedIcon;
+
+    private List<Integer> levelSlots; //Amount of levels displayable per page
 
     private List<Button> extraButtons;
 
@@ -72,13 +77,16 @@ public class PetLevelsMenu extends AbstractConfig implements PetMenu {
                 String iconKey = entry.getKey().toString();
 
                 switch (iconKey) {
-                    default: {
+                    case "level-unlocked" -> levelUnlockedIcon = parse(get("icons.level-unlocked.item").get(ItemStack.class));
+                    case "current-level" -> currentLevelIcon = parse(get("icons.current-level.item").get(ItemStack.class));
+                    case "level-locked" -> levelLockedIcon = parse(get("icons.level-locked.item").get(ItemStack.class));
+
+                    default -> {
                         ItemStack item = parse(get("icons." + iconKey + ".item").get(ItemStack.class));
                         int slot = get("icons." + iconKey + ".slot").getInt();
                         List<String> actions = get("icons." + iconKey + ".actions").getList(String.class);
 
                         extraButtons.add(Button.of(item, slot, actions));
-                        break;
                     }
                 }
             }
@@ -87,14 +95,57 @@ public class PetLevelsMenu extends AbstractConfig implements PetMenu {
         }
     }
 
-    public void open(Player player, int page) {
+    public void open(Player player, PetModel pet, int page) {
+        boolean hasNextPages = pet.config().levels().size() > levelSlots.size() * (page + 1);
+        boolean hasPrevPages = page > 0;
+
+        String title = continueTitle;
+        if(page == 0) title = startingTitle;
+        if(!hasNextPages) title = endTitle;
+
         Gui gui = Gui.gui()
-                .title(Adventure.parse(startingTitle))
+                .title(Adventure.parse(title))
                 .rows(rows)
                 .disableAllInteractions()
                 .create();
 
-        //gui.setItem(prevPageSlot, new GuiItem(pet.config().rawIcon()));
+        if(hasPrevPages) gui.setItem(prevPageSlot, new GuiItem(pet.config().rawIcon(), event -> open(player, pet, page - 1)));
+
+        //If there are levels beyond the ones that are being displayed here (and that have been
+        //displayed until now), add
+        if(hasNextPages) gui.setItem(nextPageSlot, new GuiItem(pet.config().rawIcon(), event -> open(player, pet, page + 1)));
+
+        List<IPetLevelData> levels = pet.config().levels().values().stream().toList();
+
+        for(int i = 0; i < levelSlots.size(); i++) {
+            int levelSlot = levelSlots.get(i);
+            int level = page * levelSlots.size() + i;
+
+            IPetLevelData levelData = levels.get(level);
+            ItemStack displayItem = levelLockedIcon.clone();
+            String levelStatus = "LOCKED";
+            if(pet.level() == levelData.level()) {
+                displayItem = currentLevelIcon.clone();
+                levelStatus = "CURRENT";
+            }
+
+            if(pet.level() > levelData.level()) {
+                displayItem = levelUnlockedIcon.clone();
+                levelStatus = "UNLOCKED";
+            }
+
+            String finalLevelStatus = levelStatus;
+            displayItem.editMeta(meta -> {
+                meta.displayName(Component.text("Level " + levelData.level()));
+                List<Component> lore = levelData.lore().stream()
+                        .map(s -> Component.text(s.replace("<level-status>", finalLevelStatus)))
+                        .collect(Collectors.toUnmodifiableList());
+
+                meta.lore(lore);
+            });
+
+            gui.setItem(levelSlot, new GuiItem(displayItem));
+        }
 
         for (Button button : extraButtons) {
             gui.setItem(button.slot(), new GuiItem(button.item(), event -> button.runActions((Player) event.getWhoClicked())));

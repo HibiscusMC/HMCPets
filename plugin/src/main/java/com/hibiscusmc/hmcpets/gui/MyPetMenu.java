@@ -3,13 +3,14 @@ package com.hibiscusmc.hmcpets.gui;
 import com.hibiscusmc.hmcpets.api.data.IPetLevelData;
 import com.hibiscusmc.hmcpets.api.gui.Button;
 import com.hibiscusmc.hmcpets.api.model.PetModel;
+import com.hibiscusmc.hmcpets.api.model.UserModel;
 import com.hibiscusmc.hmcpets.api.util.Adventure;
+import com.hibiscusmc.hmcpets.cache.UserCache;
 import com.hibiscusmc.hmcpets.config.LangConfig;
 import com.hibiscusmc.hmcpets.config.MenuConfig;
 import com.hibiscusmc.hmcpets.config.PluginConfig;
 import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
 import com.hibiscusmc.hmcpets.gui.internal.PetMenu;
-import com.hibiscusmc.hmcpets.listener.ListenerService;
 import com.hibiscusmc.hmcpets.listener.PetRenameChatListener;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
@@ -24,6 +25,7 @@ import team.unnamed.inject.Inject;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MyPetMenu extends AbstractConfig implements PetMenu {
 
@@ -34,7 +36,10 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
 
     private Button renameBtn;
 
-    private ItemStack levelMenuBtn, levelIndicator, hpIndicator, hungerIndicator;
+    private Button backToPetsMenu;
+    private Button petSkinsMenu;
+
+    private ItemStack levelMenuBtn, levelIndicator;
     private int levelIndicatorSlot, hpIndicatorSlot, hungerIndicatorSlot;
 
     private List<Integer> levelBtnSlots;
@@ -52,7 +57,9 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
     @Inject
     private Plugin instance;
 
-    private ListenerService listenerService;
+    @Inject
+    private UserCache userCache;
+
 
     public MyPetMenu(Path path) {
         super(path);
@@ -103,6 +110,10 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
                 }
 
                 switch (iconKey) {
+                    case "pet-skins-menu" -> {
+                        petSkinsMenu = Button.of(get("icons.pet-skins-menu.item").get(ItemStack.class), get("icons.pet-skins-menu.slot").getInt());
+                    }
+
                     case "rename-btn" -> {
                         renameBtn = Button.of(parse(get("icons.rename-btn.item").get(ItemStack.class)), get("icons.rename-btn.slot").getInt());
                     }
@@ -117,13 +128,15 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
                     }
 
                     case "food-indicator" -> {
-                        hungerIndicator = parse(get("icons.food-indicator.item").get(ItemStack.class));
                         hungerIndicatorSlot = get("icons.food-indicator.slot").getInt();
                     }
 
                     case "health-indicator" -> {
-                        hpIndicator = parse(get("icons.health-indicator.item").get(ItemStack.class));
                         hpIndicatorSlot = get("icons.health-indicator.slot").getInt();
+                    }
+
+                    case "pets-menu" -> {
+                        backToPetsMenu = Button.of(parse(get("icons.pets-menu.item").get(ItemStack.class)), get("icons.pets-menu.slot").getInt());
                     }
 
                     default -> {
@@ -155,16 +168,30 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
 
         //Add all the interactable invisible buttons for the Levels Menu
         for(int slot : levelBtnSlots){
-            gui.setItem(slot, new GuiItem(levelMenuBtn.clone(), event -> menuConfig.petLevelsMenu().open(player, 0)));
+            gui.setItem(slot, new GuiItem(levelMenuBtn.clone(), event -> menuConfig.petLevelsMenu().open(player, pet, 0)));
         }
 
         //Dynamically create the right bar for the pet level & assign it to the bar indicator
-        gui.setItem(levelIndicatorSlot, new GuiItem(createLevelBarItem(pet), event -> menuConfig.petLevelsMenu().open(player, 0)));
+        gui.setItem(levelIndicatorSlot, new GuiItem(createLevelBarItem(pet), event -> menuConfig.petLevelsMenu().open(player, pet, 0)));
 
         gui.setItem(renameBtn.slot(), new GuiItem(renameBtn.item(), event -> renamePressed(player, pet)));
 
-        gui.setItem(hungerIndicatorSlot, new GuiItem(createHungerBarItem(pet), event -> menuConfig.petLevelsMenu().open(player, 0)));
-        gui.setItem(hpIndicatorSlot, new GuiItem(createHealthBarItem(pet), event -> menuConfig.petLevelsMenu().open(player, 0)));
+        gui.setItem(hungerIndicatorSlot, new GuiItem(createHungerBarItem(pet), event -> menuConfig.petLevelsMenu().open(player, pet, 0)));
+        gui.setItem(hpIndicatorSlot, new GuiItem(createHealthBarItem(pet), event -> menuConfig.petLevelsMenu().open(player, pet, 0)));
+
+        gui.setItem(backToPetsMenu.slot(), new GuiItem(backToPetsMenu.item(), event -> {
+            UserModel user = userCache.get(player.getUniqueId());
+            if(user == null) return;
+
+            menuConfig.listPetsMenu().open(player, user, user.pets().values().stream().map(UserModel.CachedPet::pet).collect(Collectors.toSet()));
+        }));
+
+        gui.setItem(petSkinsMenu.slot(), new GuiItem(petSkinsMenu.item(), event -> {
+            UserModel user = userCache.get(player.getUniqueId());
+            if(user == null) return;
+
+            menuConfig.petSkinsMenu().open(player, user, pet);
+        }));
 
         extraButtons.forEach(button -> gui.setItem(button.slot(), new GuiItem(button.item(), event -> button.runActions(player))));
 
@@ -192,19 +219,17 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
 
     //Create HP bar display
     private ItemStack createHealthBarItem(PetModel pet){
-        System.out.println("a");
         Optional<IPetLevelData> levelData = pet.getLevelData();
         if(levelData.isEmpty()) return new ItemStack(Material.AIR); //Make this transparent if no level has been found, defaults to empty as per the underlying art
-        System.out.println("b");
-        int hpPercentage = levelData.get().maxHealth() == 0 ? 0 : (int)Math.floor((double)pet.health() / (double)levelData.get().maxHealth() * 6D);
-        System.out.println(hpPercentage + " hp (" + pet.health() + "/" + levelData.get().maxHealth() + ")");
+
+        int hpPercentage = levelData.get().maxHealth() == 0 ? 0 : (int)Math.floor(pet.health() / (double)levelData.get().maxHealth() * 6D);
+
         ItemStack hpBarItem = hpBars.get(hpPercentage);
         if(hpBarItem == null) hpBarItem = new ItemStack(Material.AIR);
 
-        System.out.println("c");
         hpBarItem = hpBarItem.clone();
         hpBarItem.editMeta(meta -> {
-           meta.displayName(Component.text("HP: " + pet.health() + "/" + levelData.get().maxHealth()));
+           meta.displayName(Component.text("<white>HP: " + pet.health() + "/" + levelData.get().maxHealth()));
         });
 
         return hpBarItem;
@@ -215,7 +240,7 @@ public class MyPetMenu extends AbstractConfig implements PetMenu {
         Optional<IPetLevelData> levelData = pet.getLevelData();
         if(levelData.isEmpty()) return new ItemStack(Material.AIR); //Make this transparent if no level has been found, defaults to empty as per the underlying art
 
-        int hpPercentage = levelData.get().maxHunger() == 0 ? 0 : (int)Math.floor((double)pet.hunger() / (double)levelData.get().maxHunger() * 6D);
+        int hpPercentage = levelData.get().maxHunger() == 0 ? 0 : (int)Math.floor(pet.hunger() / (double)levelData.get().maxHunger() * 6D);
 
         ItemStack hpBarItem = hungerBars.get(hpPercentage);
         if(hpBarItem == null) hpBarItem = new ItemStack(Material.AIR);

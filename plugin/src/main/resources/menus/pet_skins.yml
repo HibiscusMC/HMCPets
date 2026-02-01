@@ -1,0 +1,42 @@
+title: '<shift:-42><white><papi:nexo_pet_skins_gui>'
+rows: 6
+slots:
+  - 0-44
+
+icons:
+  next-page:
+    dynamic: true
+    item:
+      material: nexo:invisible_item
+      name: 'Next Page'
+      lore:
+        - 'Click to go to the next page'
+    slot: 53
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  previous-page:
+    dynamic: true
+    item:
+      material: nexo:invisible_item
+      name: 'Previous Page'
+      lore:
+        - 'Click to go to the previous page'
+    slot: 45
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  filter:
+    item:
+      material: nexo:invisible_item
+      name: 'Filter'
+      lore:
+        - '<current:all>All'
+        - ''
+        - '<#d24c9f>Left-Click<dark_gray>: <white>Next filter'
+        - '<#d24c9f>Right-Click<dark_gray>: <white>Previous filter'
+    slot: 49
+  skin-data:
+    item:
+      material: nexo:invisible_item
+      name: '<#d24c9f><skin:name>'
+      lore:
+        - ''
+        - '<#d24c9f>Left-Click<dark_gray>: <white>Select skin'
+        - '<#d24c9f>Right-Click<dark_gray>: <white>Remove skin'

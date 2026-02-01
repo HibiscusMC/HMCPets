@@ -1,5 +1,6 @@
 package com.hibiscusmc.hmcpets.api.model.mobtypes;
 
+import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.registry.MobType;
 import com.hibiscusmc.hmcpets.api.registry.Registry;
 import io.lumine.mythic.api.mobs.MythicMob;
@@ -11,6 +12,8 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Zombie;
+
+import java.util.Optional;
 
 public class MythicMobsMobType extends MobType {
 
@@ -38,6 +41,24 @@ public class MythicMobsMobType extends MobType {
 
             return entity;
         }
+    }
+
+    @Override
+    public void despawn(Object entity) {
+        if(!(entity instanceof LivingEntity le)) return;
+
+        try(MythicBukkit inst = MythicBukkit.inst()){
+            Optional<ActiveMob> optActiveMob = inst.getMobManager().getActiveMob(le.getUniqueId());
+            if(optActiveMob.isEmpty()) return;
+
+            optActiveMob.get().despawn();
+        }
+    }
+
+    @Override
+    public void tick(Object entity, PetModel pet) {
+        //Call level-based tick skill
+
     }
 
     @Override

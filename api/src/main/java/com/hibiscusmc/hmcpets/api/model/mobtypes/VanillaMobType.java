@@ -1,5 +1,6 @@
 package com.hibiscusmc.hmcpets.api.model.mobtypes;
 
+import com.hibiscusmc.hmcpets.api.model.PetModel;
 import com.hibiscusmc.hmcpets.api.model.registry.MobType;
 import com.hibiscusmc.hmcpets.api.registry.Registry;
 import net.kyori.adventure.text.Component;
@@ -24,6 +25,18 @@ public class VanillaMobType extends MobType {
         }
 
         return (LivingEntity) loc.getWorld().spawnEntity(loc, mobType);
+    }
+
+    @Override
+    public void despawn(Object entity) {
+        if(!(entity instanceof LivingEntity le)) return;
+
+        le.remove();
+    }
+
+    @Override
+    public void tick(Object entity, PetModel pet) {
+        //Nothing to do
     }
 
     @Override

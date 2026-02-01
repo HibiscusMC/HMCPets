@@ -11,6 +11,20 @@ levels-slots:
   - 7
 
 icons:
+  pets-menu:
+    dynamic: false
+    item:
+      material: nexo:invisible_item
+      name: 'Back to Pets List'
+    slot: 49
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
+  pet-skins-menu:
+    dynamic: false
+    item:
+      material: nexo:pet_icon_skin
+      name: 'Pet Skins'
+    slot: 47
+    sound: 'minecraft:item.book.page_turn;master;1;1;0'
   rename-btn:
     dynamic: false
     item:
@@ -30,16 +44,8 @@ icons:
     slot: 3
     sound: 'minecraft:item.book.page_turn;master;1;1;0'
   health-indicator: #Item that displays the actual health bar.
-    dynamic: false
-    item:
-      material: nexo:pet_bar_hp_0
-      name: 'HP'
     slot: 29
   food-indicator: #Item that displays the actual hunger bar.
-    dynamic: false
-    item:
-      material: nexo:pet_bar_hunger_0
-      name: 'Hunger'
     slot: 38
   levels-indicator: #Item that displays the actual level bar.
     dynamic: false

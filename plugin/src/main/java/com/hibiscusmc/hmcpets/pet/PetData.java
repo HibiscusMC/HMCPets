@@ -12,6 +12,7 @@ import com.hibiscusmc.hmcpets.config.internal.AbstractConfig;
 import lombok.Getter;
 import me.lojosho.hibiscuscommons.hooks.Hooks;
 import me.lojosho.shaded.configurate.CommentedConfigurationNode;
+import me.lojosho.shaded.configurate.serialize.SerializationException;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -87,6 +88,20 @@ public class PetData extends AbstractConfig implements IPetData {
 
         useDefaultFollowAlgorithm = get("use-default-follow-algorithm").getBoolean(true);
 
+        for(CommentedConfigurationNode node : get("skins").childrenMap().values()) {
+            String skinID = node.key().toString();
+
+            Material skinIconMat = Material.getMaterial(node.node("skin-icon").getString("STONE"));
+
+            SkinModel skin = new SkinModel(skinID,
+                    node.node("skin-id").getString(),
+                    HMCPets.instance().mobTypeRegistry().getRegistered(node.node("skin-type").getString().toLowerCase()).orElseThrow(NoSuchFieldError::new),
+                    (skinIconMat == null) ? Hooks.getItem(node.node("skin-icon").getString("STONE")) : new ItemStack(skinIconMat));
+
+            System.out.println("Loaded skin " + skinID);
+            skins.put(skinID, skin);
+        }
+
         for(CommentedConfigurationNode node : get("levels").childrenMap().values()){
             try{
                 int level = Integer.parseInt(node.key().toString());
@@ -96,6 +111,7 @@ public class PetData extends AbstractConfig implements IPetData {
 
                 System.out.println("Level " + level);
                 PetLevelData levelData = new PetLevelData(
+                        levelNode.node("lore").getList(String.class),
                         levelNode.node("health").getInt(100),
                         levelNode.node("hunger").getInt(100),
                         level,
@@ -106,8 +122,8 @@ public class PetData extends AbstractConfig implements IPetData {
                 );
                 System.out.println(levelData);
                 levels.put(level, levelData);
-            } catch (NumberFormatException e){
-                System.out.println("Malformed config (level " + node.key().toString() + " is not a number): " + id + ". Aborting loading this level!");
+            } catch (NumberFormatException | SerializationException e){
+                System.out.println("Malformed config (level " + node.key().toString() + "): " + id + ". Aborting loading this pet data!");
                 return false;
             }
         }

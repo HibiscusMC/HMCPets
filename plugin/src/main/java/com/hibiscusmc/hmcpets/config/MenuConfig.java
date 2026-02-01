@@ -3,6 +3,7 @@ package com.hibiscusmc.hmcpets.config;
 import com.hibiscusmc.hmcpets.gui.ListPetsMenu;
 import com.hibiscusmc.hmcpets.gui.MyPetMenu;
 import com.hibiscusmc.hmcpets.gui.PetLevelsMenu;
+import com.hibiscusmc.hmcpets.gui.PetSkinsMenu;
 import com.hibiscusmc.hmcpets.gui.internal.PetMenu;
 import lombok.Getter;
 import lombok.extern.java.Log;
@@ -33,6 +34,9 @@ public class MenuConfig {
     @Getter
     private PetLevelsMenu petLevelsMenu;
 
+    @Getter
+    private PetSkinsMenu petSkinsMenu;
+
     public void setup() {
         log.info("Loading menus...");
 
@@ -45,13 +49,15 @@ public class MenuConfig {
             plugin.saveResource("menus" + File.separator + "list_pets.yml", false);
             plugin.saveResource("menus" + File.separator + "my_pet.yml", false);
             plugin.saveResource("menus" + File.separator + "pet_levels.yml", false);
+            plugin.saveResource("menus" + File.separator + "pet_skins.yml", false);
         }
 
         listPetsMenu = new ListPetsMenu(path.resolve("list_pets.yml"));
         myPetMenu = new MyPetMenu(path.resolve("my_pet.yml"));
         petLevelsMenu = new PetLevelsMenu(path.resolve("pet_levels.yml"));
+        petSkinsMenu = new PetSkinsMenu(path.resolve("pet_skins.yml"));
 
-        List<PetMenu> menusToLoad = List.of(listPetsMenu, myPetMenu, petLevelsMenu);
+        List<PetMenu> menusToLoad = List.of(listPetsMenu, myPetMenu, petLevelsMenu, petSkinsMenu);
 
         for (PetMenu menu : menusToLoad) {
             injector.injectMembers(menu);

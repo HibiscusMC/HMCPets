@@ -1,6 +1,7 @@
 package com.hibiscusmc.hmcpets.api.model.registry;
 
 import com.hibiscusmc.hmcpets.api.i18n.LangEntry;
+import com.hibiscusmc.hmcpets.api.model.PetModel;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,9 @@ public abstract class MobType {
     }
 
     public abstract LivingEntity spawn(String id, Location loc);
+    public abstract void despawn(Object entity);
+    public abstract void tick(Object entity, PetModel pet);
+
     public abstract void addNameplate(Object mobInstance, Component text);
     public abstract void editNameplate(Object mobInstance, Component newText);
     public abstract void removeNameplate(Object mobInstance);

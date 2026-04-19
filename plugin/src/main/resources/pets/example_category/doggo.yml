@@ -28,8 +28,10 @@ use-default-follow-algorithm: true
 nametag:
   - "&7Doggo"
   - "&7LVL &f<level> &f| &7EXP &f<exp>"
-  - "<healthbar>"
-  - "<hungerbar>"
+  - "<br>"
+  - "<papi:nexo_pet_icon_life> <healthbar>"
+  - "<br>"
+  - "<papi:nexo_pet_icon_hunger> <hungerbar>"
 
 skins:
   blue:

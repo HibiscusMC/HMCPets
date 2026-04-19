@@ -35,7 +35,6 @@ pets:
   leveled-up-title: "<green><b>LEVELED UP!</b></green>"
   leveled-up-subtitle: "<gray><pet> leveled up to Level <level>!"
   downed: "<prefix><red>Your pet, <dark_red><pet></dark_red>, has been downed! <gray>(<reason>)"
-  nametag: "<white><bold><pet></bold></white><newline><papi:pet_icon_life> <lifebar><newline><papi:pet_icon_hunger> <hungerbar>"
 
 constants:
   no-pets: "<prefix><red>You don't have any pets!"

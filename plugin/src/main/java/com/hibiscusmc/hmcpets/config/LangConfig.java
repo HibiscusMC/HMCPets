@@ -52,7 +52,6 @@ public class LangConfig extends AbstractConfig implements ILangData {
     private final LangEntry petsLeveledUpTitle = new LangEntry("<green><b>LEVELED UP!</b></green>");
     private final LangEntry petsLeveledUpSubtitle = new LangEntry("<gray><pet> leveled up to Level <level>!");
     private final LangEntry petsDowned = new LangEntry("<prefix><red>Your pet, <dark_red><pet></dark_red>, has been downed! <gray>(<reason>)");
-    private final LangEntry petsNametag = new LangEntry("<white><bold><pet></bold></white><newline><newline>Test");
 
     private final LangEntry constantsNoPets = new LangEntry("<prefix><red>You don't have any pets!");
     private final LangEntry constantsEnabled = new LangEntry("<green><b>ENABLED</b></green>");
@@ -101,7 +100,6 @@ public class LangConfig extends AbstractConfig implements ILangData {
         get("pets.leveled-up-title", petsLeveledUpTitle);
         get("pets.leveled-up-subtitle", petsLeveledUpSubtitle);
         get("pets.downed", petsDowned);
-        get("pets.nametag", petsNametag);
 
 
         get("constants.no-pets", constantsNoPets);

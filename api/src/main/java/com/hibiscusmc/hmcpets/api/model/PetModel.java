@@ -320,6 +320,8 @@ public class PetModel {
                     .tag("maxhp", (arg, context) -> Tag.inserting(Component.text(maxHealth())))
                     .tag("hunger", (arg, context) -> Tag.inserting(Component.text(hunger())))
                     .tag("maxhunger", (arg, context) -> Tag.inserting(Component.text(maxHunger())))
+                    .tag("level", (arg, context) -> Tag.inserting(Component.text(String.valueOf(level()))))
+                    .tag("exp", (arg, context) -> Tag.inserting(Component.text(String.valueOf(experience()))))
                     .build()));
         }, 2L);
     }

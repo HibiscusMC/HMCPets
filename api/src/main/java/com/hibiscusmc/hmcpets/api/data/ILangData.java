@@ -37,7 +37,6 @@ public interface ILangData {
     LangEntry petsLeveledUpTitle();
     LangEntry petsLeveledUpSubtitle();
     LangEntry petsDowned();
-    LangEntry petsNametag();
 
 
     LangEntry constantsNoPets();

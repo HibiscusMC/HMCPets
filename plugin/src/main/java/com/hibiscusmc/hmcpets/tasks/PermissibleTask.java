@@ -54,7 +54,7 @@ public class PermissibleTask implements Runnable{
             //If the player already has a pet of that type AND duplicate pets are not allowed, don't add it
             if(!matchingPets.isEmpty() && !pluginConfig.users().allowDuplicatePets()) return;
 
-            cachedUser.addPet(PetModel.fromPermissible(cachedUser, petConfig));
+            cachedUser.addPet(PetModel.fromPermissible(cachedUser, petConfig, pluginConfig));
             playerInstance.sendMessage(Component.text("You got the " + petConfig.id() + " pet!"));
         });
     }

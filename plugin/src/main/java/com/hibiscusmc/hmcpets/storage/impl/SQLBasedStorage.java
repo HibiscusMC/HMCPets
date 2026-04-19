@@ -169,7 +169,7 @@ public abstract class SQLBasedStorage implements Storage {
 
 
         PetData petData = petConfig.allPets().get(configId);
-        PetModel pet = PetModel.of(UUID.fromString(petId), user, petData);
+        PetModel pet = PetModel.of(UUID.fromString(petId), user, petData, pluginConfig);
 
         String name = rs.getString("pet_name");
         pet.name(name);

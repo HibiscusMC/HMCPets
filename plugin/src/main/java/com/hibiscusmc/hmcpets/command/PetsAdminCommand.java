@@ -73,7 +73,7 @@ public class PetsAdminCommand extends BaseCommand {
                 return;
             }
 
-            user.addPet(PetModel.of(user, data.get()));
+            user.addPet(PetModel.of(user, data.get(), pluginConfig));
             sender.sendRichMessage("<green>Pet added!");
         });
     }

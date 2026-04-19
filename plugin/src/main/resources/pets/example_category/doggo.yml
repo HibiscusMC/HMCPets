@@ -25,6 +25,12 @@ rarity: COMMON
 #technique set up for this pet(e.g. MythicMobs' follow owner feature)
 use-default-follow-algorithm: true
 
+nametag:
+  - "&7Doggo"
+  - "&7LVL &f<level> &f| &7EXP &f<exp>"
+  - "<healthbar>"
+  - "<hungerbar>"
+
 skins:
   blue:
     skin-id: HMCPetsBlueDog

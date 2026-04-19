@@ -1,20 +1,28 @@
 package com.hibiscusmc.hmcpets.api.model;
 
+import com.google.common.collect.ImmutableList;
 import com.hibiscusmc.hmcpets.api.HMCPets;
 import com.hibiscusmc.hmcpets.api.data.IPetData;
 import com.hibiscusmc.hmcpets.api.data.IPetLevelData;
+import com.hibiscusmc.hmcpets.api.data.IPluginData;
 import com.hibiscusmc.hmcpets.api.event.*;
+import com.hibiscusmc.hmcpets.api.model.pathfinding.PetFollowBehavior;
 import com.hibiscusmc.hmcpets.api.model.pathfinding.PetFollowGoal;
 import com.hibiscusmc.hmcpets.api.model.registry.MobType;
 import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
+import com.hibiscusmc.hmcpets.api.util.Adventure;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.title.Title;
+import net.minecraft.world.entity.schedule.Activity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
@@ -38,6 +46,8 @@ public class PetModel {
     private final UserModel owner;
     private final IPetData config;
 
+    private final IPluginData pluginData;
+
     private String name;
     private long experience;
 
@@ -60,10 +70,11 @@ public class PetModel {
     private boolean favorite;
 
 
-    protected PetModel(UUID id, UserModel owner, IPetData config){
+    protected PetModel(UUID id, UserModel owner, IPetData config, IPluginData pluginData){
         this.id = id;
         this.owner = owner;
         this.config = config;
+        this.pluginData = pluginData;
 
         //Beautify name
 	    this.name = Character.toUpperCase(config.id().charAt(0)) + config.id().substring(1).replace("_", " ");
@@ -72,10 +83,11 @@ public class PetModel {
         lastFed = System.currentTimeMillis();
     }
 
-    protected PetModel(UUID id, UserModel owner, IPetData config, long obtainedTimestamp){
+    protected PetModel(UUID id, UserModel owner, IPetData config, IPluginData pluginData, long obtainedTimestamp){
         this.id = id;
         this.owner = owner;
         this.config = config;
+        this.pluginData = pluginData;
 
         //Beautify name
         this.name = Character.toUpperCase(config.id().charAt(0)) + config.id().substring(1).replace("_", " ");
@@ -102,19 +114,17 @@ public class PetModel {
         Mob mob = (Mob)entity;
         mob.setAI(true);
         mob.setAware(true);
-        mob.customName(Component.text(name()));
         mob.setCustomNameVisible(true);
 
         mob.getPersistentDataContainer().set(HMCPets.getInstance().PET_ID_KEY, PersistentDataType.STRING, id.toString());
         mob.getPersistentDataContainer().set(HMCPets.getInstance().PET_OWNER_KEY, PersistentDataType.STRING, ownerInstance.getUniqueId().toString());
-
-        updateNametag();
 
         if(config.useDefaultFollowAlgorithm()){
             setupFollowOwner();
         }
 
         PetSpawnEvent event = new PetSpawnEvent(ownerInstance(), this);
+        Bukkit.getPluginManager().callEvent(event);
         if(!event.isCancelled()) return;
 
         //Do not call the event - if canceled too could lead to strange behavior
@@ -126,13 +136,13 @@ public class PetModel {
 
         if(callEvent){
             PetDespawnEvent event = new PetDespawnEvent(ownerInstance(), this);
+            Bukkit.getPluginManager().callEvent(event);
             if(event.isCancelled()) return;
         }
 
         ownerInstance(null);
 
         if(entity() != null){
-            System.out.println("Destroying pet model");
             //Remove le entity and le nameplate
 
             MobType mobType = skin == null ? config.mobType() : skin.mobType();
@@ -153,7 +163,7 @@ public class PetModel {
 
     //TODO: Resting feature
     public boolean isResting(){
-        return false;
+        return health() <= 0;
     }
 
     private void retrieveOwnerInstance(){
@@ -179,8 +189,6 @@ public class PetModel {
             return Integer.MAX_VALUE;
         }
 
-        System.out.println("Current exp: " + experience);
-        System.out.println("Next level exp: " + levelData.get().expRequired());
         return Math.toIntExact(levelData.get().expRequired() - experience);
     }
 
@@ -252,6 +260,7 @@ public class PetModel {
         if(!isSpawned()) return;
 
         PetHPLostEvent event = new PetHPLostEvent(this, amount);
+        Bukkit.getPluginManager().callEvent(event);
         if(event.isCancelled()) return;
 
         health -= event.amount();
@@ -260,8 +269,6 @@ public class PetModel {
             despawn(true);
             return;
         }
-
-        updateNametag();
     }
 
     public void regainHP(double amount){
@@ -269,18 +276,18 @@ public class PetModel {
         if(health >= maxHealth) return;
 
         PetHPGainedEvent event = new PetHPGainedEvent(this, health + amount > maxHealth ? maxHealth - health : amount);
+        Bukkit.getPluginManager().callEvent(event);
         if(event.isCancelled()) return;
 
         health += event.amount();
         if(health > maxHealth) health = maxHealth;
-
-        if(isSpawned()) updateNametag();
     }
 
     public void spendFood(double amount){
         if(!isSpawned()) return;
 
         PetHungerLostEvent event = new PetHungerLostEvent(this, amount);
+        Bukkit.getPluginManager().callEvent(event);
         if(event.isCancelled()) return;
 
         hunger -= event.amount();
@@ -289,8 +296,6 @@ public class PetModel {
             despawn(true);
             return;
         }
-
-        updateNametag();
     }
 
     public void regainHunger(double amount){
@@ -298,23 +303,25 @@ public class PetModel {
         if(hunger >= maxHunger) return;
 
         PetHungerGainedEvent event = new PetHungerGainedEvent(this, hunger + amount > maxHunger ? maxHunger - hunger : amount);
+        Bukkit.getPluginManager().callEvent(event);
         if(event.isCancelled()) return;
 
         hunger += event.amount();
         if(hunger > maxHunger) hunger = maxHunger;
-
-        if(isSpawned()) updateNametag();
     }
 
-    public void updateNametag(){
-        config().mobType().editNameplate(entity(),
-                Component.text(name())
-                        .appendNewline()
-                        .append(Component.text(ownerInstance.getName() + "'s pet"))
-                        .appendNewline()
-                        .append(Component
-                                .text("HP - " + health  + " / " + maxHealth() + ", Food - " + hunger  + " / " + maxHunger())));
-
+    public void updateNametag(String nameplateTemplate){
+        Bukkit.getScheduler().runTaskLaterAsynchronously(HMCPets.getInstance(), () -> {
+            config().mobType().editNameplate(entity(), Adventure.parseForMeta(nameplateTemplate, TagResolver.builder()
+                    .tag("pet", (arg, context) -> Tag.inserting(Component.text(name())))
+                    .tag("healthbar", (arg, context) -> Tag.inserting(Component.text(pluginData.glyphs().healthBar().getSegment((int) health(), maxHealth()))))
+                    .tag("hungerbar", (arg, context) -> Tag.inserting(Component.text(pluginData.glyphs().hungerBar().getSegment((int) hunger(), maxHunger()))))
+                    .tag("hp", (arg, context) -> Tag.inserting(Component.text(health())))
+                    .tag("maxhp", (arg, context) -> Tag.inserting(Component.text(maxHealth())))
+                    .tag("hunger", (arg, context) -> Tag.inserting(Component.text(hunger())))
+                    .tag("maxhunger", (arg, context) -> Tag.inserting(Component.text(maxHunger())))
+                    .build()));
+        }, 2L);
     }
 
     public boolean isSpawned(){
@@ -329,18 +336,18 @@ public class PetModel {
     public boolean isObtainedViaPerms() { return obtainedTimestamp != -1; }
 
     private void setupFollowOwner(){
-        /*net.minecraft.world.entity.LivingEntity craftLivingEntity = ((CraftLivingEntity)entity).getHandle();
+        if(entity.getType() == EntityType.VILLAGER){
+            net.minecraft.world.entity.LivingEntity craftLivingEntity = ((CraftLivingEntity)entity).getHandle();
 
-        craftLivingEntity.getBrain().removeAllBehaviors();
-        craftLivingEntity.getBrain().addActivity(Activity.CORE, 0, ImmutableList.of(new PetFollowBehavior(ownerInstance, 1.2, 3, 10)));
-        craftLivingEntity.getBrain().setActiveActivityIfPossible(Activity.CORE);*/
+            craftLivingEntity.getBrain().removeAllBehaviors();
+            craftLivingEntity.getBrain().addActivity(Activity.CORE, 0, ImmutableList.of(new PetFollowBehavior(ownerInstance, 1.2, 3)));
+            craftLivingEntity.getBrain().setActiveActivityIfPossible(Activity.CORE);
+
+            return;
+        }
 
         net.minecraft.world.entity.Mob nmsEntity = (net.minecraft.world.entity.Mob) ((CraftLivingEntity)entity).getHandle();
 
-        //Manage goals
-        //TODO: Sprint review showcase - this doesn't work on all mobs (some use Brain API) and is not scalable!
-        //TODO: PetFollowGoal only works for ground-based mobs
-        //TODO: Make PetFollowGoal specific for PetType and make PetType goals extensible.
         nmsEntity.goalSelector.removeAllGoals(goal -> true);
         nmsEntity.targetSelector.removeAllGoals(goal -> true);
 
@@ -348,33 +355,42 @@ public class PetModel {
     }
 
     public void experience(long experience){
-        PetExpChangedEvent event = new PetExpChangedEvent(this, experience);
-        if(event.isCancelled()) return;
+        if(isSpawned()){
+            PetExpChangedEvent event = new PetExpChangedEvent(this, experience);
+            Bukkit.getPluginManager().callEvent(event);
+            if(event.isCancelled()) return;
 
-        this.experience = event.amount();
+            this.experience = event.amount();
+            return;
+        }
+
+        this.experience = experience;
     }
 
     public void name(String name){
+        if(isSpawned()){
+            PetNameChangeEvent event = new PetNameChangeEvent(this, name);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(HMCPets.getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(event);
+            });
+        }
+
         this.name = name;
-
-        //Update nametag if spawned
-        if(!isSpawned()) return;
-        config().mobType().editNameplate(entity(), Component.text(name).appendNewline().append(Component.text(ownerInstance.getName() + "'s pet")));
     }
 
-    public static PetModel fromPermissible(UUID id, UserModel owner, IPetData config){
-        return new PetModel(id, owner, config);
+    public static PetModel fromPermissible(UUID id, UserModel owner, IPetData config, IPluginData pluginData){
+        return new PetModel(id, owner, config, pluginData);
     }
 
-    public static PetModel fromPermissible(UserModel owner, IPetData config){
-        return new PetModel(UUID.randomUUID(), owner, config);
+    public static PetModel fromPermissible(UserModel owner, IPetData config, IPluginData pluginData){
+        return new PetModel(UUID.randomUUID(), owner, config, pluginData);
     }
 
-    public static PetModel of(UUID id, UserModel owner, IPetData config){
-        return new PetModel(id, owner, config, System.currentTimeMillis());
+    public static PetModel of(UUID id, UserModel owner, IPetData config, IPluginData pluginData){
+        return new PetModel(id, owner, config, pluginData, System.currentTimeMillis());
     }
 
-    public static PetModel of(UserModel owner, IPetData config){
-        return new PetModel(UUID.randomUUID(), owner, config, System.currentTimeMillis());
+    public static PetModel of(UserModel owner, IPetData config, IPluginData pluginData){
+        return new PetModel(UUID.randomUUID(), owner, config, pluginData, System.currentTimeMillis());
     }
 }

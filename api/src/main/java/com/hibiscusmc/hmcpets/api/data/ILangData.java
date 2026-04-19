@@ -5,45 +5,45 @@ import com.hibiscusmc.hmcpets.api.i18n.LangEntry;
 public interface ILangData {
 
     LangEntry prefix();
-
     LangEntry noPermission();
+    LangEntry playersOnlyCommand();
 
-    LangEntry playerOnlyCommand();
 
     LangEntry commandAdminReload();
-
     LangEntry commandAdminDebug();
 
-    LangEntry commandMainHelp();
 
-    LangEntry commandUsage();
+    LangEntry guisPetNotSpawned();
+    LangEntry guisHpBarName();
+    LangEntry guisHungerBarName();
+    LangEntry guisRenamePet();
+    LangEntry guisRenameCanceled();
+    LangEntry guisRenameDone();
+    LangEntry guisLevelStatusLocked();
+    LangEntry guisLevelStatusUnlocked();
+    LangEntry guisLevelStatusCurrent();
+    LangEntry guisEquipped();
+
 
     LangEntry petsMaxActive();
-
     LangEntry petsRarityCommon();
-
     LangEntry petsRarityRare();
-
     LangEntry petsRarityEpic();
-
     LangEntry petsRarityLegendary();
-
     LangEntry petsTypeAquatic();
-
     LangEntry petsTypeBeast();
-
     LangEntry petsTypeMagic();
-
     LangEntry petsTypeCritter();
+    LangEntry petsLeveledUpTitle();
+    LangEntry petsLeveledUpSubtitle();
+    LangEntry petsDowned();
+    LangEntry petsNametag();
+
 
     LangEntry constantsNoPets();
-
     LangEntry constantsEnabled();
-
     LangEntry constantsDisabled();
-
     LangEntry constantsCurrentActive();
-
     LangEntry constantsCurrentInactive();
 
 }

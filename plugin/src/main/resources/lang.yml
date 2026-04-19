@@ -1,11 +1,24 @@
 prefix: "<b><gradient:#d24c9f:#FF8282>HMCPets</gradient> <dark_gray>»</dark_gray></b> <gray>"
 no-permission: "<prefix><red>No permission."
+player-only-command: "<prefix><red>This command can only be executed by a player."
 
 commands:
   admin:
     reload: "<prefix><gray>Reloaded <color:#d24c9f><type></color> files in <color:#d24c9f><ms>ms</color>!"
     debug: "<prefix><gray>Debug mode: <status>"
   usage: "<prefix><gray>Usage: <#d24c9f>/<command> <usage>"
+
+guis:
+  pet-not-spawned: "<prefix><red>Your Pet is not spawned! Spawn it first to be able to modify it!"
+  hp-bar-name: "<white>HP: <hp>/<maxhp>"
+  hunger-bar-name: "<white>Hunger: <hunger>/<maxhunger>"
+  rename-pet: "<prefix><gray>Enter a new name for your pet (write 'cancel' to cancel):"
+  rename-canceled: "<prefix><gray>Rename canceled."
+  rename-done: "<prefix><gray>Your pet's name has been changed to <pet>."
+  level-status-locked: "<red><bold>Locked"
+  level-status-unlocked: "<green><bold>Unlocked"
+  level-status-current: "<yellow><bold>Current"
+  equipped-pet: "<green>Equipped!"
 
 pets:
   max-active: "<prefix><red>You can't have more active pets!"
@@ -19,6 +32,10 @@ pets:
     beast: "<red><b>Beast</b></red>"
     magic: "<dark_purple><b>Magic</b></dark_purple>"
     critter: "<green><b>Critter</b></green>"
+  leveled-up-title: "<green><b>LEVELED UP!</b></green>"
+  leveled-up-subtitle: "<gray><pet> leveled up to Level <level>!"
+  downed: "<prefix><red>Your pet, <dark_red><pet></dark_red>, has been downed! <gray>(<reason>)"
+  nametag: "<white><bold><pet></bold></white><newline><papi:pet_icon_life> <lifebar><newline><papi:pet_icon_hunger> <hungerbar>"
 
 constants:
   no-pets: "<prefix><red>You don't have any pets!"

@@ -7,6 +7,7 @@ import com.hibiscusmc.hmcpets.api.model.registry.PetRarity;
 import com.hibiscusmc.hmcpets.api.model.registry.PetType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,6 +35,8 @@ public interface IPetData {
 
     Map<String, CollarModel> collars();
     Map<String, SkinModel> skins();
+
+    List<String> nametag();
 
     Optional<IPetLevelData> getLevel(int level);
 

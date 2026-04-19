@@ -17,9 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Getter
 public class PetData extends AbstractConfig implements IPetData {
@@ -37,6 +35,8 @@ public class PetData extends AbstractConfig implements IPetData {
 
     private final Map<String, CollarModel> collars;
     private final Map<String, SkinModel> skins;
+
+    private List<String> nametag;
 
     private PetType type;
     private ItemStack icon, rawIcon;
@@ -56,6 +56,7 @@ public class PetData extends AbstractConfig implements IPetData {
         levels = new HashMap<>();
         collars = new HashMap<>();
         skins = new HashMap<>();
+        nametag = new ArrayList<>();
     }
 
     public boolean setup() {
@@ -87,6 +88,12 @@ public class PetData extends AbstractConfig implements IPetData {
         permission = get("permission").getString("hmcpets.pet." + id);
 
         useDefaultFollowAlgorithm = get("use-default-follow-algorithm").getBoolean(true);
+
+        try{
+            nametag = get("nametag").getList(String.class);
+        }catch (SerializationException e){
+            e.printStackTrace();
+        }
 
         for(CommentedConfigurationNode node : get("skins").childrenMap().values()) {
             String skinID = node.key().toString();
@@ -141,4 +148,6 @@ public class PetData extends AbstractConfig implements IPetData {
     public boolean useDefaultFollowAlgorithm() {
         return useDefaultFollowAlgorithm;
     }
+
+
 }

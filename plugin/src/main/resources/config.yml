@@ -76,3 +76,37 @@ allow-negative-pet-points: false
 
 #Should players be allowed to have more pets of the same type (Ex. 2 Dogs)?
 allow-duplicate-pets: true
+
+
+#######################################################
+#                         GLYPHS                      #
+#=====================================================#
+glyphs:
+  healthbar:
+    segment-amount: 10
+    segments:
+      0: "<papi:nexo_pet_healthbar_0>"
+      1: "<papi:nexo_pet_healthbar_1>"
+      2: "<papi:nexo_pet_healthbar_2>"
+      3: "<papi:nexo_pet_healthbar_3>"
+      4: "<papi:nexo_pet_healthbar_4>"
+      5: "<papi:nexo_pet_healthbar_5>"
+      6: "<papi:nexo_pet_healthbar_6>"
+      7: "<papi:nexo_pet_healthbar_7>"
+      8: "<papi:nexo_pet_healthbar_8>"
+      9: "<papi:nexo_pet_healthbar_9>"
+      10: "<papi:nexo_pet_healthbar_10>"
+  hungerbar:
+    segment-amount: 10
+    segments:
+      0: "<papi:nexo_pet_hungerbar_0>"
+      1: "<papi:nexo_pet_hungerbar_1>"
+      2: "<papi:nexo_pet_hungerbar_2>"
+      3: "<papi:nexo_pet_hungerbar_3>"
+      4: "<papi:nexo_pet_hungerbar_4>"
+      5: "<papi:nexo_pet_hungerbar_5>"
+      6: "<papi:nexo_pet_hungerbar_6>"
+      7: "<papi:nexo_pet_hungerbar_7>"
+      8: "<papi:nexo_pet_hungerbar_8>"
+      9: "<papi:nexo_pet_hungerbar_9>"
+      10: "<papi:nexo_pet_hungerbar_10>"

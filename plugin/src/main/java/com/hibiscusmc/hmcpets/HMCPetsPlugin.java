@@ -16,6 +16,7 @@ import com.hibiscusmc.hmcpets.storage.StorageService;
 import com.hibiscusmc.hmcpets.tasks.TasksService;
 import com.hibiscusmc.hmcpets.util.hooks.PlaceholderAPIHook;
 import lombok.extern.java.Log;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import team.unnamed.inject.Binder;
@@ -66,7 +67,7 @@ public class HMCPetsPlugin extends HMCPets implements Module {
         commandService.load();
         tasksService.load();
 
-        injector.getInstance(PlaceholderAPIHook.class).register();
+        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) injector.getInstance(PlaceholderAPIHook.class).register();
 
         long end = System.currentTimeMillis() - start;
         log.info("HMCPets loaded successfully in " + end + "ms!");

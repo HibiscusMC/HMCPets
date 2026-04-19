@@ -6,4 +6,5 @@ public interface IPluginData {
 
     IPluginPetData pets();
 
+    IPluginGlyphData glyphs();
 }

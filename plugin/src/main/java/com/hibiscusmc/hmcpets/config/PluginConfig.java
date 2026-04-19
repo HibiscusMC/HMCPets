@@ -14,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.inject.Singleton;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Log(topic = "HMCPets")
@@ -27,6 +29,7 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
     private Storage storage;
     private Pets pets;
     private Users users;
+    private Glyphs glyphs;
 
     public void setup() {
         load();
@@ -61,8 +64,7 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
             storage.remote(remote);
         }
 
-        storage.database(get("storage.database").getString("hmcpets"))
-                .prefix(get("storage.prefix").getString("hmcpets_"));
+        storage.database(get("storage.database").getString("hmcpets")).prefix(get("storage.prefix").getString("hmcpets_"));
 
         pets = new Pets();
         pets.maxActive(get("pets.max-active").getInt(3));
@@ -70,15 +72,38 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
         users = new Users();
         users.allowNegativePetPointsBalance(get("allow-negative-pet-points").getBoolean(false));
         users.allowDuplicatePets(get("allow-duplicate-pets").getBoolean(true));
+
+        glyphs = new Glyphs();
+        Map<Integer, String> glyphMap = new HashMap<>();
+
+        for (var entry : get("glyphs").node("healthbar").node("segments").childrenMap().entrySet()) {
+            glyphMap.put(Integer.parseInt(entry.getKey().toString()), entry.getValue().getString(""));
+        }
+
+        glyphs.healthBar = IPluginGlyphData.GlyphBar.of(get("glyphs.healthbar.segments-amount").getInt(10), glyphMap);
+
+        glyphMap.clear();
+
+        for (var entry : get("glyphs").node("hungerbar").node("segments").childrenMap().entrySet()) {
+            glyphMap.put(Integer.parseInt(entry.getKey().toString()), entry.getValue().getString(""));
+        }
+
+        glyphs.hungerBar = IPluginGlyphData.GlyphBar.of(get("glyphs.hungerbar.segments-amount").getInt(10), glyphMap);
+    }
+
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    @ToString
+    public static class Glyphs implements IPluginGlyphData{
+        GlyphBar healthBar;
+        GlyphBar hungerBar;
     }
 
     @Getter
     @Setter(AccessLevel.PRIVATE)
     @ToString
     public static class Pets implements IPluginPetData {
-
         int maxActive;
-
     }
 
 
@@ -86,17 +111,14 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
     @Setter(AccessLevel.PRIVATE)
     @ToString
     public static class Users implements IPluginUsersData {
-
         boolean allowNegativePetPointsBalance;
         boolean allowDuplicatePets;
-
     }
 
     @Getter
     @Setter(AccessLevel.PRIVATE)
     @ToString
     public static class Storage implements IPluginStorageData {
-
         @NotNull
         private StorageMethod method;
 
@@ -113,7 +135,6 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
         @Setter(AccessLevel.PRIVATE)
         @ToString
         public static class Remote implements IPluginRemoteStorageData {
-
             @Nullable
             private String uri;
 
@@ -129,7 +150,6 @@ public class PluginConfig extends AbstractConfig implements IPluginData {
             private String password;
 
         }
-
     }
 
 }

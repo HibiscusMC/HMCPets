@@ -29,6 +29,7 @@ public class ListenerService extends Service {
         manager.registerEvents(injector.getInstance(PlayerJoinListener.class), plugin);
         manager.registerEvents(injector.getInstance(PetRenameChatListener.class), plugin);
         manager.registerEvents(injector.getInstance(PetHurtListener.class), plugin);
+        manager.registerEvents(injector.getInstance(NametagUpdaterListener.class), plugin);
     }
 
     @Override

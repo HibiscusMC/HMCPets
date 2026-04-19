@@ -6,6 +6,9 @@ author: AlicsMacs, iKztu
 depend:
   - HibiscusCommons
 
+softdepend:
+  - PlaceholderAPI
+
 libraries:
   - org.spongepowered:configurate-yaml:4.2.0
   - com.h2database:h2:2.4.240
